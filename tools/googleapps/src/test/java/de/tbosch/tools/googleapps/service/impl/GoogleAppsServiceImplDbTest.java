@@ -31,6 +31,7 @@ import de.tbosch.tools.googleapps.AbstractSpringDbTest;
 import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.service.GCalendarService;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
+import de.tbosch.tools.googleapps.service.PreferencesService;
 
 public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 
@@ -40,28 +41,31 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 	@Autowired
 	private GCalendarService calendarServiceMock;
 
+	@Autowired
+	private PreferencesService preferencesServiceMock;
+
 	@Before
 	public void before() throws IOException {
 		executeSql("database/delete-tables.sql");
 		executeSql("database/service/GoogleAppsServiceImplDbTest.sql");
 
-		EasyMock.reset(calendarServiceMock);
+		EasyMock.reset(calendarServiceMock, preferencesServiceMock);
 	}
 
 	@Test
 	public void testGetAndSaveCalendar() throws IOException, ServiceException {
-		String username = "dickerpulli@googlemail.com";
-		String password = "";
-		calendarServiceMock.setUserCredentials(username, password);
+		expect(preferencesServiceMock.readUsername()).andReturn("usr");
+		expect(preferencesServiceMock.readPassword()).andReturn("pwd");
+		calendarServiceMock.setUserCredentials("usr", "pwd");
 		expectLastCall();
 		expect(calendarServiceMock.getFeed(isA(Query.class), isA(Class.class))).andReturn(getFeed());
-		replay(calendarServiceMock);
+		replay(calendarServiceMock, preferencesServiceMock);
 
 		googleAppsService.getAndSaveCalendar();
 		List<GReminder> reminders = googleAppsService.getAllReminders();
 
 		assertEquals(2, reminders.size());
-		verify(calendarServiceMock);
+		verify(calendarServiceMock, preferencesServiceMock);
 	}
 
 	private IFeed getFeed() {

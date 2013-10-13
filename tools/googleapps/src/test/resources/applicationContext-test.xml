@@ -10,8 +10,17 @@
 	<import resource="applicationContext.xml" />
 	
 	<!-- überschreibe das Standard-Bean mit einem Mock -->
-	<bean id="gCalendarServiceMock" class="de.tbosch.tools.googleapps.EasyMockFactoryBean" primary="true">
+	<bean class="de.tbosch.tools.googleapps.EasyMockFactoryBean" primary="true">
 		<property name="type" value="de.tbosch.tools.googleapps.service.GCalendarService" />
+	</bean>
+	
+	<!-- überschreibe das Standard-Bean mit einem Mock -->
+	<bean class="de.tbosch.tools.googleapps.EasyMockFactoryBean" primary="true">
+		<property name="type" value="de.tbosch.tools.googleapps.service.PreferencesService" />
+	</bean>
+	
+	<bean id="pref" class="de.tbosch.tools.googleapps.service.impl.PreferencesServiceImpl">
+		<property name="inTest" value="true" />
 	</bean>
 
 </beans>

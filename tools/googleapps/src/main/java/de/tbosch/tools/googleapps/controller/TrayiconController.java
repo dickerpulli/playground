@@ -23,7 +23,9 @@ import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.GoogleAppsThread;
 import de.tbosch.tools.googleapps.gui.JXTrayIcon;
+import de.tbosch.tools.googleapps.gui.SettingsFrame;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
+import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
 
 /**
@@ -50,6 +52,9 @@ public class TrayiconController {
 
 	@Autowired
 	private GoogleAppsService googleAppsService;
+
+	@Autowired
+	private PreferencesService preferencesService;
 
 	@PreDestroy
 	public void preDestroy() {
@@ -187,6 +192,18 @@ public class TrayiconController {
 
 		});
 		popup.add(connectItem);
+
+		// Connect to Google Apps
+		JMenuItem settingsItem = new JMenuItem(MessageHelper.getMessage("menu.item.settings"));
+		settingsItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new SettingsFrame(preferencesService).setVisible(true);
+			}
+
+		});
+		popup.add(settingsItem);
 
 		// Separator
 		popup.addSeparator();

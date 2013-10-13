@@ -21,6 +21,7 @@ import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
 import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.service.GCalendarService;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
+import de.tbosch.tools.googleapps.service.PreferencesService;
 
 @Service
 @Transactional
@@ -35,6 +36,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	@Autowired
 	private GCalendarService calendarService;
 
+	@Autowired
+	private PreferencesService preferencesService;
+
 	/**
 	 * @throws ServiceException
 	 * @throws IOException
@@ -43,8 +47,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	@Override
 	public void getAndSaveCalendar() throws IOException, ServiceException {
 		try {
-			String username = "dickerpulli@googlemail.com";
-			String password = "";
+			String username = preferencesService.readUsername();
+			String password = preferencesService.readPassword();
 
 			// Set up Google Apps service
 			calendarService.setUserCredentials(username, password);
