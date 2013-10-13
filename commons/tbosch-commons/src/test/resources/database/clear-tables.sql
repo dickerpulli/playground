@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS T_PERSON;
+
+CREATE TABLE T_PERSON (
+  ID integer identity NOT NULL,
+  FIRSTNAME varchar(32) NOT NULL,
+  LASTNAME varchar(32) NOT NULL
+);
