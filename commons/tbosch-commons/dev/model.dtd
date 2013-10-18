@@ -1,0 +1,10 @@
+<!ELEMENT dataset (
+    t_person*)>
+
+<!ELEMENT t_person EMPTY>
+<!ATTLIST t_person
+    ID CDATA #REQUIRED
+    FIRSTNAME CDATA #REQUIRED
+    LASTNAME CDATA #REQUIRED
+>
+

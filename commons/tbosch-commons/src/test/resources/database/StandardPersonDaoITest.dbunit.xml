@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dataset SYSTEM "dev/model.dtd"> 
+
+<dataset>
+	<t_person 
+		ID="2" 
+		FIRSTNAME="firstname" 
+		LASTNAME="lastname" 
+	/>
+</dataset>
