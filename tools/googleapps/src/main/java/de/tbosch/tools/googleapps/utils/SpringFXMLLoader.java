@@ -29,29 +29,18 @@ public class SpringFXMLLoader {
 	 * Loads a JavaFX-Scene.
 	 * @param url The URL to the FXML file.
 	 * @param controllerClass The controller class.
-	 * @return The loaded JavaFX file (i.e. Scene)
-	 * @throws IOException
-	 */
-	public Parent load(String url, Class<?> controllerClass) throws IOException {
-		return load(url, controllerClass, null);
-	}
-
-	/**
-	 * Loads a JavaFX-Scene.
-	 * @param url The URL to the FXML file.
-	 * @param controllerClass The controller class.
 	 * @param bundle Resource bundle for i18n.
 	 * @return The loaded JavaFX file (i.e. Scene)
 	 * @throws IOException
 	 */
-	public Parent load(String url, Class<?> controllerClass, ResourceBundle bundle) throws IOException {
+	public Parent load(String url, Class<?> controllerClass) throws IOException {
 		InputStream fxmlStream = null;
 		try {
 			InputStream inputStream = controllerClass.getResourceAsStream(url);
 			Object instance = context.getBean(controllerClass);
 			FXMLLoader loader = new FXMLLoader();
 			loader.setController(instance);
-			loader.setResources(bundle);
+			loader.setResources(ResourceBundle.getBundle("messages"));
 			return (Parent)loader.load(inputStream);
 		}
 		finally {

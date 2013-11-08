@@ -1,7 +1,6 @@
 package de.tbosch.tools.googleapps.gui;
 
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -19,7 +18,7 @@ public class GoogleAppsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		Parent root = GoogleAppsContext.getSpringFXMLLoader().load("../fxml/GoogleAppsApplication.fxml",
-				GoogleAppsApplicationController.class, ResourceBundle.getBundle("messages"));
+				GoogleAppsApplicationController.class);
 		Scene scene = new Scene(root);
 		stage.setTitle(MessageHelper.getMessage("main.title"));
 		stage.setScene(scene);

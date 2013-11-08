@@ -1,7 +1,6 @@
 package de.tbosch.tools.googleapps.controller;
 
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -19,8 +18,7 @@ public class GoogleAppsApplicationController {
 
 	@FXML
 	public void clickSettingsButton() throws IOException {
-		Parent parent = GoogleAppsContext.getSpringFXMLLoader().load("../fxml/Settings.fxml", SettingsController.class,
-				ResourceBundle.getBundle("messages"));
+		Parent parent = GoogleAppsContext.getSpringFXMLLoader().load("../fxml/Settings.fxml", SettingsController.class);
 		Scene scene = new Scene(parent);
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
