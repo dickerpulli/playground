@@ -32,6 +32,7 @@ import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.service.GCalendarService;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
+import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 
 public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 
@@ -52,10 +53,11 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 		EasyMock.reset(calendarServiceMock, preferencesServiceMock);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetAndSaveCalendar() throws IOException, ServiceException {
-		expect(preferencesServiceMock.readUsername()).andReturn("usr");
-		expect(preferencesServiceMock.readPassword()).andReturn("pwd");
+		expect(preferencesServiceMock.readPref(PrefKey.USERNAME)).andReturn("usr");
+		expect(preferencesServiceMock.readPref(PrefKey.PASSWORD)).andReturn("pwd");
 		calendarServiceMock.setUserCredentials("usr", "pwd");
 		expectLastCall();
 		expect(calendarServiceMock.getFeed(isA(Query.class), isA(Class.class))).andReturn(getFeed());

@@ -22,8 +22,8 @@ import org.springframework.stereotype.Controller;
 import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.GoogleAppsThread;
+import de.tbosch.tools.googleapps.gui.GoogleAppsApplication;
 import de.tbosch.tools.googleapps.gui.JXTrayIcon;
-import de.tbosch.tools.googleapps.gui.SettingsFrame;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
@@ -199,7 +199,7 @@ public class TrayiconController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new SettingsFrame(preferencesService).setVisible(true);
+				new GoogleAppsApplication().startApplication();
 			}
 
 		});
