@@ -31,6 +31,7 @@ public class SettingsController implements Initializable {
 	public void clickOkButton() {
 		preferencesService.writePref(PrefKey.PASSWORD, password.getText());
 		preferencesService.writePref(PrefKey.USERNAME, username.getText());
+		clickCancelButton();
 	}
 
 	@FXML

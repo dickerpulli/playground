@@ -3,8 +3,11 @@ package de.tbosch.tools.googleapps.service.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,8 @@ import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 @Service
 @Transactional
 public class GoogleAppsServiceImpl implements GoogleAppsService {
+
+	private static final Log LOG = LogFactory.getLog(GoogleAppsServiceImpl.class);
 
 	@Autowired
 	private GReminderDao reminderDao;
@@ -68,22 +73,37 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 
 			// Iterate over all Events
 			for (CalendarEventEntry entry : entries) {
-				if (!entry.getReminder().isEmpty()) {
-					GCalendarEventEntry gEntry = new GCalendarEventEntry(entry);
+				GCalendarEventEntry gEntry = new GCalendarEventEntry(entry);
+				GCalendarEventEntry like = calendarEventEntryDao.findLike(gEntry);
+				if (like == null) {
 					calendarEventEntryDao.create(gEntry);
-					for (Reminder reminder : entry.getReminder()) {
-						if (reminder.getMinutes() <= 15 && reminder.getMinutes() >= 0) {
-							GReminder gReminder = new GReminder(reminder, gEntry);
-							gEntry.getReminders().add(gReminder);
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " was created.");
+					}
+					if (!entry.getReminder().isEmpty()) {
+						for (Reminder reminder : entry.getReminder()) {
+							if (reminder.getMinutes() <= 15 && reminder.getMinutes() >= 0) {
+								GReminder gReminder = new GReminder(reminder, gEntry);
+								gEntry.getReminders().add(gReminder);
 
-							// persist
-							reminderDao.create(gReminder);
+								// persist
+								reminderDao.create(gReminder);
+							}
+						}
+						calendarEventEntryDao.update(gEntry);
+					}
+					else {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " has no reminders.");
 						}
 					}
-					calendarEventEntryDao.update(gEntry);
 				}
 				else {
-					System.out.println(entry.hasRepeatingExtension(null));
+					SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+					String starttime = dateFormat.format(gEntry.getStartTime());
+					String endtime = dateFormat.format(gEntry.getEndTime());
+					LOG.debug("CalendarEvent with title '" + gEntry.getTitle() + "' and starttime/endtime '"
+							+ starttime + "/" + endtime + "' already exists.");
 				}
 			}
 

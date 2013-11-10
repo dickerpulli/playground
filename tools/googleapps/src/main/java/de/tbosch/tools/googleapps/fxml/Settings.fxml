@@ -17,7 +17,7 @@
             <Label text="%settings.label.username" textAlignment="LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Label text="%settings.label.password" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="email" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="username" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
             <CheckBox fx:id="connectAtStartup" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <PasswordField fx:id="password" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
           </children>

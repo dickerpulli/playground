@@ -181,12 +181,12 @@ public class TrayiconController {
 				}
 				catch (IOException e1) {
 					JOptionPane.showMessageDialog(popup, MessageHelper.getMessage("error.io") + ": " + e1.getMessage(),
-							MessageHelper.getMessage("dialog.error.title"), JOptionPane.ERROR_MESSAGE);
+							MessageHelper.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
 				}
 				catch (ServiceException e1) {
 					JOptionPane.showMessageDialog(popup,
 							MessageHelper.getMessage("error.service") + ": " + e1.getMessage(),
-							MessageHelper.getMessage("dialog.error.title"), JOptionPane.ERROR_MESSAGE);
+							MessageHelper.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
 				}
 			}
 

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,16 @@ public class GCalendarEventEntryDaoImplDbTest extends AbstractSpringDbTest {
 	public void testRead() {
 		GCalendarEventEntry entry = calendarEventEntryDao.read(1L);
 		assertEquals(1, entry.getId());
+	}
+
+	@Test
+	public void testFindLike() throws Exception {
+		GCalendarEventEntry entry = new GCalendarEventEntry();
+		entry.setTitle("entry 1");
+		entry.setStartTime(new LocalDate(2009, 1, 1).toDateTimeAtStartOfDay().toDate());
+		entry.setEndTime(new LocalDate(2009, 1, 2).toDateTimeAtStartOfDay().toDate());
+		GCalendarEventEntry like = calendarEventEntryDao.findLike(entry);
+		assertEquals(1, like.getId());
 	}
 
 }
