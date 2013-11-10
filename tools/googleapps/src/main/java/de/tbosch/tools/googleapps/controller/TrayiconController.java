@@ -11,10 +11,10 @@ import java.io.IOException;
 
 import javax.annotation.PreDestroy;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -26,6 +26,7 @@ import de.tbosch.tools.googleapps.gui.GoogleAppsApplication;
 import de.tbosch.tools.googleapps.gui.JXTrayIcon;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
+import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
 
 /**
@@ -84,8 +85,27 @@ public class TrayiconController {
 		// register events on trayicon itself
 		registerEvents();
 
+		// connect
+		connect();
+
 		// sets the image of the icon
 		initIcon();
+	}
+
+	/**
+	 * Connect to Google if its possible.
+	 */
+	private void connect() {
+		boolean connect = BooleanUtils.toBoolean(preferencesService.readPref(PrefKey.AUTOCONNECT));
+		if (connect) {
+			try {
+				googleAppsService.connect();
+				googleAppsService.updateCalendar();
+			}
+			catch (ServiceException | IOException e) {
+				throw new IllegalStateException("Error while connecting at startup", e);
+			}
+		}
 	}
 
 	/**
@@ -128,71 +148,6 @@ public class TrayiconController {
 		// Create a new popup menu for options and controls
 		final JPopupMenu popup = new JPopupMenu(MessageHelper.getMessage("menu.label"));
 
-		// Sub menu for choosing active project
-		// JMenu menu = new JMenu(MessageHelper.getMessage("menu.projects.label"));
-		//
-		// Control item to add a new project
-		// JMenuItem itemAdd = new JMenuItem(MessageHelper.getMessage("menu.projects.manageProjects"));
-		// itemAdd.addActionListener(new ActionListener() {
-		//
-		// @Override
-		// public void actionPerformed(ActionEvent e) {
-		// guiController.manageProjects();
-		// }
-		//
-		// });
-		// menu.add(itemAdd);
-		//
-		// // Separator
-		// menu.addSeparator();
-		//
-		// // Fill in all known project to choose from
-		// List<Project> projects = projectService.getAllProjects();
-		// for (final Project project : projects) {
-		// JMenuItem item = new JMenuItem(projectService.getFullName(project));
-		// item.addActionListener(new ActionListener() {
-		//
-		// @Override
-		// public void actionPerformed(ActionEvent e) {
-		// projectService.setActiveProject(project.getId());
-		// refreshProjects();
-		// }
-		//
-		// });
-		// if (project.isActive()) {
-		// item.setBackground(Color.DARK_GRAY);
-		// item.setForeground(Color.WHITE);
-		// }
-		// menu.add(item);
-		// }
-		// popup.add(menu);
-		//
-		// // Separator
-		// popup.addSeparator();
-
-		// Connect to Google Apps
-		JMenuItem connectItem = new JMenuItem(MessageHelper.getMessage("menu.item.connect"));
-		connectItem.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					googleAppsService.getAndSaveCalendar();
-				}
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(popup, MessageHelper.getMessage("error.io") + ": " + e1.getMessage(),
-							MessageHelper.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
-				}
-				catch (ServiceException e1) {
-					JOptionPane.showMessageDialog(popup,
-							MessageHelper.getMessage("error.service") + ": " + e1.getMessage(),
-							MessageHelper.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
-				}
-			}
-
-		});
-		popup.add(connectItem);
-
 		// Connect to Google Apps
 		JMenuItem settingsItem = new JMenuItem(MessageHelper.getMessage("menu.item.settings"));
 		settingsItem.addActionListener(new ActionListener() {
@@ -234,20 +189,6 @@ public class TrayiconController {
 	 * If the left mouse button is clicked
 	 */
 	private void leftMouseButtonClicked() {
-		// Start or stop active timelot
-		// Timeslot activeTimeslot = timeslotService.getActiveTimeslot();
-		// if (activeTimeslot == null) {
-		// Project activeProject = projectService.getActiveProject();
-		// if (activeProject == null) {
-		// JOptionPane.showMessageDialog(null, MessageHelper.getMessage("error.not_active_project_found"),
-		// MessageHelper.getMessage("title.error"), JOptionPane.ERROR_MESSAGE);
-		// } else {
-		// timeslotService.startTimeslot(activeProject.getId());
-		// }
-		// } else {
-		// timeslotService.endTimeslot(activeTimeslot.getId());
-		// }
-
 		// Reset the icon image
 		initIcon();
 	}

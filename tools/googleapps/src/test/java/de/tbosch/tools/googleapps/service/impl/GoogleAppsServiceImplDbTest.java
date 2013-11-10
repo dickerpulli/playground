@@ -3,8 +3,8 @@ package de.tbosch.tools.googleapps.service.impl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
+import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gdata.client.Query;
+import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.IFeed;
 import com.google.gdata.data.PlainTextConstruct;
@@ -29,7 +30,6 @@ import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.AbstractSpringDbTest;
 import de.tbosch.tools.googleapps.model.GReminder;
-import de.tbosch.tools.googleapps.service.GCalendarService;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
@@ -40,7 +40,7 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 	private GoogleAppsService googleAppsService;
 
 	@Autowired
-	private GCalendarService calendarServiceMock;
+	private CalendarService calendarServiceMock;
 
 	@Autowired
 	private PreferencesService preferencesServiceMock;
@@ -55,7 +55,7 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetAndSaveCalendar() throws IOException, ServiceException {
+	public void testUpdateCalendar() throws IOException, ServiceException {
 		expect(preferencesServiceMock.readPref(PrefKey.USERNAME)).andReturn("usr");
 		expect(preferencesServiceMock.readPref(PrefKey.PASSWORD)).andReturn("pwd");
 		calendarServiceMock.setUserCredentials("usr", "pwd");
@@ -63,7 +63,7 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 		expect(calendarServiceMock.getFeed(isA(Query.class), isA(Class.class))).andReturn(getFeed());
 		replay(calendarServiceMock, preferencesServiceMock);
 
-		googleAppsService.getAndSaveCalendar();
+		googleAppsService.updateCalendar();
 		List<GReminder> reminders = googleAppsService.getAllReminders();
 
 		assertEquals(2, reminders.size());

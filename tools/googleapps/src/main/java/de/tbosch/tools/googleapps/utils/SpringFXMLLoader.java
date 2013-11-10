@@ -1,12 +1,16 @@
 package de.tbosch.tools.googleapps.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -37,11 +41,17 @@ public class SpringFXMLLoader {
 		InputStream fxmlStream = null;
 		try {
 			InputStream inputStream = controllerClass.getResourceAsStream(url);
+			List<String> lines = IOUtils.readLines(inputStream);
+			byte[] bytes = new byte[0];
+			for (String line : lines) {
+				bytes = ArrayUtils.addAll(bytes, line.replaceAll("fx:controller=\".*\"", "").getBytes());
+			}
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 			Object instance = context.getBean(controllerClass);
 			FXMLLoader loader = new FXMLLoader();
 			loader.setController(instance);
 			loader.setResources(ResourceBundle.getBundle("messages"));
-			return (Parent)loader.load(inputStream);
+			return (Parent)loader.load(bais);
 		}
 		finally {
 			if (fxmlStream != null) {
@@ -49,5 +59,4 @@ public class SpringFXMLLoader {
 			}
 		}
 	}
-
 }

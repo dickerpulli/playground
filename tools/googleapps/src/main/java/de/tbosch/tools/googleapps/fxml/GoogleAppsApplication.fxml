@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?scenebuilder-preview-i18n-resource ../../../../../../resources/messages.properties?>
 
-<GridPane prefHeight="306.0" prefWidth="412.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<GridPane prefHeight="306.0" prefWidth="412.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.GoogleAppsApplicationController">
   <!-- TODO Add Nodes -->
   <children>
     <GridPane hgap="10.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -40,9 +40,9 @@
         </TitledPane>
         <GridPane hgap="5.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <children>
-            <Button mnemonicParsing="false" text="%main.button.connect" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Button fx:id="connectButton" mnemonicParsing="false" onAction="#clickConnectButton" text="%main.button.connect" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Button mnemonicParsing="false" onAction="#clickSettingsButton" text="%main.button.settings" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
-            <Button mnemonicParsing="false" text="%main.button.disconnect" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Button fx:id="disconnectButton" mnemonicParsing="false" onAction="#clickDisconnectButton" text="%main.button.disconnect" GridPane.columnIndex="1" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="80.0" />

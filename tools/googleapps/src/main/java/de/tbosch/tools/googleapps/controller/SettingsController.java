@@ -5,10 +5,12 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -28,9 +30,13 @@ public class SettingsController implements Initializable {
 	private PasswordField password;
 
 	@FXML
+	private CheckBox autoconnect;
+
+	@FXML
 	public void clickOkButton() {
 		preferencesService.writePref(PrefKey.PASSWORD, password.getText());
 		preferencesService.writePref(PrefKey.USERNAME, username.getText());
+		preferencesService.writePref(PrefKey.AUTOCONNECT, BooleanUtils.toStringTrueFalse(autoconnect.isSelected()));
 		clickCancelButton();
 	}
 
@@ -47,6 +53,7 @@ public class SettingsController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		username.setText(preferencesService.readPref(PrefKey.USERNAME));
 		password.setText(preferencesService.readPref(PrefKey.PASSWORD));
+		autoconnect.setSelected(BooleanUtils.toBoolean(preferencesService.readPref(PrefKey.AUTOCONNECT)));
 	}
 
 }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?scenebuilder-preview-i18n-resource ../../../../../../resources/messages.properties?>
 
-<GridPane hgap="0.0" vgap="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<GridPane hgap="0.0" vgap="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.SettingsController">
   <!-- TODO Add Nodes -->
   <children>
     <GridPane hgap="10.0" prefHeight="138.0" prefWidth="404.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -18,7 +18,7 @@
             <Label text="%settings.label.password" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             <TextField fx:id="username" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <CheckBox fx:id="connectAtStartup" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <CheckBox id="connectAtStartup" fx:id="autoconnect" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <PasswordField fx:id="password" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
           </children>
           <columnConstraints>

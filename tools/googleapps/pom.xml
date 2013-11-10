@@ -31,6 +31,11 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.jfxtras</groupId>
+			<artifactId>jfxtras-labs</artifactId>
+			<version>2.2-r5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
@@ -126,9 +131,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
+			<artifactId>easymockclassextension</artifactId>
 			<version>2.5</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 	</dependencies>
 	
