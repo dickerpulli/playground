@@ -39,10 +39,10 @@ public class Scheduler {
 		}
 	}
 
-	@Scheduled(fixedDelay = 10000)
-	public void tenSeconds() {
+	@Scheduled(fixedDelay = 1000)
+	public void oneSecond() {
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("10-seconds-timer is fired");
+			LOG.debug("1-seconds-timer is fired");
 		}
 		trayiconController.setIconImage(googleAppsService.isConnected());
 	}

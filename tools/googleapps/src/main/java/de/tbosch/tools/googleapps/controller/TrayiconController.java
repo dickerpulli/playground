@@ -224,16 +224,8 @@ public class TrayiconController {
 	 * Sets the project name and timeslot data as tooltip on tray icon.
 	 */
 	private void setTrayiconTooltip() {
-		// Project activeProject = projectService.getActiveProject();
-		// if (activeProject != null) {
-		// String fullName = projectService.getFullName(activeProject);
-		// Timeslot activeTimeslot = timeslotService.getActiveTimeslot();
-		// if (activeTimeslot != null) {
-		// fullName += " : "
-		// + DateUtils.getDifferenceAsString(activeTimeslot.getStarttime(), activeTimeslot.getEndtime(),
-		// true);
-		// }
-		// trayIcon.setToolTip(fullName);
-		// }
+		trayIcon.setToolTip(MessageHelper.getMessage("msg.connection")
+				+ (googleAppsService.isConnected() ? "online" : "offline"));
 	}
+
 }
