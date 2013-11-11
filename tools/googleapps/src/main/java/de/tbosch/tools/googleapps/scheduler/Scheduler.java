@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import de.tbosch.tools.googleapps.controller.TrayiconController;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 
 /**
@@ -20,10 +21,13 @@ public class Scheduler {
 	@Autowired
 	private GoogleAppsService googleAppsService;
 
+	@Autowired
+	private TrayiconController trayiconController;
+
 	@Scheduled(fixedDelay = 300000)
 	public void fiveMinutes() {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("Every-5-minutes-timer is fired");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("5-minutes-timer is fired");
 		}
 		try {
 			if (googleAppsService.isConnected()) {
@@ -33,6 +37,14 @@ public class Scheduler {
 		catch (Exception e) {
 			throw new IllegalStateException("Exception while updating calendar", e);
 		}
+	}
+
+	@Scheduled(fixedDelay = 10000)
+	public void tenSeconds() {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("10-seconds-timer is fired");
+		}
+		trayiconController.setIconImage(googleAppsService.isConnected());
 	}
 
 }

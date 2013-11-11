@@ -15,6 +15,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,8 @@ import de.tbosch.tools.googleapps.utils.MessageHelper;
  */
 @Controller
 public class TrayiconController {
+
+	private static final Log LOG = LogFactory.getLog(TrayiconController.class);
 
 	@Autowired
 	private JXTrayIcon trayIcon;
@@ -113,6 +117,29 @@ public class TrayiconController {
 	 */
 	private void initIcon() {
 		setTrayiconTooltip();
+	}
+
+	/**
+	 * Sets the image for the tray icon. Online or offline image.
+	 * @param online online image?
+	 */
+	public void setIconImage(boolean online) {
+		if (online) {
+			if (trayIcon.getImage().equals(imageOffline)) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("set tray icon image to online");
+				}
+				trayIcon.setImage(imageOnline);
+			}
+		}
+		else {
+			if (trayIcon.getImage().equals(imageOnline)) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("set tray icon image to offline");
+				}
+				trayIcon.setImage(imageOffline);
+			}
+		}
 	}
 
 	/**
