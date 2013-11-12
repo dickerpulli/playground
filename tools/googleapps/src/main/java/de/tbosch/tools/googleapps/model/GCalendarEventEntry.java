@@ -1,5 +1,6 @@
 package de.tbosch.tools.googleapps.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ import com.google.gdata.data.calendar.CalendarEventEntry;
 
 @Entity
 @Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = { "title", "startTime", "endTime" }))
-public class GCalendarEventEntry {
+public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 
 	@Id
 	@GeneratedValue
@@ -121,6 +122,23 @@ public class GCalendarEventEntry {
 	 */
 	public void setReminders(Set<GReminder> reminders) {
 		this.reminders = reminders;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+		return sdf.format(startTime) + " - " + sdf.format(endTime) + ": " + title;
+	}
+
+	/**
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(GCalendarEventEntry o) {
+		return this.getStartTime().compareTo(o.getStartTime());
 	}
 
 }

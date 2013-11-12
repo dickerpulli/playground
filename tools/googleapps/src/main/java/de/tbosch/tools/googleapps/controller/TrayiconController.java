@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -29,6 +30,7 @@ import de.tbosch.tools.googleapps.gui.JXTrayIcon;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
+import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
 
 /**
@@ -60,6 +62,17 @@ public class TrayiconController {
 
 	@Autowired
 	private PreferencesService preferencesService;
+
+	@PostConstruct
+	public void postContruct() {
+		googleAppsService.addUpdateListener(new UpdateListener() {
+
+			@Override
+			public void updated() {
+				System.out.println("updated");
+			}
+		});
+	}
 
 	@PreDestroy
 	public void preDestroy() {

@@ -9,8 +9,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import javax.annotation.PostConstruct;
+
 import jfxtras.labs.dialogs.MonologFX.Type;
 import jfxtras.labs.dialogs.MonologFXBuilder;
 
@@ -18,8 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.google.gdata.util.ServiceException;
+import com.sun.javafx.collections.ObservableListWrapper;
 
+import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
+import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 import de.tbosch.tools.googleapps.utils.GoogleAppsContext;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
 
@@ -34,6 +41,24 @@ public class GoogleAppsApplicationController implements Initializable {
 
 	@FXML
 	private Button disconnectButton;
+
+	@FXML
+	private ListView<GCalendarEventEntry> calendarList;
+
+	// @FXML
+	// private ListView<?> emailList;
+
+	@PostConstruct
+	public void postContruct() {
+		googleAppsService.addUpdateListener(new UpdateListener() {
+
+			@Override
+			public void updated() {
+				calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
+						.getAllCalendarEvents()));
+			}
+		});
+	}
 
 	@FXML
 	public void clickSettingsButton() throws IOException {
@@ -71,6 +96,13 @@ public class GoogleAppsApplicationController implements Initializable {
 		initialize(null, null);
 	}
 
+	@FXML
+	public void clickUpdateButton() throws IOException, ServiceException {
+		if (googleAppsService.isConnected()) {
+			googleAppsService.updateCalendar();
+		}
+	}
+
 	/**
 	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
 	 */
@@ -84,6 +116,7 @@ public class GoogleAppsApplicationController implements Initializable {
 			connectButton.setDisable(false);
 			disconnectButton.setDisable(true);
 		}
+		calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService.getAllCalendarEvents()));
 	}
 
 }

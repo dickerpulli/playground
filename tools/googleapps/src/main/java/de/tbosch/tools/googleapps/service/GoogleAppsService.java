@@ -8,6 +8,7 @@ import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
 import de.tbosch.tools.googleapps.model.GReminder;
+import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 
 public interface GoogleAppsService {
 
@@ -48,5 +49,11 @@ public interface GoogleAppsService {
 	 * Resets the authentication information to disconnect from google service.
 	 */
 	public void disconnect();
+
+	/**
+	 * Adds update listeners to the internal set.
+	 * @param updateListener The listener.
+	 */
+	void addUpdateListener(UpdateListener updateListener);
 
 }

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +28,8 @@ import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
+import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service
 @Transactional
@@ -46,6 +50,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	private PreferencesService preferencesService;
 
 	private boolean connected = false;
+
+	private final Set<UpdateListener> updateListeners = new HashSet<UpdateListener>();
 
 	/**
 	 * @throws ServiceException
@@ -81,13 +87,11 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 						}
 						if (!entry.getReminder().isEmpty()) {
 							for (Reminder reminder : entry.getReminder()) {
-								if (reminder.getMinutes() <= 15 && reminder.getMinutes() >= 0) {
-									GReminder gReminder = new GReminder(reminder, gEntry);
-									gEntry.getReminders().add(gReminder);
+								GReminder gReminder = new GReminder(reminder, gEntry);
+								gEntry.getReminders().add(gReminder);
 
-									// persist
-									reminderDao.create(gReminder);
-								}
+								// persist
+								reminderDao.create(gReminder);
 							}
 							calendarEventEntryDao.update(gEntry);
 						}
@@ -95,6 +99,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 							if (LOG.isDebugEnabled()) {
 								LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " has no reminders.");
 							}
+						}
+						for (UpdateListener updateListener : updateListeners) {
+							updateListener.updated();
 						}
 					}
 					else {
@@ -121,7 +128,10 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 */
 	@Override
 	public List<GReminder> getAllReminders() {
-		return reminderDao.findAll();
+		List<GReminder> list = reminderDao.findAll();
+		Collections.sort(list);
+		Collections.reverse(list);
+		return list;
 	}
 
 	/**
@@ -129,7 +139,10 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 */
 	@Override
 	public List<GCalendarEventEntry> getAllCalendarEvents() {
-		return calendarEventEntryDao.findAll();
+		List<GCalendarEventEntry> list = calendarEventEntryDao.findAll();
+		Collections.sort(list);
+		Collections.reverse(list);
+		return list;
 	}
 
 	/**
@@ -159,6 +172,14 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	@Override
 	public boolean isConnected() {
 		return connected;
+	}
+
+	/**
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#addUpdateListener(de.tbosch.tools.googleapps.service.impl.GoogleAppsServiceImpl.UpdateListener)
+	 */
+	@Override
+	public void addUpdateListener(UpdateListener updateListener) {
+		updateListeners.add(updateListener);
 	}
 
 }

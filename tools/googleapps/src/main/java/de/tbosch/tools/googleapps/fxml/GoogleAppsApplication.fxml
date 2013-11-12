@@ -7,31 +7,39 @@
 <?import javafx.scene.layout.GridPane?>
 <?scenebuilder-preview-i18n-resource ../../../../../../resources/messages.properties?>
 
-<GridPane prefHeight="306.0" prefWidth="412.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.GoogleAppsApplicationController">
+<GridPane prefHeight="353.0" prefWidth="449.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.GoogleAppsApplicationController">
   <!-- TODO Add Nodes -->
   <children>
-    <GridPane hgap="10.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <GridPane hgap="10.0" prefHeight="353.0" prefWidth="492.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
-        <TitledPane animated="false" prefHeight="130.0" prefWidth="355.0" text="%main.pane.calendar" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <TitledPane id="calendarList" animated="false" collapsible="false" expanded="true" prefHeight="-1.0" prefWidth="-1.0" text="%main.pane.calendar" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
               <children>
-                <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="90.0" prefWidth="389.0">
+                <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="0.0" layoutY="0.0" pannable="false" prefHeight="-1.0" prefWidth="425.0">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="89.0" prefWidth="385.0" />
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
+                      <children>
+                        <ListView fx:id="calendarList" layoutX="0.0" layoutY="0.0" prefHeight="98.0" prefWidth="425.0" />
+                      </children>
+                    </AnchorPane>
                   </content>
                 </ScrollPane>
               </children>
             </AnchorPane>
           </content>
         </TitledPane>
-        <TitledPane animated="false" minWidth="347.0" prefHeight="116.0" prefWidth="355.0" text="%main.pane.emails" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <TitledPane animated="false" collapsible="false" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%main.pane.emails" GridPane.columnIndex="0" GridPane.rowIndex="2">
           <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="363.0">
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
               <children>
-                <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="90.0" prefWidth="388.0">
+                <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="425.0">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="88.0" prefWidth="385.0" />
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
+                      <children>
+                        <ListView fx:id="emailList" layoutX="0.0" layoutY="0.0" prefHeight="98.0" prefWidth="425.0" />
+                      </children>
+                    </AnchorPane>
                   </content>
                 </ScrollPane>
               </children>
@@ -41,13 +49,15 @@
         <GridPane hgap="5.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <children>
             <Button fx:id="connectButton" mnemonicParsing="false" onAction="#clickConnectButton" text="%main.button.connect" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <Button mnemonicParsing="false" onAction="#clickSettingsButton" text="%main.button.settings" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+            <Button mnemonicParsing="false" onAction="#clickSettingsButton" text="%main.button.settings" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
             <Button fx:id="disconnectButton" mnemonicParsing="false" onAction="#clickDisconnectButton" text="%main.button.disconnect" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Button mnemonicParsing="false" onAction="#clickUpdateButton" text="%main.button.update" GridPane.columnIndex="2" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="80.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="174.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="128.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="77.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="86.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="147.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="104.0" />
           </columnConstraints>
           <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
