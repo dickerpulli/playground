@@ -55,7 +55,7 @@ public class GoogleAppsApplicationController implements Initializable {
 			@Override
 			public void updated() {
 				calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
-						.getAllCalendarEvents()));
+						.getCalendarEventsFromNowOn()));
 			}
 		});
 	}
@@ -116,7 +116,8 @@ public class GoogleAppsApplicationController implements Initializable {
 			connectButton.setDisable(false);
 			disconnectButton.setDisable(true);
 		}
-		calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService.getAllCalendarEvents()));
+		calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
+				.getCalendarEventsFromNowOn()));
 	}
 
 }

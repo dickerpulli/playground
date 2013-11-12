@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,7 +131,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	public List<GReminder> getAllReminders() {
 		List<GReminder> list = reminderDao.findAll();
 		Collections.sort(list);
-		Collections.reverse(list);
 		return list;
 	}
 
@@ -141,7 +141,16 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	public List<GCalendarEventEntry> getAllCalendarEvents() {
 		List<GCalendarEventEntry> list = calendarEventEntryDao.findAll();
 		Collections.sort(list);
-		Collections.reverse(list);
+		return list;
+	}
+
+	/**
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#getCalendarEventsFromNowOn()
+	 */
+	@Override
+	public List<GCalendarEventEntry> getCalendarEventsFromNowOn() {
+		List<GCalendarEventEntry> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new Date());
+		Collections.sort(list);
 		return list;
 	}
 

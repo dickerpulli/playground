@@ -3,6 +3,7 @@ package de.tbosch.tools.googleapps.dao.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -40,4 +41,11 @@ public class GCalendarEventEntryDaoImplDbTest extends AbstractSpringDbTest {
 		assertEquals(1, like.getId());
 	}
 
+	@Test
+	public void testFindWithStarttimeAfterOrEqual() throws Exception {
+		List<GCalendarEventEntry> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new LocalDate(2009, 3, 1)
+				.toDateTimeAtStartOfDay().toDate());
+		assertEquals(1, list.size());
+		assertEquals(3, list.get(0).getId());
+	}
 }

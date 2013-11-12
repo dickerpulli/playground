@@ -21,17 +21,23 @@ public interface GoogleAppsService {
 	public void updateCalendar() throws IOException, ServiceException;
 
 	/**
-	 * All reminders in database. In reverted sort order.
+	 * All reminders in database. In sort order.
 	 * 
 	 * @return The list
 	 */
 	public List<GReminder> getAllReminders();
 
 	/**
-	 * All calendar events. In reverted sort order.
+	 * All calendar events. In sort order.
 	 * @return all calendar events.
 	 */
 	public List<GCalendarEventEntry> getAllCalendarEvents();
+
+	/**
+	 * All calendar events. In sort order.
+	 * @return all calendar events that start time are after or equal today.
+	 */
+	public List<GCalendarEventEntry> getCalendarEventsFromNowOn();
 
 	/**
 	 * Sets the authentication information to connect to google service.
