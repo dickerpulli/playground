@@ -21,14 +21,14 @@ public interface GoogleAppsService {
 	public void updateCalendar() throws IOException, ServiceException;
 
 	/**
-	 * All reminders in database.
+	 * All reminders in database. In reverted sort order.
 	 * 
 	 * @return The list
 	 */
 	public List<GReminder> getAllReminders();
 
 	/**
-	 * All calendar events.
+	 * All calendar events. In reverted sort order.
 	 * @return all calendar events.
 	 */
 	public List<GCalendarEventEntry> getAllCalendarEvents();
