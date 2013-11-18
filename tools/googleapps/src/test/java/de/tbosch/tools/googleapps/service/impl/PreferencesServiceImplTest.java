@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import de.tbosch.tools.googleapps.AbstractSpringTest;
 import de.tbosch.tools.googleapps.service.PreferencesService;
+import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 
 public class PreferencesServiceImplTest extends AbstractSpringTest {
 
@@ -16,8 +17,8 @@ public class PreferencesServiceImplTest extends AbstractSpringTest {
 
 	@Test
 	public void testWriteReadPassword() throws Exception {
-		preferencesService.writePassword("12345");
-		assertEquals("12345", preferencesService.readPassword());
+		preferencesService.writePref(PrefKey.PASSWORD, "12345");
+		assertEquals("12345", preferencesService.readPref(PrefKey.PASSWORD));
 	}
 
 }

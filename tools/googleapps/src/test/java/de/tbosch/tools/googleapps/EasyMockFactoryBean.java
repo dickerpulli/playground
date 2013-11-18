@@ -2,7 +2,7 @@ package de.tbosch.tools.googleapps;
 
 import javax.annotation.PostConstruct;
 
-import org.easymock.EasyMock;
+import org.easymock.classextension.EasyMock;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.FactoryBean;
 

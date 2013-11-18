@@ -1,29 +1,52 @@
 package de.tbosch.tools.googleapps.service;
 
+/**
+ * Reads and writes Preferences from User-Preferences file.
+ * @author Thomas Bosch
+ */
 public interface PreferencesService {
 
 	/**
-	 * Read password from user preferences.
-	 * @return pwd
+	 * The key of the preference in the file.
 	 */
-	public String readPassword();
+	public enum PrefKey {
+
+		PASSWORD(1, true),
+
+		USERNAME(2, true),
+
+		AUTOCONNECT(3, false);
+
+		private final boolean encrypted;
+
+		private final int id;
+
+		private PrefKey(int id, boolean encrypted) {
+			this.id = id;
+			this.encrypted = encrypted;
+		}
+
+		public boolean isEncrypted() {
+			return encrypted;
+		}
+
+		public int getId() {
+			return id;
+		}
+	}
 
 	/**
-	 * Read username from user preferences.
-	 * @return usr
+	 * Read preference from user preferences.
+	 * @param key PrefKey.
+	 * @return Pref.
 	 */
-	public String readUsername();
+	public String readPref(PrefKey key);
 
 	/**
-	 * Write password to user preferences.
-	 * @param pwd Password.
+	 * Write preference to user preferences.
+	 * @param key PrefKey.
+	 * @param pref Pref.
 	 */
-	public void writePassword(String pwd);
-
-	/**
-	 * Write username to user preferences.
-	 * @param usr Username.
-	 */
-	public void writeUsername(String usr);
+	public void writePref(PrefKey key, String pref);
 
 }

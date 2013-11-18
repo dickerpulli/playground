@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import de.tbosch.tools.googleapps.service.PreferencesService;
 
+/**
+ * Default-Implementation of {@link PreferencesService}.
+ * @author Thomas Bosch
+ */
 @Service
 public class PreferencesServiceImpl implements PreferencesService {
 
@@ -41,39 +45,28 @@ public class PreferencesServiceImpl implements PreferencesService {
 	}
 
 	/**
-	 * @see de.tbosch.tools.googleapps.service.PreferencesService#readPassword()
+	 * @see de.tbosch.tools.googleapps.service.PreferencesService#readPref(de.tbosch.tools.googleapps.service.PreferencesService.PrefKey)
 	 */
 	@Override
-	public String readPassword() {
-		String raw = prefs.get("password", "");
-		return StringUtils.stripToEmpty(decrypt(raw));
+	public String readPref(PrefKey key) {
+		String value = prefs.get(Integer.toString(key.getId()), "");
+		if (key.isEncrypted()) {
+			value = StringUtils.stripToEmpty(decrypt(value));
+		}
+		return value;
 	}
 
 	/**
-	 * @see de.tbosch.tools.googleapps.service.PreferencesService#readUsername()
+	 * @see de.tbosch.tools.googleapps.service.PreferencesService#writePref(de.tbosch.tools.googleapps.service.PreferencesService.PrefKey,
+	 *      java.lang.String)
 	 */
 	@Override
-	public String readUsername() {
-		String raw = prefs.get("username", "");
-		return StringUtils.stripToEmpty(decrypt(raw));
-	}
-
-	/**
-	 * @see de.tbosch.tools.googleapps.service.PreferencesService#writePassword(java.lang.String)
-	 */
-	@Override
-	public void writePassword(String pwd) {
-		String raw = encrypt(pwd);
-		prefs.put("password", raw);
-	}
-
-	/**
-	 * @see de.tbosch.tools.googleapps.service.PreferencesService#writeUsername(java.lang.String)
-	 */
-	@Override
-	public void writeUsername(String usr) {
-		String raw = encrypt(usr);
-		prefs.put("username", raw);
+	public void writePref(PrefKey key, String pref) {
+		String value = pref;
+		if (key.isEncrypted()) {
+			value = encrypt(value);
+		}
+		prefs.put(Integer.toString(key.getId()), value);
 	}
 
 	@SuppressWarnings("restriction")
