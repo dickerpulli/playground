@@ -34,7 +34,7 @@
 
 	<bean class="de.tbosch.commons.database.HsqlServerBean">
 		<property name="serverProperties">
-		>>>>>>> refs/remotes/origin/master	<props>
+			<props>
 				<prop key="server.port">9101</prop>
 				<prop key="server.database.0">googleappsdb</prop>
 			</props>
@@ -65,7 +65,7 @@
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
 				<prop key="hibernate.connection.release_mode">on_close</prop>
 			</props>
-		</p>>>>>>> refs/remotes/origin/masterroperty>
+		</property>
 	</bean>
 	<tx:annotation-driven />
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
