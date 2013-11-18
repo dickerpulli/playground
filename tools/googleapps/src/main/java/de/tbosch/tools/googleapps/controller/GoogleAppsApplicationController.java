@@ -43,6 +43,9 @@ public class GoogleAppsApplicationController implements Initializable {
 	private Button disconnectButton;
 
 	@FXML
+	private Button refreshButton;
+
+	@FXML
 	private ListView<GCalendarEventEntry> calendarList;
 
 	// @FXML
@@ -77,13 +80,11 @@ public class GoogleAppsApplicationController implements Initializable {
 			googleAppsService.connect();
 			googleAppsService.updateCalendar();
 			initialize(null, null);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
 					.message(MessageHelper.getMessage("error.io") + ": " + e.getMessage())
 					.titleText(MessageHelper.getMessage("error.title"));
-		}
-		catch (ServiceException e) {
+		} catch (ServiceException e) {
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
 					.message(MessageHelper.getMessage("error.service") + ": " + e.getMessage())
 					.titleText(MessageHelper.getMessage("error.title"));
@@ -111,10 +112,11 @@ public class GoogleAppsApplicationController implements Initializable {
 		if (googleAppsService.isConnected()) {
 			connectButton.setDisable(true);
 			disconnectButton.setDisable(false);
-		}
-		else {
+			refreshButton.setDisable(false);
+		} else {
 			connectButton.setDisable(false);
 			disconnectButton.setDisable(true);
+			refreshButton.setDisable(true);
 		}
 		calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
 				.getCalendarEventsFromNowOn()));
