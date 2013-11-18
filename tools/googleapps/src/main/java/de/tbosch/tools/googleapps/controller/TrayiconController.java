@@ -2,7 +2,10 @@ package de.tbosch.tools.googleapps.controller;
 
 import java.awt.AWTException;
 import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,8 +14,6 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -26,7 +27,6 @@ import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.GoogleAppsThread;
 import de.tbosch.tools.googleapps.gui.GoogleAppsApplication;
-import de.tbosch.tools.googleapps.gui.JXTrayIcon;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
@@ -44,7 +44,7 @@ public class TrayiconController {
 	private static final Log LOG = LogFactory.getLog(TrayiconController.class);
 
 	@Autowired
-	private JXTrayIcon trayIcon;
+	private TrayIcon trayIcon;
 
 	@Autowired
 	@Qualifier("imageOnline")
@@ -53,6 +53,8 @@ public class TrayiconController {
 	@Autowired
 	@Qualifier("imageOffline")
 	private Image imageOffline;
+
+	private GoogleAppsApplication app;
 
 	@Autowired
 	private GoogleAppsThread googleAppsThread;
@@ -72,11 +74,11 @@ public class TrayiconController {
 				System.out.println("updated");
 			}
 		});
+		app = new GoogleAppsApplication();
 	}
 
 	@PreDestroy
 	public void preDestroy() {
-		trayIcon.dispose();
 		SystemTray.getSystemTray().remove(trayIcon);
 	}
 
@@ -184,15 +186,15 @@ public class TrayiconController {
 	 */
 	private void registerPopupMenu() {
 		// Create a new popup menu for options and controls
-		final JPopupMenu popup = new JPopupMenu(MessageHelper.getMessage("menu.label"));
+		final PopupMenu popup = new PopupMenu(MessageHelper.getMessage("menu.label"));
 
 		// Connect to Google Apps
-		JMenuItem settingsItem = new JMenuItem(MessageHelper.getMessage("menu.item.settings"));
+		MenuItem settingsItem = new MenuItem(MessageHelper.getMessage("menu.item.settings"));
 		settingsItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GoogleAppsApplication().startApplication();
+				app.startApplication();
 			}
 
 		});
@@ -202,7 +204,7 @@ public class TrayiconController {
 		popup.addSeparator();
 
 		// Exit Item to shutdown the program
-		JMenuItem exitItem = new JMenuItem(MessageHelper.getMessage("menu.item.exit"));
+		MenuItem exitItem = new MenuItem(MessageHelper.getMessage("menu.item.exit"));
 		exitItem.addActionListener(new ActionListener() {
 
 			@Override
@@ -213,7 +215,7 @@ public class TrayiconController {
 		});
 		popup.add(exitItem);
 
-		trayIcon.setJPopupMenu(popup);
+		trayIcon.setPopupMenu(popup);
 	}
 
 	/**

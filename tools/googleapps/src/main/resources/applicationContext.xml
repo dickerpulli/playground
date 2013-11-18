@@ -28,7 +28,7 @@
 	</bean>
 	<bean id="imageOnline" factory-bean="imageIconOnline" factory-method="getImage" />
 	<bean id="imageOffline" factory-bean="imageIconOffline" factory-method="getImage" />
-	<bean id="trayIcon" class="de.tbosch.tools.googleapps.gui.JXTrayIcon" destroy-method="dispose">
+	<bean id="trayIcon" class="java.awt.TrayIcon">
 		<constructor-arg ref="imageOffline" />
 	</bean>
 
