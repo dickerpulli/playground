@@ -15,7 +15,10 @@ import de.tbosch.tools.googleapps.service.PreferencesService;
 
 /**
  * Default-Implementation of {@link PreferencesService}.
+<<<<<<< HEAD
  * 
+=======
+>>>>>>> branch 'master' of https://github.com/dickerpulli/playground.git
  * @author Thomas Bosch
  */
 @Service

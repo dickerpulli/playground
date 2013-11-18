@@ -111,7 +111,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 								+ starttime + "/" + endtime + "' already exists.");
 					}
 				}
-
 			} catch (MalformedURLException e) {
 				throw new IllegalArgumentException("Should not happen, look in the code ...");
 			}

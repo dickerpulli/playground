@@ -61,7 +61,13 @@
 		<property name="schemaUpdate" value="true" />
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hiif (!entry.getReminder().isEmpty()) {
+							for (Reminder reminder : entry.getReminder()) {
+								GReminder gReminder = new GReminder(reminder, gEntry);
+								gEntry.getReminders().add(gReminder);
+								reminderDao.create(gReminder);
+							}
+						}bernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
 				<prop key="hibernate.connection.release_mode">on_close</prop>
 			</props>

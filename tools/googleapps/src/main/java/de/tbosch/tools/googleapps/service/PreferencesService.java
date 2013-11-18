@@ -41,6 +41,8 @@ public interface PreferencesService {
 	 * 
 	 * @param key
 	 *            PrefKey.
+	 * @param key
+	 *            PrefKey.
 	 * @return Pref.
 	 */
 	public String readPref(PrefKey key);
@@ -48,6 +50,10 @@ public interface PreferencesService {
 	/**
 	 * Write preference to user preferences.
 	 * 
+	 * @param key
+	 *            PrefKey.
+	 * @param pref
+	 *            Pref.
 	 * @param key
 	 *            PrefKey.
 	 * @param pref
