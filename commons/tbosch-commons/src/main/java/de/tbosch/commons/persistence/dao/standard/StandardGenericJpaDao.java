@@ -117,11 +117,7 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 		Map cacheRegionen = sessionFactoryImpl.getAllSecondLevelCacheRegions();
 		Collection<Cache> cacheRegion = cacheRegionen.values();
 		for (Cache cache : cacheRegion) {
-			cache.evictCollectionRegions();
-			cache.evictDefaultQueryRegion();
-			cache.evictEntityRegions();
-			cache.evictNaturalIdRegions();
-			cache.evictQueryRegions();
+			cache.evictEntityRegion(type);
 		}
 	}
 
@@ -216,6 +212,14 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	@Override
 	public List<T> findAll() {
 		return entityManager.createQuery("select t from " + type.getName() + " t").getResultList();
+	}
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericDao#findByExample(java.lang.Object)
+	 */
+	@Override
+	public List<T> findByExample(T example) {
+		throw new UnsupportedOperationException("JPA unterstützt kein 'findByExample'");
 	}
 
 	// Getter / Setter

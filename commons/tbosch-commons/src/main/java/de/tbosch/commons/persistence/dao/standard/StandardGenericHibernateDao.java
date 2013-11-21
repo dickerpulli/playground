@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.tbosch.commons.persistence.dao.GenericHibernateDao;
@@ -184,7 +185,16 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> implements 
 	 */
 	@Override
 	public void evict() {
-		throw new UnsupportedOperationException("Wird noch nicht unterstützt");
+		getSessionFactory().getCache().evictEntityRegion(type);
+	}
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericDao#findByExample(java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> findByExample(T example) {
+		return getCurrentSession().createCriteria(type).add(Example.create(example)).list();
 	}
 
 	// Getter / Setter
