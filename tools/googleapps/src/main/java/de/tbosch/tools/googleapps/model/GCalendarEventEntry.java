@@ -16,9 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.gdata.data.calendar.CalendarEventEntry;
 

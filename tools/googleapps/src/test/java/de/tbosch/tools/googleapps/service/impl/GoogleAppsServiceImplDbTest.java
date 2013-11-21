@@ -56,13 +56,14 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testUpdateCalendar() throws IOException, ServiceException {
-		expect(preferencesServiceMock.readPref(PrefKey.USERNAME)).andReturn("usr");
+		expect(preferencesServiceMock.readPref(PrefKey.USERNAME)).andReturn("usr").times(2);
 		expect(preferencesServiceMock.readPref(PrefKey.PASSWORD)).andReturn("pwd");
 		calendarServiceMock.setUserCredentials("usr", "pwd");
 		expectLastCall();
 		expect(calendarServiceMock.getFeed(isA(Query.class), isA(Class.class))).andReturn(getFeed());
 		replay(calendarServiceMock, preferencesServiceMock);
 
+		googleAppsService.connect();
 		googleAppsService.updateCalendar();
 		List<GReminder> reminders = googleAppsService.getAllReminders();
 

@@ -11,15 +11,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.hibernate.validator.NotNull;
 
 import com.google.gdata.data.extensions.Reminder;
 
 @Entity
 @Table(name = "reminder")
-public class GReminder {
+public class GReminder implements Comparable<GReminder> {
 
 	@Id
 	@GeneratedValue
@@ -40,17 +40,13 @@ public class GReminder {
 		this.event = event;
 		if (reminder.getAbsoluteTime() != null) {
 			this.time = new Date(reminder.getAbsoluteTime().getValue());
-		}
-		else if (reminder.getMinutes() != null) {
+		} else if (reminder.getMinutes() != null) {
 			this.time = DateUtils.addMinutes(event.getStartTime(), -1 * reminder.getMinutes());
-		}
-		else if (reminder.getHours() != null) {
+		} else if (reminder.getHours() != null) {
 			this.time = DateUtils.addHours(event.getStartTime(), -1 * reminder.getHours());
-		}
-		else if (reminder.getDays() != null) {
+		} else if (reminder.getDays() != null) {
 			this.time = DateUtils.addDays(event.getStartTime(), -1 * reminder.getDays());
-		}
-		else {
+		} else {
 			throw new IllegalStateException("reminder must have a time");
 		}
 	}
@@ -63,7 +59,8 @@ public class GReminder {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -77,7 +74,8 @@ public class GReminder {
 	}
 
 	/**
-	 * @param time the time to set
+	 * @param time
+	 *            the time to set
 	 */
 	public void setTime(Date time) {
 		this.time = time;
@@ -91,10 +89,19 @@ public class GReminder {
 	}
 
 	/**
-	 * @param event the event to set
+	 * @param event
+	 *            the event to set
 	 */
 	public void setEvent(GCalendarEventEntry event) {
 		this.event = event;
+	}
+
+	/**
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(GReminder o) {
+		return time.compareTo(o.getTime());
 	}
 
 }
