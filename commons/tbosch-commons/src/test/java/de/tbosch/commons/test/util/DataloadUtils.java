@@ -23,7 +23,7 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.ext.mysql.MySqlDataTypeFactory;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
 public class DataloadUtils {
@@ -59,7 +59,7 @@ public class DataloadUtils {
 
 		// Prüfe ob qualifizierte Tabellennamen aktiviert werden sollen
 		databaseConfig.setFeature(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, enableQualifiedTableNames);
-		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
 
 		try {
 			// Speichere die Testdaten
@@ -96,7 +96,7 @@ public class DataloadUtils {
 
 		// Prüfe ob qualifizierte Tabellennamen aktiviert werden sollen
 		databaseConfig.setFeature(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, enableQualifiedTableNames);
-		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
 
 		try {
 			// Speichere die Testdaten
@@ -126,7 +126,7 @@ public class DataloadUtils {
 
 		// Prüfe ob qualifizierte Tabellennamen aktiviert werden sollen
 		databaseConfig.setFeature(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, enableQualifiedTableNames);
-		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+		databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
 
 		// Erzeuge Dataset
 		QueryDataSet dataSet = new QueryDataSet(databaseConnection);

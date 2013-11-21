@@ -1,20 +1,16 @@
 package de.tbosch.commons.persistence.validator;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.hibernate.mapping.Column;
-import org.hibernate.mapping.Property;
-import org.hibernate.validator.PropertyConstraint;
-import org.hibernate.validator.Validator;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Prüft einen Mindestwert für einen Wert
  * 
  * @author tbo
  */
-@SuppressWarnings("serial")
-public class MinDoubleValidator implements Validator<MinDouble>, PropertyConstraint, Serializable {
+public class MinDoubleValidator implements ConstraintValidator<MinDouble, Object> {
 
 	private double min;
 
@@ -27,10 +23,10 @@ public class MinDoubleValidator implements Validator<MinDouble>, PropertyConstra
 	}
 
 	/**
-	 * @see org.hibernate.validator.Validator#isValid(java.lang.Object)
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
 	 */
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		if (value == null)
 			return true;
 		if (value instanceof String) {
@@ -52,12 +48,4 @@ public class MinDoubleValidator implements Validator<MinDouble>, PropertyConstra
 		}
 	}
 
-	/**
-	 * @see org.hibernate.validator.PropertyConstraint#apply(org.hibernate.mapping.Property)
-	 */
-	@Override
-	public void apply(Property property) {
-		Column col = (Column) property.getColumnIterator().next();
-		col.setCheckConstraint(col.getName() + ">=" + min);
-	}
 }

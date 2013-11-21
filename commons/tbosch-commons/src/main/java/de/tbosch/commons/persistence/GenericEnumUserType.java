@@ -8,8 +8,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.HibernateException;
-import org.hibernate.type.NullableType;
-import org.hibernate.type.TypeFactory;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
+import org.hibernate.type.TypeResolver;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 
@@ -41,7 +42,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 
 	private Method valueOfMethod;
 
-	private NullableType type;
+	private AbstractSingleColumnStandardBasicType type;
 
 	private int[] sqlTypes;
 
@@ -53,8 +54,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 		String enumClassName = parameters.getProperty("enumClass");
 		try {
 			enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
-		}
-		catch (ClassNotFoundException cfne) {
+		} catch (ClassNotFoundException cfne) {
 			throw new HibernateException("Enum class not found", cfne);
 		}
 
@@ -63,14 +63,14 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 		try {
 			identifierMethod = enumClass.getMethod(identifierMethodName, new Class[0]);
 			identifierType = identifierMethod.getReturnType();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new HibernateException("Failed to obtain identifier method", e);
 		}
 
-		type = (NullableType)TypeFactory.basic(identifierType.getName());
+		type = (AbstractSingleColumnStandardBasicType) new TypeResolver().basic(identifierType.getName());
 
-		if (type == null) throw new HibernateException("Unsupported identifier type " + identifierType.getName());
+		if (type == null)
+			throw new HibernateException("Unsupported identifier type " + identifierType.getName());
 
 		sqlTypes = new int[] { type.sqlType() };
 
@@ -78,8 +78,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 
 		try {
 			valueOfMethod = enumClass.getMethod(valueOfMethodName, new Class[] { identifierType });
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new HibernateException("Failed to obtain valueOf method", e);
 		}
 	}
@@ -94,39 +93,40 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 	}
 
 	/**
-	 * @see org.hibernate.usertype.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
+	 * @see org.hibernate.usertype.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[],
+	 *      org.hibernate.engine.spi.SessionImplementor, java.lang.Object)
 	 */
 	@Override
-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws SQLException {
-		Object identifier = type.get(rs, names[0]);
+	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+			throws HibernateException, SQLException {
+		Object identifier = type.get(rs, names[0], session);
 		if (identifier == null) {
 			return null;
 		}
 
 		try {
 			return valueOfMethod.invoke(enumClass, new Object[] { identifier });
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new HibernateException("Exception while invoking valueOf method '" + valueOfMethod.getName()
 					+ "' of " + "enumeration class '" + enumClass + "'", e);
 		}
 	}
 
 	/**
-	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
+	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int,
+	 *      org.hibernate.engine.spi.SessionImplementor)
 	 */
 	@Override
-	public void nullSafeSet(PreparedStatement st, Object value, int index) throws SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+			throws HibernateException, SQLException {
 		try {
 			if (value == null) {
 				st.setNull(index, type.sqlType());
-			}
-			else {
+			} else {
 				Object identifier = identifierMethod.invoke(value, new Object[0]);
-				type.set(st, identifier, index);
+				type.set(st, identifier, index, session);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new HibernateException("Exception while invoking identifierMethod '" + identifierMethod.getName()
 					+ "' of " + "enumeration class '" + enumClass + "'", e);
 		}
@@ -161,7 +161,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
 	 */
 	@Override
 	public Serializable disassemble(Object value) {
-		return (Serializable)value;
+		return (Serializable) value;
 	}
 
 	/**

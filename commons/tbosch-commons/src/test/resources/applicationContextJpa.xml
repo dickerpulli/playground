@@ -13,7 +13,7 @@
 	
 	<context:annotation-config />
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven />
 
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
@@ -47,22 +47,5 @@
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
     
-    <!-- Hibernate -->
-    
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="de.tbosch.commons.dao.model" />
-		<property name="schemaUpdate" value="true" />
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
-				<prop key="hibernate.connection.release_mode">on_close</prop>
-			</props>
-		</property>
-	</bean>
-    
-    <bean id="personDao2" class="de.tbosch.commons.dao.hibernate.StandardPersonDao" />
-
 </beans>
 
