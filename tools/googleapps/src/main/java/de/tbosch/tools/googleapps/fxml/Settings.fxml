@@ -7,39 +7,45 @@
 <?import javafx.scene.layout.GridPane?>
 <?scenebuilder-preview-i18n-resource ../../../../../../resources/messages.properties?>
 
-<GridPane hgap="0.0" vgap="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.SettingsController">
+<GridPane hgap="0.0" prefHeight="171.0" vgap="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.SettingsController">
   <!-- TODO Add Nodes -->
   <children>
-    <GridPane hgap="10.0" prefHeight="138.0" prefWidth="404.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <GridPane hgap="10.0" prefHeight="171.0" prefWidth="483.0" vgap="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
-        <GridPane alignment="TOP_LEFT" hgap="5.0" prefHeight="86.0" prefWidth="384.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <GridPane alignment="TOP_LEFT" hgap="5.0" prefHeight="-1.0" prefWidth="384.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <children>
             <Label text="%settings.label.username" textAlignment="LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Label text="%settings.label.password" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="4" />
             <TextField fx:id="username" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <CheckBox id="connectAtStartup" fx:id="autoconnect" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <CheckBox id="connectAtStartup" fx:id="autoconnect" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
             <PasswordField fx:id="password" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="%settings.label.oauth.auth" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label text="%settings.label.oauth.refresh" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="authToken" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="refreshToken" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
           </children>
           <columnConstraints>
             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="117.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.0" minWidth="10.0" prefWidth="257.0" />
           </columnConstraints>
           <rowConstraints>
-            <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="50.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="50.0" minHeight="0.0" prefHeight="19.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
-        <GridPane hgap="5.0" prefHeight="30.0" prefWidth="384.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <GridPane hgap="5.0" prefHeight="28.0" prefWidth="463.0" vgap="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <children>
             <Button mnemonicParsing="false" onAction="#clickOkButton" text="%button.ok" textAlignment="LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0" />
             <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#clickCancelButton" text="%button.cancel" textAlignment="LEFT" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="125.0" minWidth="10.0" prefWidth="125.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="168.0" minWidth="10.0" prefWidth="168.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="81.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="230.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0" prefWidth="62.0" />
           </columnConstraints>
           <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -53,8 +59,8 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding>
       <rowConstraints>
-        <RowConstraints maxHeight="243.0" minHeight="10.0" prefHeight="87.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="243.0" minHeight="10.0" prefHeight="115.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>

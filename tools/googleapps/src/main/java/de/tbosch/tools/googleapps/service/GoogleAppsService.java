@@ -3,6 +3,8 @@ package de.tbosch.tools.googleapps.service;
 import java.io.IOException;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 
@@ -68,5 +70,12 @@ public interface GoogleAppsService {
 	 *            The listener.
 	 */
 	void addUpdateListener(UpdateListener updateListener);
+
+	/**
+	 * Reads Emails an persists the inbox into DB.
+	 * 
+	 * @throws MessagingException
+	 */
+	void updateEmails() throws MessagingException;
 
 }

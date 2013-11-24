@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.Reminder;
 import com.google.gdata.util.ServiceException;
+import com.sun.mail.imap.IMAPStore;
 
 import de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao;
 import de.tbosch.tools.googleapps.dao.GReminderDao;
 import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
 import de.tbosch.tools.googleapps.model.GReminder;
+import de.tbosch.tools.googleapps.oauth2.OAuth2Authenticator;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
@@ -184,6 +188,19 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	@Override
 	public void addUpdateListener(UpdateListener updateListener) {
 		updateListeners.add(updateListener);
+	}
+
+	/**
+	 * @throws MessagingException
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#updateEmails()
+	 */
+	@Override
+	public void updateEmails() throws MessagingException {
+		String username = preferencesService.readPref(PrefKey.USERNAME);
+		String oauthToken = "";
+		OAuth2Authenticator.initialize();
+		IMAPStore imapStore = OAuth2Authenticator.connectToImap("imap.gmail.com", 993, username, oauthToken, true);
+		System.out.println(imapStore.getFolder("inbox").getMessageCount());
 	}
 
 }

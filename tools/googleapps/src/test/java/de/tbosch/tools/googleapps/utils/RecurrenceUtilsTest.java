@@ -11,6 +11,8 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import de.tbosch.tools.googleapps.utils.RecurrenceUtils;
+
 public class RecurrenceUtilsTest {
 
 	@Test
