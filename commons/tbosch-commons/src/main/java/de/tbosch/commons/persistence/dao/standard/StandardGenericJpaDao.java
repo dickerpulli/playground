@@ -11,10 +11,10 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Cache;
 import org.hibernate.Session;
-import org.hibernate.cache.Cache;
 import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.impl.SessionFactoryImpl;
+import org.hibernate.internal.SessionFactoryImpl;
 
 import de.tbosch.commons.persistence.dao.GenericJpaDao;
 
@@ -38,7 +38,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	/**
 	 * Konstruktor der den Typ der Klasse �bernimmt.
 	 * 
-	 * @param type der Typ der Klasse
+	 * @param type
+	 *            der Typ der Klasse
 	 */
 	public StandardGenericJpaDao(Class<T> type) {
 		this.type = type;
@@ -49,7 +50,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public T create(T newInstance) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO schreibt Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO schreibt Objekt vom Typ " + type);
 
 		entityManager.persist(newInstance);
 		return newInstance;
@@ -60,7 +62,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public void delete(T transientObject) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO l�scht Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO l�scht Objekt vom Typ " + type);
 
 		entityManager.remove(transientObject);
 	}
@@ -70,7 +73,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public T update(T transientObject) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO merged Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO merged Objekt vom Typ " + type);
 
 		return entityManager.merge(transientObject);
 	}
@@ -80,7 +84,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public T read(PK id) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO liest Objekt vom Typ " + type + " mit Schl�ssel: " + id);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO liest Objekt vom Typ " + type + " mit Schl�ssel: " + id);
 
 		return entityManager.find(type, id);
 	}
@@ -90,7 +95,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public void clear() {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO clear");
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO clear");
 
 		entityManager.clear();
 	}
@@ -101,16 +107,17 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void evict() {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO evict");
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO evict");
 
 		// Bereinige den Cache
-		HibernateEntityManager hibernateEntityManager = (HibernateEntityManager)entityManager;
+		HibernateEntityManager hibernateEntityManager = (HibernateEntityManager) entityManager;
 		Session session = hibernateEntityManager.getSession();
-		SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl)session.getSessionFactory();
+		SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl) session.getSessionFactory();
 		Map cacheRegionen = sessionFactoryImpl.getAllSecondLevelCacheRegions();
 		Collection<Cache> cacheRegion = cacheRegionen.values();
 		for (Cache cache : cacheRegion) {
-			cache.clear();
+			cache.evictEntityRegion(type);
 		}
 	}
 
@@ -119,7 +126,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	 */
 	@Override
 	public void flush() {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO flush");
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO flush");
 
 		entityManager.flush();
 	}
@@ -130,7 +138,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> executeFinder(String methodenName) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO führt Named-Query aus:" + methodenName);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO führt Named-Query aus:" + methodenName);
 
 		String queryName = type.getSimpleName() + "." + methodenName;
 		Query namedQuery = entityManager.createNamedQuery(queryName);
@@ -143,7 +152,8 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> executeFinder(String methodenName, Map<String, Object> queryArgs) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO führt Named-Query aus:" + methodenName);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO führt Named-Query aus:" + methodenName);
 
 		if (queryArgs == null || queryArgs.size() == 0) {
 			throw new IllegalArgumentException();
@@ -172,19 +182,22 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	/**
 	 * Bereitet das Query für die Ausführung vor.
 	 * 
-	 * @param methodName der Name der Methode
-	 * @param queryArgs die Suchparameter
+	 * @param methodName
+	 *            der Name der Methode
+	 * @param queryArgs
+	 *            die Suchparameter
 	 * @return das vorbereitete Query.
 	 */
 	private Query prepareQuery(String methodName, Object[] queryArgs) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO führt Named-Query aus:" + methodName);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO führt Named-Query aus:" + methodName);
 
 		String queryName = type.getSimpleName() + "." + methodName;
 		Query namedQuery = entityManager.createNamedQuery(queryName);
 		if (queryArgs != null) {
 			for (int i = 0; i < queryArgs.length; i++) {
-				if (LOG.isDebugEnabled()) LOG.debug("Named-Query " + methodName + " Parameter " + (i + 1) + ": "
-						+ queryArgs[i]);
+				if (LOG.isDebugEnabled())
+					LOG.debug("Named-Query " + methodName + " Parameter " + (i + 1) + ": " + queryArgs[i]);
 
 				namedQuery.setParameter(i + 1, queryArgs[i]);
 			}
@@ -199,6 +212,14 @@ public class StandardGenericJpaDao<T, PK extends Serializable> implements Generi
 	@Override
 	public List<T> findAll() {
 		return entityManager.createQuery("select t from " + type.getName() + " t").getResultList();
+	}
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericDao#findByExample(java.lang.Object)
+	 */
+	@Override
+	public List<T> findByExample(T example) {
+		throw new UnsupportedOperationException("JPA unterstützt kein 'findByExample'");
 	}
 
 	// Getter / Setter

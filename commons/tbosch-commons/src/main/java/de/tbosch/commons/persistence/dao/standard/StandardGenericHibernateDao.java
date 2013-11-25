@@ -7,20 +7,23 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import de.tbosch.commons.persistence.dao.GenericHibernateDao;
 
 /**
  * Hibernate-Implementierung der generischen Dao-Schnittstelle.
  * 
- * @param <T> Der Typ des generischen Daos
- * @param <PK> Der Typ des Primary Keys
+ * @param <T>
+ *            Der Typ des generischen Daos
+ * @param <PK>
+ *            Der Typ des Primary Keys
  */
-public class StandardGenericHibernateDao<T, PK extends Serializable> extends HibernateDaoSupport implements
-		GenericHibernateDao<T, PK> {
+public class StandardGenericHibernateDao<T, PK extends Serializable> implements GenericHibernateDao<T, PK> {
 
 	private final Log LOG = LogFactory.getLog(getClass());
 
@@ -29,10 +32,13 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 
 	private final String prefixNamedQueries;
 
+	private SessionFactory sessionFactory;
+
 	/**
 	 * Konstruktor der den Typ der Klasse übernimmt.
 	 * 
-	 * @param type der Typ der Klasse
+	 * @param type
+	 *            der Typ der Klasse
 	 */
 	public StandardGenericHibernateDao(Class<T> type) {
 		this.type = type;
@@ -40,11 +46,12 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	}
 
 	/**
-	 * SessionFactory an das DaoSupport weitergeben.
+	 * Gibt die aktuelle Hibernate-Session zurück.
+	 * 
+	 * @return Session.
 	 */
-	@Autowired
-	public void setSessionFabrik(SessionFactory sessionFactory) {
-		setSessionFactory(sessionFactory);
+	public Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
 	}
 
 	/**
@@ -52,30 +59,35 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	 */
 	@Override
 	public T create(T t) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO schreibt Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO schreibt Objekt vom Typ " + type);
 
-		getHibernateTemplate().persist(t);
+		getCurrentSession().persist(t);
 		return t;
 	}
 
 	/**
 	 * @see de.tbosch.commons.persistence.dao.GenericDao#read(java.io.Serializable)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public T read(PK id) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO liest Objekt vom Typ " + type + " mit Schlüssel: " + id);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO liest Objekt vom Typ " + type + " mit Schlüssel: " + id);
 
-		return getHibernateTemplate().get(type, id);
+		return (T) getCurrentSession().get(type, id);
 	}
 
 	/**
 	 * @see de.tbosch.commons.persistence.dao.GenericDao#merge(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public T update(T o) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO merged Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO merged Objekt vom Typ " + type);
 
-		return getHibernateTemplate().merge(o);
+		return (T) getCurrentSession().merge(o);
 	}
 
 	/**
@@ -83,9 +95,10 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	 */
 	@Override
 	public void delete(T o) {
-		if (LOG.isDebugEnabled()) LOG.debug("GenericDAO löscht Objekt vom Typ " + type);
+		if (LOG.isDebugEnabled())
+			LOG.debug("GenericDAO löscht Objekt vom Typ " + type);
 
-		getHibernateTemplate().delete(o);
+		getCurrentSession().delete(o);
 	}
 
 	/**
@@ -95,13 +108,14 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	@SuppressWarnings("unchecked")
 	public List<T> executeFinder(String methodenName) {
 		final String namedQueryName = getNamedQueryName(methodenName);
-		return getHibernateTemplate().findByNamedQuery(namedQueryName);
+		return getCurrentSession().getNamedQuery(namedQueryName).list();
 	}
 
 	/**
 	 * Ermittelt den Namen einer Named-Query aus dem Namen der aufgerufenen 'findXYZ'-Methode
 	 * 
-	 * @param methodenName Name der aufgerufenen 'findXYZ'-Methode, z.B. 'findAlleUser'
+	 * @param methodenName
+	 *            Name der aufgerufenen 'findXYZ'-Methode, z.B. 'findAlleUser'
 	 * 
 	 * @return Resultierende Name der Named-Query => Methodenname ergänzt um Model-Klasse, z.B. 'User.findAlleUser'
 	 */
@@ -120,7 +134,11 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	@SuppressWarnings("unchecked")
 	public List<T> executeFinder(String methodenName, final Object[] queryArgs) {
 		final String namedQueryName = getNamedQueryName(methodenName);
-		return getHibernateTemplate().findByNamedQuery(namedQueryName, queryArgs);
+		Query namedQuery = getCurrentSession().getNamedQuery(namedQueryName);
+		for (int i = 0; i < queryArgs.length; i++) {
+			namedQuery.setParameter(i, queryArgs[i]);
+		}
+		return namedQuery.list();
 	}
 
 	/**
@@ -130,16 +148,11 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	@SuppressWarnings("unchecked")
 	public List<T> executeFinder(String methodenName, final Map<String, Object> queryArgs) {
 		final String namedQueryName = getNamedQueryName(methodenName);
-		String[] keys = new String[queryArgs.size()];
-		Object[] values = new Object[queryArgs.size()];
-		int pos = 0;
-		for (Entry<String, Object> entry : queryArgs.entrySet()) {
-			keys[pos] = entry.getKey();
-			values[pos] = entry.getValue();
-			pos++;
+		Query namedQuery = getCurrentSession().getNamedQuery(namedQueryName);
+		for (Entry<String, Object> queryArg : queryArgs.entrySet()) {
+			namedQuery.setParameter(queryArg.getKey(), queryArg.getValue());
 		}
-
-		return getHibernateTemplate().findByNamedQueryAndNamedParam(namedQueryName, keys, values);
+		return namedQuery.list();
 	}
 
 	/**
@@ -147,7 +160,7 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	 */
 	@Override
 	public void clear() {
-		getHibernateTemplate().clear();
+		getCurrentSession().clear();
 	}
 
 	/**
@@ -155,7 +168,7 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	 */
 	@Override
 	public void flush() {
-		getHibernateTemplate().flush();
+		getCurrentSession().flush();
 	}
 
 	/**
@@ -164,7 +177,7 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> findAll() {
-		return getHibernateTemplate().find("from " + type.getName());
+		return getCurrentSession().createCriteria(type).list();
 	}
 
 	/**
@@ -172,6 +185,35 @@ public class StandardGenericHibernateDao<T, PK extends Serializable> extends Hib
 	 */
 	@Override
 	public void evict() {
-		throw new UnsupportedOperationException("Wird noch nicht unterstützt");
+		getSessionFactory().getCache().evictEntityRegion(type);
 	}
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericDao#findByExample(java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> findByExample(T example) {
+		return getCurrentSession().createCriteria(type).add(Example.create(example)).list();
+	}
+
+	// Getter / Setter
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericHibernateDao#getSessionFactory()
+	 */
+	@Override
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	/**
+	 * @see de.tbosch.commons.persistence.dao.GenericHibernateDao#setSessionFactory(org.hibernate.SessionFactory)
+	 */
+	@Override
+	@Autowired
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
 }

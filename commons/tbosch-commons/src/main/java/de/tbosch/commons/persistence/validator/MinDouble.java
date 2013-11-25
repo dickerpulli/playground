@@ -8,7 +8,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.hibernate.validator.ValidatorClass;
+import javax.validation.Constraint;
 
 /**
  * Testet die minimale Größe eines Elements. Auch double-Werte sind vergleichbar.
@@ -16,8 +16,8 @@ import org.hibernate.validator.ValidatorClass;
  * @author tbo
  */
 @Documented
-@ValidatorClass(MinDoubleValidator.class)
-@Target( { METHOD, FIELD })
+@Constraint(validatedBy = {})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface MinDouble {
 	/**

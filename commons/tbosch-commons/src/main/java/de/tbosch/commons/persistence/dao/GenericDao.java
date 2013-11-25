@@ -18,8 +18,10 @@ import de.tbosch.commons.persistence.finder.FinderExecutor;
  * Über die Repository-Annotation werden die Persistence-Exceptions in unchecked {@link DataAccessException} von Spring
  * gewrapped.
  * 
- * @param <T> Die Klasse für welche das Dao gilt.
- * @param <PK> der Typ des Primärschüssels.
+ * @param <T>
+ *            Die Klasse für welche das Dao gilt.
+ * @param <PK>
+ *            der Typ des Primärschüssels.
  */
 @Repository
 public interface GenericDao<T, PK extends Serializable> extends FinderExecutor<T> {
@@ -35,7 +37,8 @@ public interface GenericDao<T, PK extends Serializable> extends FinderExecutor<T
 	/**
 	 * Liest eine Entity anhand der Id aus.
 	 * 
-	 * @param id die eindeutige Id der Entity.
+	 * @param id
+	 *            die eindeutige Id der Entity.
 	 * @return die gefundene Entity oder null, wenn zur übergebenen Id keine Entity gefunden wurde.
 	 */
 	public T read(PK id);
@@ -62,6 +65,13 @@ public interface GenericDao<T, PK extends Serializable> extends FinderExecutor<T
 	 * @return alles
 	 */
 	public List<T> findAll();
+
+	/**
+	 * Hole alle Entities, die ähnlich dem übergebenen sind.
+	 * 
+	 * @return gefundene
+	 */
+	public List<T> findByExample(T example);
 
 	/**
 	 * Flusht die Session und die Entities werden in die Datenbank geschrieben.

@@ -15,8 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gdata.client.Query;
+import com.google.gdata.client.appsforyourdomain.AppsForYourDomainQuery;
+import com.google.gdata.client.appsforyourdomain.EmailListService;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.appsforyourdomain.provisioning.EmailListEntry;
+import com.google.gdata.data.appsforyourdomain.provisioning.EmailListFeed;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.Reminder;
@@ -46,6 +51,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 
 	@Autowired
 	private CalendarService calendarService;
+
+	@Autowired
+	private EmailListService emailListService;
 
 	@Autowired
 	private PreferencesService preferencesService;
@@ -95,8 +103,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 								reminderDao.create(gReminder);
 							}
 							calendarEventEntryDao.update(gEntry);
-						}
-						else {
+						} else {
 							if (LOG.isDebugEnabled()) {
 								LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " has no reminders.");
 							}
@@ -104,8 +111,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 						for (UpdateListener updateListener : updateListeners) {
 							updateListener.updated();
 						}
-					}
-					else {
+					} else {
 						SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 						String starttime = dateFormat.format(gEntry.getStartTime());
 						String endtime = dateFormat.format(gEntry.getEndTime());
@@ -113,14 +119,37 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 								+ starttime + "/" + endtime + "' already exists.");
 					}
 				}
-
-			}
-			catch (MalformedURLException e) {
+			} catch (MalformedURLException e) {
 				throw new IllegalArgumentException("Should not happen, look in the code ...");
 			}
-		}
-		else {
+		} else {
 			throw new IllegalStateException("not connected");
+		}
+	}
+
+	/**
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#updateEmails()
+	 */
+	@Override
+	public void updateEmails() throws IOException, ServiceException {
+		if (connected) {
+			String username = preferencesService.readPref(PrefKey.USERNAME);
+
+			// Construct URL
+			StringBuffer url = new StringBuffer();
+			url.append("https://www.google.com/calendar/feeds/");
+			url.append(username);
+			url.append("/private/full");
+			URL feedUrl = new URL(url.toString());
+
+			// Query all events from the calendar
+			Query myQuery = new AppsForYourDomainQuery(feedUrl);
+			EmailListFeed queryResult = emailListService.getFeed(myQuery, EmailListFeed.class);
+			List<EmailListEntry> entries = queryResult.getEntries();
+
+			// Iterate over all Events
+			for (EmailListEntry entry : entries) {
+			}
 		}
 	}
 

@@ -15,6 +15,10 @@ import de.tbosch.tools.googleapps.service.PreferencesService;
 
 /**
  * Default-Implementation of {@link PreferencesService}.
+<<<<<<< HEAD
+ * 
+=======
+>>>>>>> branch 'master' of https://github.com/dickerpulli/playground.git
  * @author Thomas Bosch
  */
 @Service
@@ -25,7 +29,8 @@ public class PreferencesServiceImpl implements PreferencesService {
 	private boolean inTest = false;
 
 	/**
-	 * @param inTest the inTest to set
+	 * @param inTest
+	 *            the inTest to set
 	 */
 	public void setInTest(boolean inTest) {
 		this.inTest = inTest;
@@ -38,8 +43,7 @@ public class PreferencesServiceImpl implements PreferencesService {
 	public void createPrefs() {
 		if (inTest) {
 			prefs = Preferences.userNodeForPackage(Object.class);
-		}
-		else {
+		} else {
 			prefs = Preferences.userNodeForPackage(PreferencesServiceImpl.class);
 		}
 	}
@@ -81,8 +85,7 @@ public class PreferencesServiceImpl implements PreferencesService {
 			byte[] raw = encoder.decodeBuffer(encrypted);
 			byte[] stringBytes = cipher.doFinal(raw);
 			return new String(stringBytes, "UTF8");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Error while decoding", e);
 		}
 	}
@@ -98,8 +101,7 @@ public class PreferencesServiceImpl implements PreferencesService {
 			byte[] raw = cipher.doFinal(decrypted.getBytes("UTF8"));
 			sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
 			return encoder.encode(raw);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Error while decoding", e);
 		}
 	}

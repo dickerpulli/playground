@@ -48,4 +48,5 @@ public class GCalendarEventEntryDaoImplDbTest extends AbstractSpringDbTest {
 		assertEquals(1, list.size());
 		assertEquals(3, list.get(0).getId());
 	}
+
 }

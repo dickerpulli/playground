@@ -37,7 +37,8 @@ public class GoogleAppsContext {
 	/**
 	 * Gets a bean from the context.
 	 * 
-	 * @param name The name of the bean
+	 * @param name
+	 *            The name of the bean
 	 * @return The bean
 	 */
 	public static Object getBean(String name) {
@@ -64,7 +65,8 @@ public class GoogleAppsContext {
 	/**
 	 * Creates the context from given applicationContext. Is overriden, when loaded a second time.
 	 * 
-	 * @param applicationContext The context to use
+	 * @param applicationContext
+	 *            The context to use
 	 */
 	public static void load(ConfigurableApplicationContext applicationContext) {
 		Assert.notNull(applicationContext);
@@ -73,6 +75,7 @@ public class GoogleAppsContext {
 
 	/**
 	 * Creates a Spring FXML Loader that is used to create Spring-Aware JavaFX-Scenes.
+	 * 
 	 * @return SpringFxmlLoader
 	 */
 	public static SpringFXMLLoader getSpringFXMLLoader() {

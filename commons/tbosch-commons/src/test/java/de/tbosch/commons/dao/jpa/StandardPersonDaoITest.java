@@ -18,7 +18,7 @@ import de.tbosch.commons.persistence.dao.GenericDao;
 import de.tbosch.commons.test.AbstractGenericDaoDbUnitTest;
 import de.tbosch.commons.test.util.DataloadUtils;
 
-@ContextConfiguration(locations = ("/applicationContext.xml"))
+@ContextConfiguration(locations = ("/applicationContextJpa.xml"))
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class StandardPersonDaoITest extends AbstractGenericDaoDbUnitTest<Person, Integer> {
 

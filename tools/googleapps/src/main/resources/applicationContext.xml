@@ -18,6 +18,10 @@
 	<bean id="calendarService" class="com.google.gdata.client.calendar.CalendarService">
 		<constructor-arg value="googleapps" />
 	</bean>
+	
+	<bean id="emailListService" class="com.google.gdata.client.appsforyourdomain.EmailListService">
+		<constructor-arg value="googleapps" />
+	</bean>
 
 	<bean id="googleAppsThread" class="de.tbosch.tools.googleapps.GoogleAppsThread" />
 	<bean id="imageIconOnline" class="javax.swing.ImageIcon">
@@ -28,7 +32,7 @@
 	</bean>
 	<bean id="imageOnline" factory-bean="imageIconOnline" factory-method="getImage" />
 	<bean id="imageOffline" factory-bean="imageIconOffline" factory-method="getImage" />
-	<bean id="trayIcon" class="de.tbosch.tools.googleapps.gui.JXTrayIcon" destroy-method="dispose">
+	<bean id="trayIcon" class="java.awt.TrayIcon">
 		<constructor-arg ref="imageOffline" />
 	</bean>
 
@@ -55,10 +59,9 @@
 		<property name="username" value="${datasource.username}" />
 		<property name="password" value="${datasource.password}" />
 	</bean>
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan" value="de.tbosch.tools.googleapps.model" />
-		<property name="schemaUpdate" value="true" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
@@ -68,7 +71,7 @@
 		</property>
 	</bean>
 	<tx:annotation-driven />
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

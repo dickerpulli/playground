@@ -1,19 +1,14 @@
 package de.tbosch.commons.persistence.validator;
 
-import java.io.Serializable;
-
-import org.hibernate.mapping.Column;
-import org.hibernate.mapping.Property;
-import org.hibernate.validator.PropertyConstraint;
-import org.hibernate.validator.Validator;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Prüft die Mindestlänge für einen String.
  * 
  * @author tbo
  */
-@SuppressWarnings("serial")
-public class MinLengthValidator implements Validator<MinLength>, PropertyConstraint, Serializable {
+public class MinLengthValidator implements ConstraintValidator<MinLength, String> {
 
 	private int min;
 
@@ -26,25 +21,15 @@ public class MinLengthValidator implements Validator<MinLength>, PropertyConstra
 	}
 
 	/**
-	 * @see org.hibernate.validator.Validator#isValid(java.lang.Object)
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
 	 */
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if (value == null)
 			return true;
-		if (value instanceof String) {
-			if (((String) value).length() >= min)
-				return true;
-		}
+		if (value.length() >= min)
+			return true;
 		return false;
 	}
 
-	/**
-	 * @see org.hibernate.validator.PropertyConstraint#apply(org.hibernate.mapping.Property)
-	 */
-	@Override
-	public void apply(Property property) {
-		Column col = (Column) property.getColumnIterator().next();
-		col.setCheckConstraint(col.getName() + ">=" + min);
-	}
 }

@@ -16,9 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.gdata.data.calendar.CalendarEventEntry;
 
@@ -62,7 +62,8 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -76,7 +77,8 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -90,7 +92,8 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	}
 
 	/**
-	 * @param startTime the startTime to set
+	 * @param startTime
+	 *            the startTime to set
 	 */
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
@@ -104,7 +107,8 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	}
 
 	/**
-	 * @param endTime the endTime to set
+	 * @param endTime
+	 *            the endTime to set
 	 */
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
@@ -118,7 +122,8 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	}
 
 	/**
-	 * @param reminders the reminders to set
+	 * @param reminders
+	 *            the reminders to set
 	 */
 	public void setReminders(Set<GReminder> reminders) {
 		this.reminders = reminders;

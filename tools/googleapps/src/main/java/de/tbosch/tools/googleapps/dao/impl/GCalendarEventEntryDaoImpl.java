@@ -3,7 +3,6 @@ package de.tbosch.tools.googleapps.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.stereotype.Repository;
 
@@ -24,18 +23,18 @@ public class GCalendarEventEntryDaoImpl extends StandardGenericHibernateDao<GCal
 	 */
 	@Override
 	public GCalendarEventEntry findLike(GCalendarEventEntry gEntry) {
-		List list = getHibernateTemplate().findByExample(gEntry);
-		return list.isEmpty() ? null : (GCalendarEventEntry)list.get(0);
+		List<GCalendarEventEntry> list = findByExample(gEntry);
+		return list.isEmpty() ? null : (GCalendarEventEntry) list.get(0);
 	}
 
 	/**
 	 * @see de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao#findWithStarttimeAfterOrEqual(java.util.Date)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<GCalendarEventEntry> findWithStarttimeAfterOrEqual(Date date) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(GCalendarEventEntry.class).add(
-				Property.forName("startTime").ge(date));
-		return getHibernateTemplate().findByCriteria(criteria);
+		return getCurrentSession().createCriteria(GCalendarEventEntry.class)
+				.add(Property.forName("startTime").ge(date)).list();
 	}
 
 }

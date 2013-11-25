@@ -2,6 +2,7 @@ package de.tbosch.tools.googleapps.service;
 
 /**
  * Reads and writes Preferences from User-Preferences file.
+ * 
  * @author Thomas Bosch
  */
 public interface PreferencesService {
@@ -37,15 +38,26 @@ public interface PreferencesService {
 
 	/**
 	 * Read preference from user preferences.
-	 * @param key PrefKey.
+	 * 
+	 * @param key
+	 *            PrefKey.
+	 * @param key
+	 *            PrefKey.
 	 * @return Pref.
 	 */
 	public String readPref(PrefKey key);
 
 	/**
 	 * Write preference to user preferences.
-	 * @param key PrefKey.
-	 * @param pref Pref.
+	 * 
+	 * @param key
+	 *            PrefKey.
+	 * @param pref
+	 *            Pref.
+	 * @param key
+	 *            PrefKey.
+	 * @param pref
+	 *            Pref.
 	 */
 	public void writePref(PrefKey key, String pref);
 

@@ -68,7 +68,8 @@ public class EasyMockFactoryBean<T> implements FactoryBean<T> {
 	/**
 	 * Der Typ, den das EasyMock Proxy implementiert.
 	 * 
-	 * @param type Das Interface
+	 * @param type
+	 *            Das Interface
 	 */
 	public void setType(Class<T> type) {
 		this.type = type;
@@ -78,7 +79,8 @@ public class EasyMockFactoryBean<T> implements FactoryBean<T> {
 	 * Sagt, ob das EasyMock Proxy ein NiceMock ist.
 	 * 
 	 * @see org.easymock.NiceMock
-	 * @param niceMock boolean
+	 * @param niceMock
+	 *            boolean
 	 */
 	public void setNiceMock(boolean niceMock) {
 		this.niceMock = niceMock;
@@ -88,7 +90,8 @@ public class EasyMockFactoryBean<T> implements FactoryBean<T> {
 	 * Sagt, ob das EasyMock Proxy ein StrickMock ist.
 	 * 
 	 * @see org.easymock.StrictMock
-	 * @param strictMock boolean
+	 * @param strictMock
+	 *            boolean
 	 */
 	public void setStrictMock(boolean strictMock) {
 		this.strictMock = strictMock;
