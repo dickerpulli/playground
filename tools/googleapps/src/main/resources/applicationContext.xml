@@ -18,10 +18,6 @@
 	<bean id="calendarService" class="com.google.gdata.client.calendar.CalendarService">
 		<constructor-arg value="googleapps" />
 	</bean>
-	
-	<bean id="emailListService" class="com.google.gdata.client.appsforyourdomain.EmailListService">
-		<constructor-arg value="googleapps" />
-	</bean>
 
 	<bean id="googleAppsThread" class="de.tbosch.tools.googleapps.GoogleAppsThread" />
 	<bean id="imageIconOnline" class="javax.swing.ImageIcon">

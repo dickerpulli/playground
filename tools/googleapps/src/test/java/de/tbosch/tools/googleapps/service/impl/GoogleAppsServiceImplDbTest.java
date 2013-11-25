@@ -26,7 +26,6 @@ import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.Reminder;
 import com.google.gdata.data.extensions.When;
-import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.AbstractSpringDbTest;
 import de.tbosch.tools.googleapps.model.GReminder;
@@ -55,7 +54,7 @@ public class GoogleAppsServiceImplDbTest extends AbstractSpringDbTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testUpdateCalendar() throws IOException, ServiceException {
+	public void testUpdateCalendar() throws Exception {
 		expect(preferencesServiceMock.readPref(PrefKey.USERNAME)).andReturn("usr").times(2);
 		expect(preferencesServiceMock.readPref(PrefKey.PASSWORD)).andReturn("pwd");
 		calendarServiceMock.setUserCredentials("usr", "pwd");

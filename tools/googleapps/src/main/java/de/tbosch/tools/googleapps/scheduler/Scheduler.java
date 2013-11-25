@@ -1,20 +1,18 @@
 package de.tbosch.tools.googleapps.scheduler;
 
-import java.io.IOException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.google.gdata.util.ServiceException;
-
 import de.tbosch.tools.googleapps.controller.TrayiconController;
+import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 
 /**
  * A scheduler class to run different timer tasks
+ * 
  * @author Thomas Bosch
  */
 @Component
@@ -37,8 +35,7 @@ public class Scheduler {
 			if (googleAppsService.isConnected()) {
 				googleAppsService.updateCalendar();
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new IllegalStateException("Exception while updating calendar", e);
 		}
 	}
@@ -59,8 +56,7 @@ public class Scheduler {
 		if (googleAppsService.isConnected()) {
 			try {
 				googleAppsService.updateCalendar();
-			}
-			catch (IOException | ServiceException e) {
+			} catch (GoogleAppsException e) {
 				if (LOG.isErrorEnabled()) {
 					LOG.error("15-minutes-timer failed to run", e);
 				}

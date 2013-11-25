@@ -21,9 +21,9 @@ import jfxtras.labs.dialogs.MonologFXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.google.gdata.util.ServiceException;
 import com.sun.javafx.collections.ObservableListWrapper;
 
+import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
@@ -57,10 +57,8 @@ public class GoogleAppsApplicationController implements Initializable {
 
 			@Override
 			public void updated() {
-				if (calendarList != null) {
-					calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
-							.getCalendarEventsFromNowOn()));
-				}
+				calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
+						.getCalendarEventsFromNowOn()));
 			}
 		});
 	}
@@ -82,11 +80,7 @@ public class GoogleAppsApplicationController implements Initializable {
 			googleAppsService.connect();
 			googleAppsService.updateCalendar();
 			initialize(null, null);
-		} catch (IOException e) {
-			MonologFXBuilder.create().modal(true).type(Type.ERROR)
-					.message(MessageHelper.getMessage("error.io") + ": " + e.getMessage())
-					.titleText(MessageHelper.getMessage("error.title"));
-		} catch (ServiceException e) {
+		} catch (GoogleAppsException e) {
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
 					.message(MessageHelper.getMessage("error.service") + ": " + e.getMessage())
 					.titleText(MessageHelper.getMessage("error.title"));
@@ -100,7 +94,7 @@ public class GoogleAppsApplicationController implements Initializable {
 	}
 
 	@FXML
-	public void clickUpdateButton() throws IOException, ServiceException {
+	public void clickUpdateButton() throws GoogleAppsException {
 		if (googleAppsService.isConnected()) {
 			googleAppsService.updateCalendar();
 		}

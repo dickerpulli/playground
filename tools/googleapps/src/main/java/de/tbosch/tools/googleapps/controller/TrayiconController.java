@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,9 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import com.google.gdata.util.ServiceException;
-
 import de.tbosch.tools.googleapps.GoogleAppsThread;
+import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.gui.GoogleAppsApplication;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
@@ -119,7 +117,7 @@ public class TrayiconController {
 			try {
 				googleAppsService.connect();
 				googleAppsService.updateCalendar();
-			} catch (ServiceException | IOException e) {
+			} catch (GoogleAppsException e) {
 				throw new IllegalStateException("Error while connecting at startup", e);
 			}
 		}

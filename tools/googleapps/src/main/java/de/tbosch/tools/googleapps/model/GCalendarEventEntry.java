@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.google.api.services.calendar.model.Event;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 
 @Entity
@@ -52,6 +53,12 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 		this.title = entry.getTitle().getPlainText();
 		this.startTime = new Date(entry.getTimes().get(0).getStartTime().getValue());
 		this.endTime = new Date(entry.getTimes().get(0).getEndTime().getValue());
+	}
+
+	public GCalendarEventEntry(Event event) {
+		this.title = event.getSummary();
+		this.startTime = new Date(event.getStart().getDateTime().getValue());
+		this.endTime = new Date(event.getEnd().getDateTime().getValue());
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tbosch.tools</groupId>
 	<artifactId>googleapps</artifactId>
@@ -8,11 +8,11 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>googleapps</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<properties>
 		<spring.version>3.2.4.RELEASE</spring.version>
 	</properties>
-	
+
 	<dependencies>
 		<!-- to be found in my github repo https://github.com/dickerpulli/playground.git -->
 		<dependency>
@@ -20,7 +20,7 @@
 			<artifactId>tbosch-commons</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>javafx</artifactId>
@@ -28,7 +28,7 @@
 			<systemPath>${JAVA_HOME}/jre/lib/jfxrt.jar</systemPath>
 			<scope>system</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jfxtras</groupId>
 			<artifactId>jfxtras-labs</artifactId>
@@ -99,7 +99,27 @@
 			<artifactId>hsqldb</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-calendar</artifactId>
+			<version>v3-rev67-1.17.0-rc</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>1.17.0-rc</version>
+		</dependency>
+
 		<!-- Test scope -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -120,27 +140,28 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-plus</artifactId>
+			<version>v1-rev99-1.17.0-rc</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
-		    <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <configuration>
-		          	<archive>
-		            	<manifest>
-		              		<mainClass>de.tbosch.tools.googleapps.GoogleApps</mainClass>
-              				<addClasspath>true</addClasspath>               
-              				<classpathPrefix>lib/</classpathPrefix>
-		              	</manifest>
-		       		</archive>
-		       	</configuration>
-		 	</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>de.tbosch.tools.googleapps.GoogleApps</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
