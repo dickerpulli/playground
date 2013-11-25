@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
+import javax.mail.MessagingException;
+
 import com.google.gdata.util.ServiceException;
 
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;

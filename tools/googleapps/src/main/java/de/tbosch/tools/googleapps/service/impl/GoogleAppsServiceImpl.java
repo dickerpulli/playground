@@ -33,6 +33,7 @@ import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.mail.imap.IMAPSSLStore;
 import com.sun.mail.imap.IMAPStore;
+import com.sun.mail.imap.IMAPStore;
 
 import de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao;
 import de.tbosch.tools.googleapps.dao.GReminderDao;
