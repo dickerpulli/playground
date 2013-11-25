@@ -6,7 +6,7 @@
 	<groupId>de.tbosch.commons</groupId>
 	<artifactId>tbosch-commons</artifactId>
 	<name>Common Classes</name>
-	<version>2.0.0</version>
+	<version>3.0.0</version>
 
 	<properties>
 		<spring.version>3.2.4.RELEASE</spring.version>
@@ -47,13 +47,14 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.3.2.GA</version>
+			<version>4.2.7.SP1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>3.0.0.ga</version>
+			<version>5.0.1.Final</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
