@@ -83,7 +83,7 @@ public class GoogleAppsApplicationController implements Initializable {
 		} catch (GoogleAppsException e) {
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
 					.message(MessageHelper.getMessage("error.service") + ": " + e.getMessage())
-					.titleText(MessageHelper.getMessage("error.title"));
+					.titleText(MessageHelper.getMessage("error.title")).build().showDialog();
 		}
 	}
 

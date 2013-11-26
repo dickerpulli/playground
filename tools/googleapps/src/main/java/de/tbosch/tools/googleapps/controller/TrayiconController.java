@@ -101,6 +101,9 @@ public class TrayiconController {
 		// register events on trayicon itself
 		registerEvents();
 
+		// start GUI
+		app.startApplication(false);
+
 		// connect
 		connect();
 
@@ -192,7 +195,7 @@ public class TrayiconController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				app.startApplication();
+				app.startApplication(true);
 			}
 
 		});

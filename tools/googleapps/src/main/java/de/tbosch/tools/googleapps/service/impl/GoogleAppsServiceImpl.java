@@ -15,7 +15,6 @@ import javax.mail.URLName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +29,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
 import com.google.gdata.client.calendar.CalendarService;
-import com.google.gdata.util.AuthenticationException;
 import com.sun.mail.imap.IMAPSSLStore;
-import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.imap.IMAPStore;
 
 import de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao;
@@ -77,8 +74,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	private final Set<UpdateListener> updateListeners = new HashSet<UpdateListener>();
 
 	/**
-	 * @throws ServiceException
-	 * @throws IOException
 	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#updateCalendar()
 	 */
 	@Override
@@ -123,6 +118,12 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		}
 	}
 
+	/**
+	 * Gets all events that are associated to the primary calendar.
+	 * 
+	 * @return List.
+	 * @throws GoogleAppsException
+	 */
 	private List<Event> getPrimaryCalendarEvents() throws GoogleAppsException {
 		HttpTransport httpTransport;
 		try {
@@ -181,13 +182,10 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 */
 	@Override
 	public void connect() throws GoogleAppsException {
-		String username = preferencesService.readPref(PrefKey.USERNAME);
-		String password = preferencesService.readPref(PrefKey.PASSWORD);
-
-		// Set up Google Apps service
 		try {
-			calendarService.setUserCredentials(username, password);
-		} catch (AuthenticationException e) {
+			oauth2Authenticator.authorize();
+		} catch (Exception e) {
+			connected = false;
 			throw new GoogleAppsException("Authentication failed", e);
 		}
 		connected = true;
@@ -206,7 +204,14 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 */
 	@Override
 	public boolean isConnected() {
-		return connected;
+		try {
+			return connected && oauth2Authenticator.authorize().getExpiresInSeconds() > 0;
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Not connected, because authorization failed", e);
+			}
+			return false;
+		}
 	}
 
 	/**

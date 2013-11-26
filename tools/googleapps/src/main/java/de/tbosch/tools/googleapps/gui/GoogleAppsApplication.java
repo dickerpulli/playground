@@ -25,11 +25,14 @@ public class GoogleAppsApplication {
 	private Stage window;
 
 	/**
-	 * Startet die Anwendungs-GUI.
+	 * Starts the application GUI.
+	 * 
+	 * @param show
+	 *            Sets, if the application gui is shown after this method.
 	 * 
 	 * @throws IOException
 	 */
-	public void startApplication() {
+	public void startApplication(final boolean show) {
 		if (window == null) {
 			PlatformImpl.startup(new Runnable() {
 
@@ -52,7 +55,9 @@ public class GoogleAppsApplication {
 							window.hide();
 						}
 					});
-					window.show();
+					if (show) {
+						window.show();
+					}
 				}
 			});
 		} else if (!window.isShowing()) {
@@ -60,7 +65,9 @@ public class GoogleAppsApplication {
 
 				@Override
 				public void run() {
-					window.show();
+					if (show) {
+						window.show();
+					}
 				}
 			});
 		} else {
