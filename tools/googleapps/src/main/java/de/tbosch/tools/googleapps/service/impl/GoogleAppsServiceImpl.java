@@ -3,6 +3,7 @@ package de.tbosch.tools.googleapps.service.impl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,6 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
-import com.google.gdata.client.calendar.CalendarService;
 import com.sun.mail.imap.IMAPSSLStore;
 import com.sun.mail.imap.IMAPStore;
 
@@ -43,7 +43,6 @@ import de.tbosch.tools.googleapps.service.OAuth2Authenticator;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service
 @Transactional
@@ -59,9 +58,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 
 	@Autowired
 	private GCalendarEventEntryDao calendarEventEntryDao;
-
-	@Autowired
-	private CalendarService calendarService;
 
 	@Autowired
 	private PreferencesService preferencesService;
@@ -88,7 +84,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " was created.");
 					}
-					if (!event.getReminders().isEmpty()) {
+					if (!event.getReminders().isEmpty() && event.getReminders().getOverrides() != null) {
 						for (EventReminder reminder : event.getReminders().getOverrides()) {
 							GReminder gReminder = new GReminder(reminder, gEntry);
 							gEntry.getReminders().add(gReminder);

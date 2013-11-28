@@ -10,11 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.ApplicationContext;
 
 /**
  * Loader to load JavaFX objects that are Spring-aware.
+ * 
  * @author Thomas Bosch
  */
 public class SpringFXMLLoader {
@@ -23,7 +24,9 @@ public class SpringFXMLLoader {
 
 	/**
 	 * Konstructor.
-	 * @param context Spring Application-Context.
+	 * 
+	 * @param context
+	 *            Spring Application-Context.
 	 */
 	public SpringFXMLLoader(ApplicationContext context) {
 		this.context = context;
@@ -31,9 +34,13 @@ public class SpringFXMLLoader {
 
 	/**
 	 * Loads a JavaFX-Scene.
-	 * @param url The URL to the FXML file.
-	 * @param controllerClass The controller class.
-	 * @param bundle Resource bundle for i18n.
+	 * 
+	 * @param url
+	 *            The URL to the FXML file.
+	 * @param controllerClass
+	 *            The controller class.
+	 * @param bundle
+	 *            Resource bundle for i18n.
 	 * @return The loaded JavaFX file (i.e. Scene)
 	 * @throws IOException
 	 */
@@ -51,9 +58,8 @@ public class SpringFXMLLoader {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setController(instance);
 			loader.setResources(ResourceBundle.getBundle("messages"));
-			return (Parent)loader.load(bais);
-		}
-		finally {
+			return (Parent) loader.load(bais);
+		} finally {
 			if (fxmlStream != null) {
 				fxmlStream.close();
 			}

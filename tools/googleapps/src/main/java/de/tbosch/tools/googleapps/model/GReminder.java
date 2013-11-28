@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.google.api.services.calendar.model.EventReminder;
-import com.google.gdata.data.extensions.Reminder;
 
 @Entity
 @Table(name = "reminder")
@@ -35,21 +34,6 @@ public class GReminder implements Comparable<GReminder> {
 	private GCalendarEventEntry event;
 
 	public GReminder() {
-	}
-
-	public GReminder(Reminder reminder, GCalendarEventEntry event) {
-		this.event = event;
-		if (reminder.getAbsoluteTime() != null) {
-			this.time = new Date(reminder.getAbsoluteTime().getValue());
-		} else if (reminder.getMinutes() != null) {
-			this.time = DateUtils.addMinutes(event.getStartTime(), -1 * reminder.getMinutes());
-		} else if (reminder.getHours() != null) {
-			this.time = DateUtils.addHours(event.getStartTime(), -1 * reminder.getHours());
-		} else if (reminder.getDays() != null) {
-			this.time = DateUtils.addDays(event.getStartTime(), -1 * reminder.getDays());
-		} else {
-			throw new IllegalStateException("reminder must have a time");
-		}
 	}
 
 	public GReminder(EventReminder reminder, GCalendarEventEntry event) {

@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
-import javax.mail.MessagingException;
-
-import com.google.gdata.util.ServiceException;
+import org.hibernate.service.spi.ServiceException;
 
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.model.GCalendarEventEntry;

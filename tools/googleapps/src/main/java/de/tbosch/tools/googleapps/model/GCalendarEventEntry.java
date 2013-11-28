@@ -18,10 +18,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.google.api.services.calendar.model.Event;
-import com.google.gdata.data.calendar.CalendarEventEntry;
 
 @Entity
 @Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = { "title", "startTime", "endTime" }))
@@ -31,7 +28,6 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	@GeneratedValue
 	private long id;
 
-	@NotEmpty
 	private String title;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -49,16 +45,12 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	public GCalendarEventEntry() {
 	}
 
-	public GCalendarEventEntry(CalendarEventEntry entry) {
-		this.title = entry.getTitle().getPlainText();
-		this.startTime = new Date(entry.getTimes().get(0).getStartTime().getValue());
-		this.endTime = new Date(entry.getTimes().get(0).getEndTime().getValue());
-	}
-
 	public GCalendarEventEntry(Event event) {
 		this.title = event.getSummary();
-		this.startTime = new Date(event.getStart().getDateTime().getValue());
-		this.endTime = new Date(event.getEnd().getDateTime().getValue());
+		this.startTime = new Date(event.getStart().getDateTime() != null ? event.getStart().getDateTime().getValue()
+				: event.getStart().getDate().getValue());
+		this.endTime = new Date(event.getEnd().getDateTime() != null ? event.getEnd().getDateTime().getValue() : event
+				.getEnd().getDate().getValue());
 	}
 
 	/**

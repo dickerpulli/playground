@@ -11,10 +11,10 @@ public class GoogleApps {
 
 	public static void main(String[] args) {
 		GoogleAppsContext.load();
-		GoogleAppsThread timetoolThread = (GoogleAppsThread) GoogleAppsContext.getBean("googleAppsThread");
-		timetoolThread.start();
+		GoogleAppsThread googleAppsThread = (GoogleAppsThread) GoogleAppsContext.getBean("googleAppsThread");
+		googleAppsThread.start();
 		try {
-			timetoolThread.join();
+			googleAppsThread.join();
 		} catch (InterruptedException e) {
 			// Close will be done in finally block
 		} finally {

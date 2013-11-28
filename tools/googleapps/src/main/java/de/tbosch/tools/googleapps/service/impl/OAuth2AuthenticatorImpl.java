@@ -7,10 +7,12 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
 
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import javax.annotation.PostConstruct;
 
@@ -124,6 +126,9 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 	 * JavaFX compatible flow.
 	 */
 	private class MyAuthorizationCodeInstalledApp extends AuthorizationCodeInstalledApp {
+
+		private Stage stage;
+
 		public MyAuthorizationCodeInstalledApp(AuthorizationCodeFlow flow, VerificationCodeReceiver receiver) {
 			super(flow, receiver);
 		}
@@ -132,11 +137,12 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 		 * @see com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp#onAuthorization(com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl)
 		 */
 		@Override
-		protected void onAuthorization(final AuthorizationCodeRequestUrl authorizationUrl) throws Exception {
+		protected void onAuthorization(final AuthorizationCodeRequestUrl authorizationUrl) throws IOException {
 			if (Desktop.isDesktopSupported()) {
 				super.onAuthorization(authorizationUrl);
 			} else {
 				PlatformImpl.startup(new Runnable() {
+
 					@Override
 					public void run() {
 						try {
@@ -145,8 +151,16 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 							Parent parent = GoogleAppsContext.getSpringFXMLLoader().load("../fxml/Authorize.fxml",
 									AuthorizeController.class);
 							Scene scene = new Scene(parent);
-							Stage stage = new Stage();
+							stage = new Stage();
 							stage.initModality(Modality.APPLICATION_MODAL);
+							stage.setResizable(false);
+							stage.setFullScreen(false);
+							stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+								@Override
+								public void handle(WindowEvent arg0) {
+									arg0.consume();
+								}
+							});
 							stage.setTitle(MessageHelper.getMessage("authorize.title"));
 							stage.setScene(scene);
 							stage.show();
@@ -156,6 +170,21 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 					}
 				});
 			}
+		}
+
+		@Override
+		public Credential authorize(String userId) throws IOException {
+			Credential credential = super.authorize(userId);
+			if (stage != null && stage.isShowing()) {
+				PlatformImpl.startup(new Runnable() {
+
+					@Override
+					public void run() {
+						stage.hide();
+					}
+				});
+			}
+			return credential;
 		}
 	}
 

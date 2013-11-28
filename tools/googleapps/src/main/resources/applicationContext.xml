@@ -15,10 +15,6 @@
 	<context:component-scan
 		base-package="de.tbosch.tools.googleapps.dao,de.tbosch.tools.googleapps.service,de.tbosch.tools.googleapps.controller,de.tbosch.tools.googleapps.scheduler" />
 
-	<bean id="calendarService" class="com.google.gdata.client.calendar.CalendarService">
-		<constructor-arg value="googleapps" />
-	</bean>
-
 	<bean id="googleAppsThread" class="de.tbosch.tools.googleapps.GoogleAppsThread" />
 	<bean id="imageIconOnline" class="javax.swing.ImageIcon">
 		<constructor-arg type="java.net.URL" value="classpath:/${image.online}" />
