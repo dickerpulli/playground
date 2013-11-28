@@ -1,5 +1,7 @@
 package de.tbosch.tools.googleapps;
 
+import com.sun.javafx.application.PlatformImpl;
+
 import de.tbosch.tools.googleapps.utils.GoogleAppsContext;
 
 /**
@@ -18,6 +20,7 @@ public class GoogleApps {
 		} catch (InterruptedException e) {
 			// Close will be done in finally block
 		} finally {
+			PlatformImpl.exit();
 			GoogleAppsContext.close();
 		}
 	}

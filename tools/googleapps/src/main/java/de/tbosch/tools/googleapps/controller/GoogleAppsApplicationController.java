@@ -24,7 +24,8 @@ import org.springframework.stereotype.Controller;
 import com.sun.javafx.collections.ObservableListWrapper;
 
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
-import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
+import de.tbosch.tools.googleapps.model.GCalendarEvent;
+import de.tbosch.tools.googleapps.model.GEmail;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 import de.tbosch.tools.googleapps.utils.GoogleAppsContext;
@@ -46,10 +47,10 @@ public class GoogleAppsApplicationController implements Initializable {
 	private Button refreshButton;
 
 	@FXML
-	private ListView<GCalendarEventEntry> calendarList;
+	private ListView<GCalendarEvent> calendarList;
 
-	// @FXML
-	// private ListView<?> emailList;
+	@FXML
+	private ListView<GEmail> emailList;
 
 	@PostConstruct
 	public void postContruct() {
@@ -57,7 +58,7 @@ public class GoogleAppsApplicationController implements Initializable {
 
 			@Override
 			public void updated() {
-				calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
+				calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
 						.getCalendarEventsFromNowOn()));
 			}
 		});
@@ -79,6 +80,7 @@ public class GoogleAppsApplicationController implements Initializable {
 		try {
 			googleAppsService.connect();
 			googleAppsService.updateCalendar();
+			googleAppsService.updateEmails();
 			initialize(null, null);
 		} catch (GoogleAppsException e) {
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
@@ -97,6 +99,7 @@ public class GoogleAppsApplicationController implements Initializable {
 	public void clickUpdateButton() throws GoogleAppsException {
 		if (googleAppsService.isConnected()) {
 			googleAppsService.updateCalendar();
+			googleAppsService.updateEmails();
 		}
 	}
 
@@ -114,8 +117,9 @@ public class GoogleAppsApplicationController implements Initializable {
 			disconnectButton.setDisable(true);
 			refreshButton.setDisable(true);
 		}
-		calendarList.setItems(new ObservableListWrapper<GCalendarEventEntry>(googleAppsService
+		calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
 				.getCalendarEventsFromNowOn()));
+		emailList.setItems(new ObservableListWrapper<GEmail>(googleAppsService.getEmails()));
 	}
 
 }

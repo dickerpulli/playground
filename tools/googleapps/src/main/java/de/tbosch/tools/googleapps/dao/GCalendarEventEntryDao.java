@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import de.tbosch.commons.persistence.dao.GenericDao;
-import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
+import de.tbosch.tools.googleapps.model.GCalendarEvent;
 
-public interface GCalendarEventEntryDao extends GenericDao<GCalendarEventEntry, Long> {
+public interface GCalendarEventEntryDao extends GenericDao<GCalendarEvent, Long> {
 
 	/**
 	 * Finds a calendar event entry that has the same information in title, starttime and endtime.
@@ -15,7 +15,7 @@ public interface GCalendarEventEntryDao extends GenericDao<GCalendarEventEntry, 
 	 *            The event entry to compare to.
 	 * @return Probably an event entry from database.
 	 */
-	GCalendarEventEntry findLike(GCalendarEventEntry gEntry);
+	GCalendarEvent findLike(GCalendarEvent gEntry);
 
 	/**
 	 * Finds all calendar event enties that has a starttime that is on the date or in its future.
@@ -24,6 +24,6 @@ public interface GCalendarEventEntryDao extends GenericDao<GCalendarEventEntry, 
 	 *            The day.
 	 * @return List.
 	 */
-	List<GCalendarEventEntry> findWithStarttimeAfterOrEqual(Date date);
+	List<GCalendarEvent> findWithStarttimeAfterOrEqual(Date date);
 
 }

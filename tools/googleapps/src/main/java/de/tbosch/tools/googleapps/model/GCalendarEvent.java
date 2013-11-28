@@ -22,7 +22,7 @@ import com.google.api.services.calendar.model.Event;
 
 @Entity
 @Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = { "title", "startTime", "endTime" }))
-public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
+public class GCalendarEvent implements Comparable<GCalendarEvent> {
 
 	@Id
 	@GeneratedValue
@@ -42,10 +42,10 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	@Column(name = "event")
 	private Set<GReminder> reminders = new HashSet<GReminder>();
 
-	public GCalendarEventEntry() {
+	public GCalendarEvent() {
 	}
 
-	public GCalendarEventEntry(Event event) {
+	public GCalendarEvent(Event event) {
 		this.title = event.getSummary();
 		this.startTime = new Date(event.getStart().getDateTime() != null ? event.getStart().getDateTime().getValue()
 				: event.getStart().getDate().getValue());
@@ -141,7 +141,7 @@ public class GCalendarEventEntry implements Comparable<GCalendarEventEntry> {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(GCalendarEventEntry o) {
+	public int compareTo(GCalendarEvent o) {
 		return this.getStartTime().compareTo(o.getStartTime());
 	}
 

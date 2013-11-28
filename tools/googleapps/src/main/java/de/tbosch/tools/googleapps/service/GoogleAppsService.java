@@ -7,7 +7,8 @@ import javax.mail.MessagingException;
 import org.hibernate.service.spi.ServiceException;
 
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
-import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
+import de.tbosch.tools.googleapps.model.GCalendarEvent;
+import de.tbosch.tools.googleapps.model.GEmail;
 import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 
@@ -32,14 +33,14 @@ public interface GoogleAppsService {
 	 * 
 	 * @return all calendar events.
 	 */
-	public List<GCalendarEventEntry> getAllCalendarEvents();
+	public List<GCalendarEvent> getAllCalendarEvents();
 
 	/**
 	 * All calendar events. In sort order.
 	 * 
 	 * @return all calendar events that start time are after or equal today.
 	 */
-	public List<GCalendarEventEntry> getCalendarEventsFromNowOn();
+	public List<GCalendarEvent> getCalendarEventsFromNowOn();
 
 	/**
 	 * Sets the authentication information to connect to google service.
@@ -74,5 +75,12 @@ public interface GoogleAppsService {
 	 * @throws MessagingException
 	 */
 	void updateEmails() throws GoogleAppsException;
+
+	/**
+	 * Returns all Emails from Database.
+	 * 
+	 * @return List.
+	 */
+	List<GEmail> getEmails();
 
 }

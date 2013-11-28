@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import de.tbosch.tools.googleapps.controller.TrayiconController;
-import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 
 /**
@@ -34,6 +33,7 @@ public class Scheduler {
 		try {
 			if (googleAppsService.isConnected()) {
 				googleAppsService.updateCalendar();
+				googleAppsService.updateEmails();
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException("Exception while updating calendar", e);
@@ -46,22 +46,6 @@ public class Scheduler {
 			LOG.debug("1-seconds-timer is fired");
 		}
 		trayiconController.setIconImage(googleAppsService.isConnected());
-	}
-
-	@Scheduled(fixedDelay = 1000 * 60 * 15)
-	public void fifteenMinutes() {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("15-minutes-timer is fired");
-		}
-		if (googleAppsService.isConnected()) {
-			try {
-				googleAppsService.updateCalendar();
-			} catch (GoogleAppsException e) {
-				if (LOG.isErrorEnabled()) {
-					LOG.error("15-minutes-timer failed to run", e);
-				}
-			}
-		}
 	}
 
 }

@@ -10,10 +10,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.mail.BodyPart;
+import javax.mail.Folder;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.URLName;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +38,11 @@ import com.sun.mail.imap.IMAPSSLStore;
 import com.sun.mail.imap.IMAPStore;
 
 import de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao;
+import de.tbosch.tools.googleapps.dao.GEmailDao;
 import de.tbosch.tools.googleapps.dao.GReminderDao;
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
-import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
+import de.tbosch.tools.googleapps.model.GCalendarEvent;
+import de.tbosch.tools.googleapps.model.GEmail;
 import de.tbosch.tools.googleapps.model.GReminder;
 import de.tbosch.tools.googleapps.oauth2.OAuth2SaslClientFactory;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
@@ -60,6 +67,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	private GCalendarEventEntryDao calendarEventEntryDao;
 
 	@Autowired
+	private GEmailDao emailDao;
+
+	@Autowired
 	private PreferencesService preferencesService;
 
 	@Autowired
@@ -76,9 +86,10 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	public void updateCalendar() throws GoogleAppsException {
 		if (connected) {
 			// Iterate over all Events
+			boolean updated = false;
 			for (Event event : getPrimaryCalendarEvents()) {
-				GCalendarEventEntry gEntry = new GCalendarEventEntry(event);
-				GCalendarEventEntry like = calendarEventEntryDao.findLike(gEntry);
+				GCalendarEvent gEntry = new GCalendarEvent(event);
+				GCalendarEvent like = calendarEventEntryDao.findLike(gEntry);
 				if (like == null) {
 					calendarEventEntryDao.create(gEntry);
 					if (LOG.isDebugEnabled()) {
@@ -93,13 +104,11 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 							reminderDao.create(gReminder);
 						}
 						calendarEventEntryDao.update(gEntry);
+						updated = true;
 					} else {
 						if (LOG.isDebugEnabled()) {
 							LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " has no reminders.");
 						}
-					}
-					for (UpdateListener updateListener : updateListeners) {
-						updateListener.updated();
 					}
 				} else {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
@@ -107,6 +116,11 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 					String endtime = dateFormat.format(gEntry.getEndTime());
 					LOG.debug("CalendarEvent with title '" + gEntry.getTitle() + "' and starttime/endtime '"
 							+ starttime + "/" + endtime + "' already exists.");
+				}
+			}
+			if (updated) {
+				for (UpdateListener updateListener : updateListeners) {
+					updateListener.updated();
 				}
 			}
 		} else {
@@ -157,8 +171,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#getAllCalendarEvents()
 	 */
 	@Override
-	public List<GCalendarEventEntry> getAllCalendarEvents() {
-		List<GCalendarEventEntry> list = calendarEventEntryDao.findAll();
+	public List<GCalendarEvent> getAllCalendarEvents() {
+		List<GCalendarEvent> list = calendarEventEntryDao.findAll();
 		Collections.sort(list);
 		return list;
 	}
@@ -167,8 +181,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#getCalendarEventsFromNowOn()
 	 */
 	@Override
-	public List<GCalendarEventEntry> getCalendarEventsFromNowOn() {
-		List<GCalendarEventEntry> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new Date());
+	public List<GCalendarEvent> getCalendarEventsFromNowOn() {
+		List<GCalendarEvent> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new Date());
 		Collections.sort(list);
 		return list;
 	}
@@ -233,15 +247,80 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		}
 		IMAPStore imapStore;
 		try {
-			imapStore = connectToImap("imap.gmail.com", 993, username, credential.getAccessToken(), true);
+			imapStore = connectToImap("imap.gmail.com", 993, username, credential.getAccessToken(),
+					LOG.isDebugEnabled());
 		} catch (MessagingException e) {
 			throw new GoogleAppsException("Failed to connect to IMAP server", e);
 		}
+
+		// First delete database to get a fresh copy of the INBOX
+		for (GEmail email : emailDao.findAll()) {
+			emailDao.delete(email);
+		}
+
+		// Read inbox again
 		try {
-			System.out.println(imapStore.getFolder("inbox").getMessageCount());
-		} catch (MessagingException e) {
+			Folder inbox = imapStore.getFolder("inbox");
+			if (inbox.getMessageCount() > 0) {
+				inbox.open(Folder.READ_ONLY);
+				for (Message message : inbox.getMessages()) {
+					GEmail email = new GEmail();
+					email.setFrom(message.getFrom()[0].toString());
+					email.setSentDate(message.getSentDate());
+					email.setSubject(message.getSubject());
+					if (StringUtils.startsWithIgnoreCase(message.getContentType(), "text/html")
+							|| StringUtils.startsWithIgnoreCase(message.getContentType(), "text/rtf")
+							|| StringUtils.startsWithIgnoreCase(message.getContentType(), "text/plain")) {
+						email.setContent((String) message.getContent());
+					} else if (message.getContentType().startsWith("multipart")) {
+						Multipart multipart = (Multipart) message.getContent();
+						for (int i = 0; i < multipart.getCount(); i++) {
+							BodyPart part = multipart.getBodyPart(i);
+							if (StringUtils.startsWithIgnoreCase(part.getContentType(), "text/html")
+									|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/rtf")
+									|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/plain")) {
+								email.setContent((String) part.getContent());
+							} else {
+								if (LOG.isDebugEnabled()) {
+									LOG.debug("Multipart content type not saved: " + part.getContentType());
+								}
+							}
+						}
+					} else {
+						if (LOG.isWarnEnabled()) {
+							LOG.warn("Unknown content type: " + message.getContentType());
+						}
+					}
+					List<GEmail> list = emailDao.findByExample(email);
+					if (list.isEmpty()) {
+						emailDao.create(email);
+					} else {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("Email already saved in database: " + email);
+						}
+					}
+				}
+			} else {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("INBOX is empty");
+				}
+			}
+		} catch (IOException | MessagingException e) {
 			throw new GoogleAppsException("Failed to get INBOX folder", e);
 		}
+		for (UpdateListener updateListener : updateListeners) {
+			updateListener.updated();
+		}
+	}
+
+	/**
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#getEmails()
+	 */
+	@Override
+	public List<GEmail> getEmails() {
+		List<GEmail> emails = emailDao.findAll();
+		Collections.sort(emails);
+		return emails;
 	}
 
 	/**

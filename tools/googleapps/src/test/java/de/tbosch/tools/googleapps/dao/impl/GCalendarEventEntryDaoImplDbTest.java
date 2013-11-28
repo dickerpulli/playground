@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.tbosch.tools.googleapps.AbstractSpringDbTest;
 import de.tbosch.tools.googleapps.dao.GCalendarEventEntryDao;
-import de.tbosch.tools.googleapps.model.GCalendarEventEntry;
+import de.tbosch.tools.googleapps.model.GCalendarEvent;
 
 public class GCalendarEventEntryDaoImplDbTest extends AbstractSpringDbTest {
 
@@ -27,23 +27,23 @@ public class GCalendarEventEntryDaoImplDbTest extends AbstractSpringDbTest {
 
 	@Test
 	public void testRead() {
-		GCalendarEventEntry entry = calendarEventEntryDao.read(1L);
+		GCalendarEvent entry = calendarEventEntryDao.read(1L);
 		assertEquals(1, entry.getId());
 	}
 
 	@Test
 	public void testFindLike() throws Exception {
-		GCalendarEventEntry entry = new GCalendarEventEntry();
+		GCalendarEvent entry = new GCalendarEvent();
 		entry.setTitle("entry 1");
 		entry.setStartTime(new LocalDate(2009, 1, 1).toDateTimeAtStartOfDay().toDate());
 		entry.setEndTime(new LocalDate(2009, 1, 2).toDateTimeAtStartOfDay().toDate());
-		GCalendarEventEntry like = calendarEventEntryDao.findLike(entry);
+		GCalendarEvent like = calendarEventEntryDao.findLike(entry);
 		assertEquals(1, like.getId());
 	}
 
 	@Test
 	public void testFindWithStarttimeAfterOrEqual() throws Exception {
-		List<GCalendarEventEntry> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new LocalDate(2009, 3, 1)
+		List<GCalendarEvent> list = calendarEventEntryDao.findWithStarttimeAfterOrEqual(new LocalDate(2009, 3, 1)
 				.toDateTimeAtStartOfDay().toDate());
 		assertEquals(1, list.size());
 		assertEquals(3, list.get(0).getId());

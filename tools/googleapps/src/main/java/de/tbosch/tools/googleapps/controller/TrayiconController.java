@@ -120,6 +120,7 @@ public class TrayiconController {
 			try {
 				googleAppsService.connect();
 				googleAppsService.updateCalendar();
+				googleAppsService.updateEmails();
 			} catch (GoogleAppsException e) {
 				throw new IllegalStateException("Error while connecting at startup", e);
 			}

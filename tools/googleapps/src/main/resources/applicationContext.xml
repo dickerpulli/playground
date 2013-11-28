@@ -27,16 +27,7 @@
 	<bean id="trayIcon" class="java.awt.TrayIcon">
 		<constructor-arg ref="imageOffline" />
 	</bean>
-
-	<bean class="de.tbosch.commons.database.HsqlServerBean">
-		<property name="serverProperties">
-			<props>
-				<prop key="server.port">9101</prop>
-				<prop key="server.database.0">googleappsdb</prop>
-			</props>
-		</property>
-	</bean>
-
+	
 	<!-- resources -->
 
 	<bean id="resourceBundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">

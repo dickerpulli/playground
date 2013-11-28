@@ -31,12 +31,12 @@ public class GReminder implements Comparable<GReminder> {
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@NotNull
-	private GCalendarEventEntry event;
+	private GCalendarEvent event;
 
 	public GReminder() {
 	}
 
-	public GReminder(EventReminder reminder, GCalendarEventEntry event) {
+	public GReminder(EventReminder reminder, GCalendarEvent event) {
 		this.event = event;
 		if (reminder.getMinutes() != null) {
 			this.time = DateUtils.addMinutes(event.getStartTime(), -1 * reminder.getMinutes());
@@ -78,7 +78,7 @@ public class GReminder implements Comparable<GReminder> {
 	/**
 	 * @return the event
 	 */
-	public GCalendarEventEntry getEvent() {
+	public GCalendarEvent getEvent() {
 		return event;
 	}
 
@@ -86,7 +86,7 @@ public class GReminder implements Comparable<GReminder> {
 	 * @param event
 	 *            the event to set
 	 */
-	public void setEvent(GCalendarEventEntry event) {
+	public void setEvent(GCalendarEvent event) {
 		this.event = event;
 	}
 
