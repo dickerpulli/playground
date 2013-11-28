@@ -16,11 +16,13 @@
 package de.tbosch.tools.googleapps.oauth2;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslClientFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A SaslClientFactory that returns instances of OAuth2SaslClient.
@@ -30,7 +32,8 @@ import javax.security.sasl.SaslClientFactory;
  * parameters are ignored.
  */
 public class OAuth2SaslClientFactory implements SaslClientFactory {
-	private static final Logger logger = Logger.getLogger(OAuth2SaslClientFactory.class.getName());
+
+	private static final Log LOG = LogFactory.getLog(OAuth2SaslClientFactory.class);
 
 	public static final String OAUTH_TOKEN_PROP = "mail.imaps.sasl.mechanisms.oauth2.oauthToken";
 
@@ -45,7 +48,7 @@ public class OAuth2SaslClientFactory implements SaslClientFactory {
 			}
 		}
 		if (!matchedMechanism) {
-			logger.info("Failed to match any mechanisms");
+			LOG.info("Failed to match any mechanisms");
 			return null;
 		}
 		return new OAuth2SaslClient((String) props.get(OAUTH_TOKEN_PROP), callbackHandler);

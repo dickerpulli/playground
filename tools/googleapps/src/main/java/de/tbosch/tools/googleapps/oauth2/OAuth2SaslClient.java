@@ -16,7 +16,6 @@
 package de.tbosch.tools.googleapps.oauth2;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -25,11 +24,15 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * An OAuth2 implementation of SaslClient.
  */
 class OAuth2SaslClient implements SaslClient {
-	private static final Logger logger = Logger.getLogger(OAuth2SaslClient.class.getName());
+
+	private static final Log LOG = LogFactory.getLog(OAuth2SaslClient.class);
 
 	private final String oauthToken;
 	private final CallbackHandler callbackHandler;

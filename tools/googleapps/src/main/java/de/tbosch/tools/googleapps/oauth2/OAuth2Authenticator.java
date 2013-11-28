@@ -54,7 +54,7 @@ import de.tbosch.tools.googleapps.googleplus.PlusSample;
  */
 public class OAuth2Authenticator {
 
-	private static final Log logger = LogFactory.getLog(OAuth2Authenticator.class);
+	private static final Log LOG = LogFactory.getLog(OAuth2Authenticator.class);
 
 	/** Global instance of the JSON factory. */
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
