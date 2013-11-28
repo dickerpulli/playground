@@ -11,11 +11,6 @@
 	
 	<!-- überschreibe das Standard-Bean mit einem Mock -->
 	<bean class="de.tbosch.tools.googleapps.EasyMockFactoryBean" primary="true">
-		<property name="type" value="com.google.gdata.client.calendar.CalendarService" />
-	</bean>
-	
-	<!-- überschreibe das Standard-Bean mit einem Mock -->
-	<bean class="de.tbosch.tools.googleapps.EasyMockFactoryBean" primary="true">
 		<property name="type" value="de.tbosch.tools.googleapps.service.PreferencesService" />
 	</bean>
 	
