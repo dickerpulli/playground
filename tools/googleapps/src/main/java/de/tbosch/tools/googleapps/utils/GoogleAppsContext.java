@@ -46,6 +46,17 @@ public class GoogleAppsContext {
 	}
 
 	/**
+	 * Gets a bean from the context.
+	 * 
+	 * @param name
+	 *            The type of the bean
+	 * @return The bean
+	 */
+	public static <T> T getBean(Class<T> clazz) {
+		return context.getBean(clazz);
+	}
+
+	/**
 	 * Closes the application context.
 	 */
 	public static void close() {
