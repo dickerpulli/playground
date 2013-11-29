@@ -3,7 +3,6 @@ package de.tbosch.tools.googleapps.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,8 +29,9 @@ public class GEmail implements Comparable<GEmail> {
 	private String subject;
 
 	@NotEmpty
-	@Column(name = "fromAddress")
-	private String from;
+	private String fromAddress;
+
+	private String fromName;
 
 	/**
 	 * @return the id
@@ -79,18 +79,33 @@ public class GEmail implements Comparable<GEmail> {
 	}
 
 	/**
-	 * @return the from
+	 * @return the fromAddress
 	 */
-	public String getFrom() {
-		return from;
+	public String getFromAddress() {
+		return fromAddress;
 	}
 
 	/**
-	 * @param from
-	 *            the from to set
+	 * @param fromAddress
+	 *            the fromAddress to set
 	 */
-	public void setFrom(String from) {
-		this.from = from;
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
+	}
+
+	/**
+	 * @return the fromName
+	 */
+	public String getFromName() {
+		return fromName;
+	}
+
+	/**
+	 * @param fromName
+	 *            the fromName to set
+	 */
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
 	}
 
 	/**
@@ -114,7 +129,7 @@ public class GEmail implements Comparable<GEmail> {
 	@Override
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		return sdf.format(sentDate) + " - " + from + " - " + subject;
+		return sdf.format(sentDate) + " - " + (fromName != null ? fromName : fromAddress) + " - " + subject;
 	}
 
 	/**

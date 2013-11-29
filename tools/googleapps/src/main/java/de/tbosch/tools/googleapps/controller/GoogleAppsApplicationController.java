@@ -21,6 +21,7 @@ import jfxtras.labs.dialogs.MonologFXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.sun.javafx.application.PlatformImpl;
 import com.sun.javafx.collections.ObservableListWrapper;
 
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
@@ -55,11 +56,16 @@ public class GoogleAppsApplicationController implements Initializable {
 	@PostConstruct
 	public void postContruct() {
 		googleAppsService.addUpdateListener(new UpdateListener() {
-
 			@Override
 			public void updated() {
-				calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
-						.getCalendarEventsFromNowOn()));
+				PlatformImpl.runLater(new Runnable() {
+					@Override
+					public void run() {
+						calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
+								.getCalendarEventsFromNowOn()));
+						emailList.setItems(new ObservableListWrapper<GEmail>(googleAppsService.getEmails()));
+					}
+				});
 			}
 		});
 	}
@@ -117,8 +123,8 @@ public class GoogleAppsApplicationController implements Initializable {
 			disconnectButton.setDisable(true);
 			refreshButton.setDisable(true);
 		}
-		calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
-				.getCalendarEventsFromNowOn()));
+		calendarList
+				.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService.getCalendarEventsFromNowOn()));
 		emailList.setItems(new ObservableListWrapper<GEmail>(googleAppsService.getEmails()));
 	}
 

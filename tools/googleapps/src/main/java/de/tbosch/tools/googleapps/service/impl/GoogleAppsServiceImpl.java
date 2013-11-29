@@ -3,6 +3,7 @@ package de.tbosch.tools.googleapps.service.impl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,9 +16,12 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.URLName;
+import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -253,32 +257,25 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 			throw new GoogleAppsException("Failed to connect to IMAP server", e);
 		}
 
-		// First delete database to get a fresh copy of the INBOX
-		for (GEmail email : emailDao.findAll()) {
-			emailDao.delete(email);
-		}
-
-		// Read inbox again
+		// Read inbox to get emails
+		List<GEmail> createList = new ArrayList<GEmail>();
 		try {
 			Folder inbox = imapStore.getFolder("inbox");
 			if (inbox.getMessageCount() > 0) {
 				inbox.open(Folder.READ_ONLY);
 				for (Message message : inbox.getMessages()) {
 					GEmail email = new GEmail();
-					email.setFrom(message.getFrom()[0].toString());
+					email.setFromName(((InternetAddress) message.getFrom()[0]).getPersonal());
+					email.setFromAddress(((InternetAddress) message.getFrom()[0]).getAddress());
 					email.setSentDate(message.getSentDate());
 					email.setSubject(message.getSubject());
-					if (StringUtils.startsWithIgnoreCase(message.getContentType(), "text/html")
-							|| StringUtils.startsWithIgnoreCase(message.getContentType(), "text/rtf")
-							|| StringUtils.startsWithIgnoreCase(message.getContentType(), "text/plain")) {
+					if (isTextContent(message)) {
 						email.setContent((String) message.getContent());
 					} else if (message.getContentType().startsWith("multipart")) {
 						Multipart multipart = (Multipart) message.getContent();
 						for (int i = 0; i < multipart.getCount(); i++) {
 							BodyPart part = multipart.getBodyPart(i);
-							if (StringUtils.startsWithIgnoreCase(part.getContentType(), "text/html")
-									|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/rtf")
-									|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/plain")) {
+							if (isTextContent(part)) {
 								email.setContent((String) part.getContent());
 							} else {
 								if (LOG.isDebugEnabled()) {
@@ -293,7 +290,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 					}
 					List<GEmail> list = emailDao.findByExample(email);
 					if (list.isEmpty()) {
-						emailDao.create(email);
+						createList.add(email);
 					} else {
 						if (LOG.isDebugEnabled()) {
 							LOG.debug("Email already saved in database: " + email);
@@ -308,9 +305,42 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		} catch (IOException | MessagingException e) {
 			throw new GoogleAppsException("Failed to get INBOX folder", e);
 		}
-		for (UpdateListener updateListener : updateListeners) {
-			updateListener.updated();
+
+		// Compare actual email-list in inbox with the database
+		if (!CollectionUtils.isEqualCollection(emailDao.findAll(), createList)) {
+			// First delete database to get a fresh copy of the INBOX
+			for (GEmail email : emailDao.findAll()) {
+				emailDao.delete(email);
+			}
+
+			// Create new list
+			for (GEmail email : createList) {
+				emailDao.create(email);
+			}
+
+			// inform listeners
+			for (UpdateListener updateListener : updateListeners) {
+				updateListener.updated();
+			}
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("INBOX is unchanged");
+			}
 		}
+	}
+
+	/**
+	 * Checks, if the email part's content is a text content.
+	 * 
+	 * @param part
+	 *            The email part
+	 * @return text content?
+	 * @throws MessagingException
+	 */
+	private boolean isTextContent(Part part) throws MessagingException {
+		return StringUtils.startsWithIgnoreCase(part.getContentType(), "text/html")
+				|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/rtf")
+				|| StringUtils.startsWithIgnoreCase(part.getContentType(), "text/plain");
 	}
 
 	/**
