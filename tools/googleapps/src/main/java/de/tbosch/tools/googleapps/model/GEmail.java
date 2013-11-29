@@ -114,7 +114,7 @@ public class GEmail implements Comparable<GEmail> {
 	@Override
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		return "From " + from + " at " + sdf.format(sentDate) + " with subject '" + subject + "'";
+		return sdf.format(sentDate) + " - " + from + " - " + subject;
 	}
 
 	/**
