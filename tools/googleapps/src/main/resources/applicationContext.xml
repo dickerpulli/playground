@@ -24,9 +24,6 @@
 	</bean>
 	<bean id="imageOnline" factory-bean="imageIconOnline" factory-method="getImage" />
 	<bean id="imageOffline" factory-bean="imageIconOffline" factory-method="getImage" />
-	<bean id="trayIcon" class="java.awt.TrayIcon">
-		<constructor-arg ref="imageOffline" />
-	</bean>
 	
 	<!-- resources -->
 

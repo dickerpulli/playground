@@ -41,7 +41,6 @@ public class TrayiconController {
 
 	private static final Log LOG = LogFactory.getLog(TrayiconController.class);
 
-	@Autowired
 	private TrayIcon trayIcon;
 
 	@Autowired
@@ -84,6 +83,8 @@ public class TrayiconController {
 	 * Register menu and all actions on the trayicon.
 	 */
 	public void registerTrayIcon() {
+		trayIcon = new TrayIcon(imageOffline);
+
 		// Autosize the icon image
 		trayIcon.setImageAutoSize(true);
 
@@ -141,19 +142,21 @@ public class TrayiconController {
 	 *            online image?
 	 */
 	public void setIconImage(boolean online) {
-		if (online) {
-			if (trayIcon.getImage().equals(imageOffline)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("set tray icon image to online");
+		if (trayIcon != null) {
+			if (online) {
+				if (trayIcon.getImage().equals(imageOffline)) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("set tray icon image to online");
+					}
+					trayIcon.setImage(imageOnline);
 				}
-				trayIcon.setImage(imageOnline);
-			}
-		} else {
-			if (trayIcon.getImage().equals(imageOnline)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("set tray icon image to offline");
+			} else {
+				if (trayIcon.getImage().equals(imageOnline)) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("set tray icon image to offline");
+					}
+					trayIcon.setImage(imageOffline);
 				}
-				trayIcon.setImage(imageOffline);
 			}
 		}
 	}

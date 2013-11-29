@@ -13,7 +13,7 @@ public class GoogleApps {
 
 	public static void main(String[] args) {
 		GoogleAppsContext.load();
-		GoogleAppsThread googleAppsThread = (GoogleAppsThread) GoogleAppsContext.getBean("googleAppsThread");
+		GoogleAppsThread googleAppsThread = GoogleAppsContext.getBean(GoogleAppsThread.class);
 		googleAppsThread.start();
 		try {
 			googleAppsThread.join();
@@ -22,6 +22,7 @@ public class GoogleApps {
 		} finally {
 			PlatformImpl.exit();
 			GoogleAppsContext.close();
+			System.exit(0);
 		}
 	}
 }
