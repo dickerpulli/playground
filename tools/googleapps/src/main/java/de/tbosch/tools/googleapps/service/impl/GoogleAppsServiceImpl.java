@@ -288,14 +288,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 							LOG.warn("Unknown content type: " + message.getContentType());
 						}
 					}
-					List<GEmail> list = emailDao.findByExample(email);
-					if (list.isEmpty()) {
-						createList.add(email);
-					} else {
-						if (LOG.isDebugEnabled()) {
-							LOG.debug("Email already saved in database: " + email);
-						}
-					}
+					createList.add(email);
 				}
 			} else {
 				if (LOG.isDebugEnabled()) {
@@ -350,6 +343,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	public List<GEmail> getEmails() {
 		List<GEmail> emails = emailDao.findAll();
 		Collections.sort(emails);
+		Collections.reverse(emails);
 		return emails;
 	}
 
