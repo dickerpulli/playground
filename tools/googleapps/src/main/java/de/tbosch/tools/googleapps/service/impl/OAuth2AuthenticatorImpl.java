@@ -106,12 +106,6 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 		// load client secrets
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(this
 				.getClass().getResourceAsStream("/client_secrets.json")));
-		if (clientSecrets.getDetails().getClientId().startsWith("Enter")
-				|| clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
-			System.out.println("Enter Client ID and Secret from https://code.google.com/apis/console/?api=plus "
-					+ "into plus-cmdline-sample/src/main/resources/client_secrets.json");
-			System.exit(1);
-		}
 
 		// set up authorization code flow
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
@@ -172,8 +166,12 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 			}
 		}
 
+		/**
+		 * @see com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp#authorize(java.lang.String)
+		 */
 		@Override
 		public Credential authorize(String userId) throws IOException {
+			// Dispose informational window after athorization
 			Credential credential = super.authorize(userId);
 			if (stage != null && stage.isShowing()) {
 				PlatformImpl.startup(new Runnable() {
