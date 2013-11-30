@@ -35,6 +35,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
@@ -60,6 +62,8 @@ import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 public class GoogleAppsServiceImpl implements GoogleAppsService {
 
 	private static final Log LOG = LogFactory.getLog(GoogleAppsServiceImpl.class);
+
+	private static final Log LOG_IMAP = LogFactory.getLog(IMAPStore.class);
 
 	/** Global instance of the JSON factory. */
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -99,7 +103,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("CalendarEvent with title " + gEntry.getTitle() + " was created.");
 					}
-					if (!event.getReminders().isEmpty() && event.getReminders().getOverrides() != null) {
+					if (event.getReminders() != null && !event.getReminders().isEmpty()
+							&& event.getReminders().getOverrides() != null) {
 						for (EventReminder reminder : event.getReminders().getOverrides()) {
 							GReminder gReminder = new GReminder(reminder, gEntry);
 							gEntry.getReminders().add(gReminder);
@@ -152,13 +157,21 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 			throw new GoogleAppsException("Authentication failed", e);
 		}
 		Calendar calendar = new Calendar.Builder(httpTransport, JSON_FACTORY, credential).build();
-		Events events;
+		List<Event> eventList = new ArrayList<Event>();
 		try {
-			events = calendar.events().list("primary").execute();
+			String pageToken = null;
+			do {
+				CalendarList calendarList = calendar.calendarList().list().setPageToken(pageToken).execute();
+				for (CalendarListEntry calendarListEntry : calendarList.getItems()) {
+					Events events = calendar.events().list(calendarListEntry.getId()).execute();
+					eventList.addAll(events.getItems());
+				}
+				pageToken = calendarList.getNextPageToken();
+			} while (pageToken != null);
 		} catch (IOException e) {
 			throw new GoogleAppsException("Error getting primary calendar events", e);
 		}
-		return events.getItems();
+		return eventList;
 	}
 
 	/**
@@ -252,7 +265,7 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		IMAPStore imapStore;
 		try {
 			imapStore = connectToImap("imap.gmail.com", 993, username, credential.getAccessToken(),
-					LOG.isDebugEnabled());
+					LOG_IMAP.isDebugEnabled());
 		} catch (MessagingException e) {
 			throw new GoogleAppsException("Failed to connect to IMAP server", e);
 		}
