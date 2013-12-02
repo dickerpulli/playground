@@ -128,7 +128,6 @@ public class GoogleAppsApplicationController implements Initializable {
 			googleAppsService.connect();
 			googleAppsService.updateCalendar();
 			googleAppsService.updateEmails();
-			initialize(null, null);
 		} catch (GoogleAppsException e) {
 			googleAppsService.disconnect();
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
@@ -140,7 +139,6 @@ public class GoogleAppsApplicationController implements Initializable {
 	@FXML
 	public void clickDisconnectButton() {
 		googleAppsService.disconnect();
-		initialize(null, null);
 	}
 
 	@FXML
