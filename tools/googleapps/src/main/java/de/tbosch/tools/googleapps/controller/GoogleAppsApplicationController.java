@@ -1,6 +1,7 @@
 package de.tbosch.tools.googleapps.controller;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -18,6 +20,11 @@ import javax.annotation.PostConstruct;
 import jfxtras.labs.dialogs.MonologFX.Type;
 import jfxtras.labs.dialogs.MonologFXBuilder;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.WriterAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -36,6 +43,8 @@ import de.tbosch.tools.googleapps.utils.MessageHelper;
 @Controller
 public class GoogleAppsApplicationController implements Initializable {
 
+	public static final Log LOG_STATUS = LogFactory.getLog(StatusbarWriter.class);
+
 	@Autowired
 	private GoogleAppsService googleAppsService;
 
@@ -47,6 +56,9 @@ public class GoogleAppsApplicationController implements Initializable {
 
 	@FXML
 	private Button refreshButton;
+
+	@FXML
+	private TextField status;
 
 	@FXML
 	private ListView<GCalendarEvent> calendarList;
@@ -65,6 +77,9 @@ public class GoogleAppsApplicationController implements Initializable {
 						calendarList.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService
 								.getCalendarEventsFromNowOn()));
 						emailList.setItems(new ObservableListWrapper<GEmail>(googleAppsService.getEmails()));
+						if (LOG_STATUS.isInfoEnabled()) {
+							LOG_STATUS.info(MessageHelper.getMessage("msg.updated"));
+						}
 					}
 				});
 			}
@@ -78,8 +93,19 @@ public class GoogleAppsApplicationController implements Initializable {
 						initialize(null, null);
 					}
 				});
+				if (connected) {
+					if (LOG_STATUS.isInfoEnabled()) {
+						LOG_STATUS.info(MessageHelper.getMessage("msg.connected"));
+					}
+				} else {
+					if (LOG_STATUS.isInfoEnabled()) {
+						LOG_STATUS.info(MessageHelper.getMessage("msg.disconnected"));
+					}
+				}
 			}
 		});
+		Logger logger = Logger.getLogger(StatusbarWriter.class);
+		logger.addAppender(new WriterAppender(new SimpleLayout(), new StatusbarWriter()));
 	}
 
 	@FXML
@@ -96,6 +122,9 @@ public class GoogleAppsApplicationController implements Initializable {
 	@FXML
 	public void clickConnectButton() {
 		try {
+			if (LOG_STATUS.isInfoEnabled()) {
+				LOG_STATUS.info(MessageHelper.getMessage("msg.updating"));
+			}
 			googleAppsService.connect();
 			googleAppsService.updateCalendar();
 			googleAppsService.updateEmails();
@@ -117,6 +146,9 @@ public class GoogleAppsApplicationController implements Initializable {
 	@FXML
 	public void clickUpdateButton() throws GoogleAppsException {
 		if (googleAppsService.isConnected()) {
+			if (LOG_STATUS.isInfoEnabled()) {
+				LOG_STATUS.info(MessageHelper.getMessage("msg.updating"));
+			}
 			googleAppsService.updateCalendar();
 			googleAppsService.updateEmails();
 		}
@@ -139,6 +171,43 @@ public class GoogleAppsApplicationController implements Initializable {
 		calendarList
 				.setItems(new ObservableListWrapper<GCalendarEvent>(googleAppsService.getCalendarEventsFromNowOn()));
 		emailList.setItems(new ObservableListWrapper<GEmail>(googleAppsService.getEmails()));
+	}
+
+	/**
+	 * A Writer that writes Log output to the status text field in the GUI.
+	 */
+	private class StatusbarWriter extends Writer {
+
+		/**
+		 * @see java.io.Writer#write(char[], int, int)
+		 */
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			if (status != null) {
+				String text = "";
+				for (int i = off; i < len; i++) {
+					text += cbuf[i];
+				}
+				status.setText(text);
+			}
+		}
+
+		/**
+		 * @see java.io.Writer#flush()
+		 */
+		@Override
+		public void flush() throws IOException {
+			// nop
+		}
+
+		/**
+		 * @see java.io.Writer#close()
+		 */
+		@Override
+		public void close() throws IOException {
+			// nop
+		}
+
 	}
 
 }
