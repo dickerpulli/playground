@@ -44,7 +44,7 @@
         </ScrollPane>
       </content>
     </TitledPane>
-    <TextField fx:id="status" disable="true" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <TextField fx:id="status" disable="true" opacity="0.9" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="3" />
   </children>
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
