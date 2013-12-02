@@ -15,6 +15,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.swing.SwingUtilities;
 
+import jfxtras.labs.dialogs.MonologFX.Type;
+import jfxtras.labs.dialogs.MonologFXBuilder;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,13 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
+import com.sun.javafx.application.PlatformImpl;
+
 import de.tbosch.tools.googleapps.GoogleAppsThread;
 import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.gui.GoogleAppsApplication;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
-import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
+import de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
 
 /**
@@ -64,11 +69,10 @@ public class TrayiconController {
 
 	@PostConstruct
 	public void postContruct() {
-		googleAppsService.addUpdateListener(new UpdateListener() {
-
+		googleAppsService.addConnectionStatusListener(new ConnectionStatusListener() {
 			@Override
-			public void updated() {
-				System.out.println("updated");
+			public void changed(boolean connected) {
+				setIconImage(connected);
 			}
 		});
 		app = new GoogleAppsApplication();
@@ -122,8 +126,16 @@ public class TrayiconController {
 				googleAppsService.connect();
 				googleAppsService.updateCalendar();
 				googleAppsService.updateEmails();
-			} catch (GoogleAppsException e) {
-				throw new IllegalStateException("Error while connecting at startup", e);
+			} catch (final GoogleAppsException e) {
+				googleAppsService.disconnect();
+				PlatformImpl.runLater(new Runnable() {
+					@Override
+					public void run() {
+						MonologFXBuilder.create().modal(true).type(Type.ERROR)
+								.message(MessageHelper.getMessage("error.service") + ": " + e.getMessage())
+								.titleText(MessageHelper.getMessage("error.title")).build().showDialog();
+					}
+				});
 			}
 		}
 	}

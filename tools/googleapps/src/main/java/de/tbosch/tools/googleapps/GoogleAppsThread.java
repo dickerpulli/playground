@@ -20,8 +20,9 @@ public class GoogleAppsThread extends Thread {
 
 	@Override
 	public void run() {
-		LOG.info("running thread");
-		AWTExceptionHandler.registerExceptionHandler();
+		if (LOG.isInfoEnabled()) {
+			LOG.info("running thread");
+		}
 		trayiconController.registerTrayIcon();
 		while (!isInterrupted()) {
 			try {
@@ -30,7 +31,8 @@ public class GoogleAppsThread extends Thread {
 				break;
 			}
 		}
-		LOG.info("exiting thread");
+		if (LOG.isInfoEnabled()) {
+			LOG.info("exiting thread");
+		}
 	}
-
 }

@@ -10,6 +10,7 @@ import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.model.GCalendarEvent;
 import de.tbosch.tools.googleapps.model.GEmail;
 import de.tbosch.tools.googleapps.model.GReminder;
+import de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 
 public interface GoogleAppsService {
@@ -68,6 +69,14 @@ public interface GoogleAppsService {
 	 *            The listener.
 	 */
 	void addUpdateListener(UpdateListener updateListener);
+
+	/**
+	 * Adds status change listeners to the internal set.
+	 * 
+	 * @param statusListener
+	 *            The listener.
+	 */
+	void addConnectionStatusListener(ConnectionStatusListener statusListener);
 
 	/**
 	 * Reads Emails an persists the inbox into DB.

@@ -55,6 +55,7 @@ import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.OAuth2Authenticator;
 import de.tbosch.tools.googleapps.service.PreferencesService;
 import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
+import de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 
 @Service
@@ -86,6 +87,8 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	private boolean connected = false;
 
 	private final Set<UpdateListener> updateListeners = new HashSet<UpdateListener>();
+
+	private final Set<ConnectionStatusListener> connectionStatusListeners = new HashSet<ConnectionStatusListener>();
 
 	/**
 	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#updateCalendar()
@@ -212,10 +215,13 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		try {
 			oauth2Authenticator.authorize();
 		} catch (Exception e) {
-			connected = false;
+			disconnect();
 			throw new GoogleAppsException("Authentication failed", e);
 		}
 		connected = true;
+		for (ConnectionStatusListener listeners : connectionStatusListeners) {
+			listeners.changed(connected);
+		}
 	}
 
 	/**
@@ -224,6 +230,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	@Override
 	public void disconnect() {
 		connected = false;
+		for (ConnectionStatusListener listeners : connectionStatusListeners) {
+			listeners.changed(connected);
+		}
 	}
 
 	/**
@@ -242,11 +251,19 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	}
 
 	/**
-	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#addUpdateListener(de.tbosch.tools.googleapps.service.impl.GoogleAppsServiceImpl.UpdateListener)
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#addUpdateListener(de.tbosch.tools.googleapps.service.listeners.UpdateListener)
 	 */
 	@Override
 	public void addUpdateListener(UpdateListener updateListener) {
 		updateListeners.add(updateListener);
+	}
+
+	/**
+	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#addConnectionStatusListener(de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener)
+	 */
+	@Override
+	public void addConnectionStatusListener(ConnectionStatusListener statusListener) {
+		connectionStatusListeners.add(statusListener);
 	}
 
 	/**
@@ -391,5 +408,4 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		store.connect(host, port, userEmail, emptyPassword);
 		return store;
 	}
-
 }

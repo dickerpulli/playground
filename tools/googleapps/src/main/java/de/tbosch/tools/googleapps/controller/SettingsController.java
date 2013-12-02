@@ -34,7 +34,6 @@ public class SettingsController implements Initializable {
 
 	@FXML
 	public void clickOkButton() {
-		preferencesService.writePref(PrefKey.PASSWORD, password.getText());
 		preferencesService.writePref(PrefKey.USERNAME, username.getText());
 		preferencesService.writePref(PrefKey.AUTOCONNECT, BooleanUtils.toStringTrueFalse(autoconnect.isSelected()));
 		clickCancelButton();
@@ -42,7 +41,7 @@ public class SettingsController implements Initializable {
 
 	@FXML
 	public void clickCancelButton() {
-		Stage stage = (Stage)username.getScene().getWindow();
+		Stage stage = (Stage) username.getScene().getWindow();
 		stage.close();
 	}
 
@@ -52,7 +51,6 @@ public class SettingsController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		username.setText(preferencesService.readPref(PrefKey.USERNAME));
-		password.setText(preferencesService.readPref(PrefKey.PASSWORD));
 		autoconnect.setSelected(BooleanUtils.toBoolean(preferencesService.readPref(PrefKey.AUTOCONNECT)));
 	}
 

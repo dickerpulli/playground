@@ -28,7 +28,7 @@ public class Scheduler {
 	@Scheduled(fixedDelay = 1000 * 60 * 5)
 	public void fiveMinutes() {
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("5-minutes-timer is fired");
+			LOG.debug("every-5-minutes timer is fired");
 		}
 		try {
 			if (googleAppsService.isConnected()) {
@@ -36,16 +36,8 @@ public class Scheduler {
 				googleAppsService.updateEmails();
 			}
 		} catch (Exception e) {
-			throw new IllegalStateException("Exception while updating calendar", e);
+			throw new IllegalStateException("Exception while updating data", e);
 		}
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void oneSecond() {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("1-seconds-timer is fired");
-		}
-		trayiconController.setIconImage(googleAppsService.isConnected());
 	}
 
 }

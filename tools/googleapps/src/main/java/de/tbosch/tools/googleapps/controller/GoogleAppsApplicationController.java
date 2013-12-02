@@ -28,6 +28,7 @@ import de.tbosch.tools.googleapps.exception.GoogleAppsException;
 import de.tbosch.tools.googleapps.model.GCalendarEvent;
 import de.tbosch.tools.googleapps.model.GEmail;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
+import de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 import de.tbosch.tools.googleapps.utils.GoogleAppsContext;
 import de.tbosch.tools.googleapps.utils.MessageHelper;
@@ -68,6 +69,17 @@ public class GoogleAppsApplicationController implements Initializable {
 				});
 			}
 		});
+		googleAppsService.addConnectionStatusListener(new ConnectionStatusListener() {
+			@Override
+			public void changed(boolean connected) {
+				PlatformImpl.runLater(new Runnable() {
+					@Override
+					public void run() {
+						initialize(null, null);
+					}
+				});
+			}
+		});
 	}
 
 	@FXML
@@ -89,6 +101,7 @@ public class GoogleAppsApplicationController implements Initializable {
 			googleAppsService.updateEmails();
 			initialize(null, null);
 		} catch (GoogleAppsException e) {
+			googleAppsService.disconnect();
 			MonologFXBuilder.create().modal(true).type(Type.ERROR)
 					.message(MessageHelper.getMessage("error.service") + ": " + e.getMessage())
 					.titleText(MessageHelper.getMessage("error.title")).build().showDialog();
