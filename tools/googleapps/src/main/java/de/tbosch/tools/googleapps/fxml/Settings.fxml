@@ -7,25 +7,22 @@
 <?import javafx.scene.layout.GridPane?>
 <?scenebuilder-preview-i18n-resource ../../../../../../resources/messages.properties?>
 
-<GridPane hgap="10.0" maxHeight="-1.0" prefHeight="123.0" prefWidth="476.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.SettingsController">
+<GridPane hgap="10.0" maxHeight="-1.0" prefHeight="87.0" prefWidth="476.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.tbosch.tools.googleapps.controller.SettingsController">
   <children>
     <GridPane alignment="TOP_LEFT" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0" vgap="5.0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
       <children>
-        <Label text="%settings.label.username" textAlignment="LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="username" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <CheckBox id="connectAtStartup" fx:id="autoconnect" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <Label prefHeight="-1.0" prefWidth="-1.0" text="%settings.label.connectAtStartup" textAlignment="LEFT" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <CheckBox id="connectAtStartup" fx:id="autoconnect" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
       </children>
       <columnConstraints>
         <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="-1.0" minWidth="10.0" prefWidth="-1.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="-1.0" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
         <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0" vgap="5.0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="33.5" prefWidth="456.0" vgap="5.0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
       <children>
         <Button mnemonicParsing="false" onAction="#clickOkButton" text="%button.ok" textAlignment="LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0" />
         <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#clickCancelButton" text="%button.cancel" textAlignment="LEFT" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />

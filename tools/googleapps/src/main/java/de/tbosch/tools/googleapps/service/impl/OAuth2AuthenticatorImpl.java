@@ -36,6 +36,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.CalendarScopes;
 import com.sun.javafx.application.PlatformImpl;
 
 import de.tbosch.tools.googleapps.controller.AuthorizeController;
@@ -109,7 +110,8 @@ public class OAuth2AuthenticatorImpl implements OAuth2Authenticator {
 
 		// set up authorization code flow
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
-				clientSecrets, Arrays.asList("https://mail.google.com/", "https://www.googleapis.com/auth/calendar"))
+				clientSecrets, Arrays.asList("https://mail.google.com/",
+						"https://www.googleapis.com/auth/userinfo.email", CalendarScopes.CALENDAR_READONLY))
 				.setDataStoreFactory(dataStoreFactory).build();
 
 		// authorize

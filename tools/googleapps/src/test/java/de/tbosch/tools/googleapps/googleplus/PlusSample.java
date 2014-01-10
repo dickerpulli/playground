@@ -16,9 +16,17 @@ package de.tbosch.tools.googleapps.googleplus;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URL;
+import java.security.Security;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.URLName;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -26,12 +34,17 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.plus.Plus;
@@ -39,9 +52,21 @@ import com.google.api.services.plus.PlusScopes;
 import com.google.api.services.plus.model.Activity;
 import com.google.api.services.plus.model.ActivityFeed;
 import com.google.api.services.plus.model.Person;
+import com.google.gdata.client.contacts.ContactsService;
+import com.google.gdata.data.Link;
+import com.google.gdata.data.contacts.ContactEntry;
+import com.google.gdata.data.contacts.ContactFeed;
+import com.google.gdata.data.contacts.GroupMembershipInfo;
+import com.google.gdata.data.extensions.Email;
+import com.google.gdata.data.extensions.ExtendedProperty;
+import com.google.gdata.data.extensions.Im;
+import com.google.gdata.data.extensions.Name;
+import com.google.gdata.util.ServiceException;
+import com.sun.mail.imap.IMAPSSLStore;
 import com.sun.mail.imap.IMAPStore;
 
-import de.tbosch.tools.googleapps.oauth2.OAuth2Authenticator;
+import de.tbosch.tools.googleapps.oauth2.OAuth2SaslClientFactory;
+import de.tbosch.tools.googleapps.service.impl.OAuth2AuthenticatorImpl.OAuth2Provider;
 
 /**
  * @author Yaniv Inbar
@@ -84,11 +109,26 @@ public class PlusSample {
 			System.exit(1);
 		}
 		// set up authorization code flow
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
-				clientSecrets, Arrays.asList(PlusScopes.PLUS_ME, "https://mail.google.com/",
-						"https://www.googleapis.com/auth/calendar")).setDataStoreFactory(dataStoreFactory).build();
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+				httpTransport,
+				JSON_FACTORY,
+				clientSecrets,
+				Arrays.asList(PlusScopes.PLUS_ME, "https://www.googleapis.com/auth/userinfo.email",
+						"https://mail.google.com/", CalendarScopes.CALENDAR_READONLY, "https://www.google.com/m8/feeds"))
+				.setDataStoreFactory(dataStoreFactory).build();
 		// authorize
 		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+	}
+
+	private static void initialize() {
+		Security.addProvider(new OAuth2Provider());
+		try {
+			dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+			// httpTransport = Goo1gleNetHttpTransport.newTrustedTransport();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -106,6 +146,8 @@ public class PlusSample {
 			getProfile();
 			getEmails(credential);
 			getCalendar();
+			getAllContacts(credential);
+			getUserinfo(credential);
 			// success!
 			return;
 		} catch (IOException e) {
@@ -114,6 +156,73 @@ public class PlusSample {
 			t.printStackTrace();
 		}
 		System.exit(1);
+	}
+
+	private static void getUserinfo(Credential credential) throws IOException {
+		System.out.println("-----------------------------------------------------------");
+		// Make an authenticated request
+		final GenericUrl url = new GenericUrl("https://www.googleapis.com/oauth2/v2/userinfo");
+		final HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+		final HttpRequest request = requestFactory.buildGetRequest(url);
+		request.getHeaders().setContentType("application/json");
+		final String jsonIdentity = request.execute().parseAsString();
+		System.out.println(jsonIdentity);
+		JsonObjectParser parser = new JsonObjectParser.Builder(JSON_FACTORY).build();
+		Map userinfo = parser.parseAndClose(new StringReader(jsonIdentity), HashMap.class);
+		System.out.println(userinfo.get("email"));
+		System.out.println("-----------------------------------------------------------");
+	}
+
+	public static class Userinfo {
+		private String id;
+		private String email;
+		private String verified_email;
+
+		/**
+		 * @return the id
+		 */
+		public String getId() {
+			return id;
+		}
+
+		/**
+		 * @param id
+		 *            the id to set
+		 */
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		/**
+		 * @return the email
+		 */
+		public String getEmail() {
+			return email;
+		}
+
+		/**
+		 * @param email
+		 *            the email to set
+		 */
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		/**
+		 * @return the verified_email
+		 */
+		public String getVerified_email() {
+			return verified_email;
+		}
+
+		/**
+		 * @param verified_email
+		 *            the verified_email to set
+		 */
+		public void setVerified_email(String verified_email) {
+			this.verified_email = verified_email;
+		}
+
 	}
 
 	private static void getCalendar() throws Exception {
@@ -126,10 +235,26 @@ public class PlusSample {
 	}
 
 	private static void getEmails(Credential credential) throws MessagingException {
-		OAuth2Authenticator.initialize();
-		IMAPStore imapStore = OAuth2Authenticator.connectToImap("imap.gmail.com", 993, "dickerpulli@gmail.com",
+		initialize();
+		IMAPStore imapStore = connectToImap("imap.gmail.com", 993, "dickerpulli@gmail.com",
 				credential.getAccessToken(), true);
 		System.out.println(imapStore.getFolder("inbox").getMessageCount());
+	}
+
+	private static IMAPStore connectToImap(String host, int port, String userEmail, String oauthToken, boolean debug)
+			throws MessagingException {
+		Properties props = new Properties();
+		props.put("mail.imaps.sasl.enable", "true");
+		props.put("mail.imaps.sasl.mechanisms", "XOAUTH2");
+		props.put(OAuth2SaslClientFactory.OAUTH_TOKEN_PROP, oauthToken);
+		Session session = Session.getInstance(props);
+		session.setDebug(debug);
+
+		final URLName unusedUrlName = null;
+		IMAPSSLStore store = new IMAPSSLStore(session, unusedUrlName);
+		final String emptyPassword = "";
+		store.connect(host, port, userEmail, emptyPassword);
+		return store;
 	}
 
 	/** List the public activities for the authenticated user. */
@@ -176,6 +301,120 @@ public class PlusSample {
 		View.header1("Get my Google+ profile");
 		Person profile = plus.people().get("me").execute();
 		View.show(profile);
+	}
+
+	private static void getAllContacts(Credential credential) throws ServiceException, IOException {
+		ContactsService myService = new ContactsService(APPLICATION_NAME);
+		myService.setOAuth2Credentials(credential);
+		// Request the feed
+		URL feedUrl = new URL("https://www.google.com/m8/feeds/contacts/default/full");
+		ContactFeed resultFeed = myService.getFeed(feedUrl, ContactFeed.class);
+		// Print the results
+		System.out.println(resultFeed.getTitle().getPlainText());
+		for (ContactEntry entry : resultFeed.getEntries()) {
+			if (entry.hasName()) {
+				Name name = entry.getName();
+				if (name.hasFullName()) {
+					String fullNameToDisplay = name.getFullName().getValue();
+					if (name.getFullName().hasYomi()) {
+						fullNameToDisplay += " (" + name.getFullName().getYomi() + ")";
+					}
+					System.out.println("\\\t\\\t" + fullNameToDisplay);
+				} else {
+					System.out.println("\\\t\\\t (no full name found)");
+				}
+				if (name.hasNamePrefix()) {
+					System.out.println("\\\t\\\t" + name.getNamePrefix().getValue());
+				} else {
+					System.out.println("\\\t\\\t (no name prefix found)");
+				}
+				if (name.hasGivenName()) {
+					String givenNameToDisplay = name.getGivenName().getValue();
+					if (name.getGivenName().hasYomi()) {
+						givenNameToDisplay += " (" + name.getGivenName().getYomi() + ")";
+					}
+					System.out.println("\\\t\\\t" + givenNameToDisplay);
+				} else {
+					System.out.println("\\\t\\\t (no given name found)");
+				}
+				if (name.hasAdditionalName()) {
+					String additionalNameToDisplay = name.getAdditionalName().getValue();
+					if (name.getAdditionalName().hasYomi()) {
+						additionalNameToDisplay += " (" + name.getAdditionalName().getYomi() + ")";
+					}
+					System.out.println("\\\t\\\t" + additionalNameToDisplay);
+				} else {
+					System.out.println("\\\t\\\t (no additional name found)");
+				}
+				if (name.hasFamilyName()) {
+					String familyNameToDisplay = name.getFamilyName().getValue();
+					if (name.getFamilyName().hasYomi()) {
+						familyNameToDisplay += " (" + name.getFamilyName().getYomi() + ")";
+					}
+					System.out.println("\\\t\\\t" + familyNameToDisplay);
+				} else {
+					System.out.println("\\\t\\\t (no family name found)");
+				}
+				if (name.hasNameSuffix()) {
+					System.out.println("\\\t\\\t" + name.getNameSuffix().getValue());
+				} else {
+					System.out.println("\\\t\\\t (no name suffix found)");
+				}
+			} else {
+				System.out.println("\t (no name found)");
+			}
+			System.out.println("Email addresses:");
+			for (Email email : entry.getEmailAddresses()) {
+				System.out.print(" " + email.getAddress());
+				if (email.getRel() != null) {
+					System.out.print(" rel:" + email.getRel());
+				}
+				if (email.getLabel() != null) {
+					System.out.print(" label:" + email.getLabel());
+				}
+				if (email.getPrimary()) {
+					System.out.print(" (primary) ");
+				}
+				System.out.print("\n");
+			}
+			System.out.println("IM addresses:");
+			for (Im im : entry.getImAddresses()) {
+				System.out.print(" " + im.getAddress());
+				if (im.getLabel() != null) {
+					System.out.print(" label:" + im.getLabel());
+				}
+				if (im.getRel() != null) {
+					System.out.print(" rel:" + im.getRel());
+				}
+				if (im.getProtocol() != null) {
+					System.out.print(" protocol:" + im.getProtocol());
+				}
+				if (im.getPrimary()) {
+					System.out.print(" (primary) ");
+				}
+				System.out.print("\n");
+			}
+			System.out.println("Groups:");
+			for (GroupMembershipInfo group : entry.getGroupMembershipInfos()) {
+				String groupHref = group.getHref();
+				System.out.println("  Id: " + groupHref);
+			}
+			System.out.println("Extended Properties:");
+			for (ExtendedProperty property : entry.getExtendedProperties()) {
+				if (property.getValue() != null) {
+					System.out.println("  " + property.getName() + "(value) = " + property.getValue());
+				} else if (property.getXmlBlob() != null) {
+					System.out.println("  " + property.getName() + "(xmlBlob)= " + property.getXmlBlob().getBlob());
+				}
+			}
+			Link photoLink = entry.getContactPhotoLink();
+			String photoLinkHref = photoLink.getHref();
+			System.out.println("Photo Link: " + photoLinkHref);
+			if (photoLink.getEtag() != null) {
+				System.out.println("Contact Photo's ETag: " + photoLink.getEtag());
+			}
+			System.out.println("Contact's ETag: " + entry.getEtag());
+		}
 	}
 
 }

@@ -1,16 +1,20 @@
 package de.tbosch.tools.googleapps.service.impl;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -31,8 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
@@ -54,7 +62,6 @@ import de.tbosch.tools.googleapps.oauth2.OAuth2SaslClientFactory;
 import de.tbosch.tools.googleapps.service.GoogleAppsService;
 import de.tbosch.tools.googleapps.service.OAuth2Authenticator;
 import de.tbosch.tools.googleapps.service.PreferencesService;
-import de.tbosch.tools.googleapps.service.PreferencesService.PrefKey;
 import de.tbosch.tools.googleapps.service.listeners.ConnectionStatusListener;
 import de.tbosch.tools.googleapps.service.listeners.UpdateListener;
 
@@ -89,6 +96,22 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	private final Set<UpdateListener> updateListeners = new HashSet<UpdateListener>();
 
 	private final Set<ConnectionStatusListener> connectionStatusListeners = new HashSet<ConnectionStatusListener>();
+
+	private HttpTransport httpTransport;
+
+	/**
+	 * Initialize Service.
+	 * 
+	 * @throws GoogleAppsException
+	 */
+	@PostConstruct
+	public void init() throws GoogleAppsException {
+		try {
+			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+		} catch (GeneralSecurityException | IOException e) {
+			throw new GoogleAppsException("Error initializing transport layer", e);
+		}
+	}
 
 	/**
 	 * @see de.tbosch.tools.googleapps.service.GoogleAppsService#updateCalendar()
@@ -147,12 +170,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 * @throws GoogleAppsException
 	 */
 	private List<Event> getPrimaryCalendarEvents() throws GoogleAppsException {
-		HttpTransport httpTransport;
-		try {
-			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-		} catch (GeneralSecurityException | IOException e) {
-			throw new GoogleAppsException("Error initializing transport layer", e);
-		}
 		Credential credential;
 		try {
 			credential = oauth2Authenticator.authorize();
@@ -272,7 +289,6 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 	 */
 	@Override
 	public void updateEmails() throws GoogleAppsException {
-		String username = preferencesService.readPref(PrefKey.USERNAME);
 		Credential credential;
 		try {
 			credential = oauth2Authenticator.authorize();
@@ -281,9 +297,9 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		}
 		IMAPStore imapStore;
 		try {
-			imapStore = connectToImap("imap.gmail.com", 993, username, credential.getAccessToken(),
+			imapStore = connectToImap("imap.gmail.com", 993, getUserEmail(credential), credential.getAccessToken(),
 					LOG_IMAP.isDebugEnabled());
-		} catch (MessagingException e) {
+		} catch (MessagingException | IOException e) {
 			throw new GoogleAppsException("Failed to connect to IMAP server", e);
 		}
 
@@ -408,4 +424,18 @@ public class GoogleAppsServiceImpl implements GoogleAppsService {
 		store.connect(host, port, userEmail, emptyPassword);
 		return store;
 	}
+
+	private String getUserEmail(Credential credential) throws IOException {
+		// Make an authenticated request
+		GenericUrl url = new GenericUrl("https://www.googleapis.com/oauth2/v2/userinfo");
+		HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+		HttpRequest request = requestFactory.buildGetRequest(url);
+		request.getHeaders().setContentType("application/json");
+		String jsonIdentity = request.execute().parseAsString();
+		JsonObjectParser parser = new JsonObjectParser.Builder(JSON_FACTORY).build();
+		@SuppressWarnings("rawtypes")
+		Map userinfo = parser.parseAndClose(new StringReader(jsonIdentity), HashMap.class);
+		return (String) userinfo.get("email");
+	}
+
 }
