@@ -1,0 +1,12 @@
+/.settings
+/target
+/.classpath
+/.project
+/googleapps.log
+/googleappsdb-test.log
+/googleappsdb-test.properties
+/googleappsdb-test.script
+/googleappsdb.log
+/googleappsdb.properties
+/googleappsdb.script
+/googleappsdb.tmp
