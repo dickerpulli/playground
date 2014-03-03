@@ -1,16 +1,17 @@
 package de.tbosch.batch.item;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
-public class SysoutItemWriter implements ItemWriter<String[]> {
+import de.tbosch.batch.model.Person;
+
+public class SysoutItemWriter implements ItemWriter<Person> {
 
 	@Override
-	public void write(List<? extends String[]> items) throws Exception {
-		for (String[] item : items) {
-			System.out.println(Arrays.toString(item));
+	public void write(List<? extends Person> items) throws Exception {
+		for (Person item : items) {
+			System.out.println(item);
 		}
 	}
 
