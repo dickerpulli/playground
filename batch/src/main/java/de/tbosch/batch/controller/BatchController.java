@@ -3,6 +3,8 @@ package de.tbosch.batch.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
@@ -109,11 +111,23 @@ public class BatchController {
 
 		public static Summary parse(String text) {
 			Summary summary = new Summary();
-			String[] attrs = text.trim().split(",");
-			for (String attr : attrs) {
-				String key = attr.trim().split("=")[0];
-				String value = attr.trim().split("=")[1];
-				summary.attributes.add(new DefaultKeyValue(key, value));
+			// see toString() method of JobExecution
+			String regex = "(.*): id=(.*), version=(.*), startTime=(.*), endTime=(.*), lastUpdated=(.*), status=(.*), exitStatus=(.*), job=\\[(.*)\\], jobParameters=\\[(.*)\\]";
+			Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+			Matcher matcher = pattern.matcher(text);
+			if (matcher.find()) {
+				summary.attributes.add(new DefaultKeyValue("className", matcher.group(1)));
+				summary.attributes.add(new DefaultKeyValue("id", matcher.group(2)));
+				summary.attributes.add(new DefaultKeyValue("version", matcher.group(3)));
+				summary.attributes.add(new DefaultKeyValue("startTime", matcher.group(4)));
+				summary.attributes.add(new DefaultKeyValue("endTime", matcher.group(5)));
+				summary.attributes.add(new DefaultKeyValue("lastUpdated", matcher.group(6)));
+				summary.attributes.add(new DefaultKeyValue("status", matcher.group(7)));
+				summary.attributes.add(new DefaultKeyValue("exitStatus", matcher.group(8)));
+				summary.attributes.add(new DefaultKeyValue("job", matcher.group(9)));
+				summary.attributes.add(new DefaultKeyValue("jobParameters", matcher.group(10)));
+			} else {
+				throw new IllegalStateException("Pattern is not valid - see JobExecution toString() method");
 			}
 			return summary;
 		}

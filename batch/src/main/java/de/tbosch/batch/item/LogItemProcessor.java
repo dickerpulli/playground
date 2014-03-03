@@ -13,6 +13,9 @@ public class LogItemProcessor implements ItemProcessor<Person, Person> {
 	@Override
 	public Person process(Person item) throws Exception {
 		LOGGER.info("Item {} processed ...", item);
+		if (item.getLastname().equals("Müller")) {
+			throw new IllegalStateException("not accepted");
+		}
 		return item;
 	}
 

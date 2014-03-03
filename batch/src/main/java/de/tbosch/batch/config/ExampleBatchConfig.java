@@ -1,10 +1,16 @@
 package de.tbosch.batch.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.step.skip.SkipPolicy;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -13,10 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 import de.tbosch.batch.item.LogItemProcessor;
 import de.tbosch.batch.item.SysoutItemWriter;
 import de.tbosch.batch.model.Person;
+import de.tbosch.batch.skip.AsyncLimitCheckingItemSkipPolicy;
 
 @Configuration
 public class ExampleBatchConfig {
@@ -34,8 +42,15 @@ public class ExampleBatchConfig {
 
 	@Bean
 	protected Step step() throws Exception {
-		return steps.get("step").<Person, Person> chunk(10).reader(itemReader()).processor(itemProcessor())
-				.writer(itemWriter()).build();
+		return steps.get("step").<Person, Person> chunk(10).faultTolerant().skipPolicy(skipPolicy())
+				.reader(itemReader()).processor(asyncItemProcessor()).writer(asyncItemWriter()).build();
+	}
+
+	@Bean
+	public SkipPolicy skipPolicy() {
+		Map<Class<? extends Throwable>, Boolean> skip = new HashMap<Class<? extends Throwable>, Boolean>();
+		skip.put(IllegalStateException.class, true);
+		return new AsyncLimitCheckingItemSkipPolicy(1, skip);
 	}
 
 	@Bean
@@ -66,6 +81,25 @@ public class ExampleBatchConfig {
 	@StepScope
 	public SysoutItemWriter itemWriter() {
 		return new SysoutItemWriter();
+	}
+
+	@Bean
+	@StepScope
+	public AsyncItemProcessor asyncItemProcessor() {
+		AsyncItemProcessor<Person, Person> itemProcessor = new AsyncItemProcessor<>();
+		itemProcessor.setDelegate(itemProcessor());
+		SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+		taskExecutor.setConcurrencyLimit(10);
+		itemProcessor.setTaskExecutor(taskExecutor);
+		return itemProcessor;
+	}
+
+	@Bean
+	@StepScope
+	public AsyncItemWriter asyncItemWriter() {
+		AsyncItemWriter<Person> itemWriter = new AsyncItemWriter<>();
+		itemWriter.setDelegate(itemWriter());
+		return itemWriter;
 	}
 
 }
