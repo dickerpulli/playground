@@ -1,3 +1,0 @@
-Beckenbauer,Franz,60
-Müller,Thomas,28
-Lienen,Ewald,56
