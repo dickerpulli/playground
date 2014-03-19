@@ -3,13 +3,15 @@ package de.tbosch.web.springboot;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.springframework.web.WebApplicationInitializer;
+import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.context.annotation.Configuration;
 
-public class Initializer implements WebApplicationInitializer {
+@Configuration
+public class Initializer implements ServletContextInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		System.err.println("------------------------------------");
+		servletContext.addServlet("ping", PingServlet.class).addMapping("/ping");
 	}
 
 }
