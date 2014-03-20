@@ -4,12 +4,24 @@
 	<groupId>de.tbosch.web</groupId>
 	<artifactId>spring-boot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>1.0.0.RC4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>7.0.52</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -20,6 +32,29 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>1.0.0.RC4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>de.tbosch.web.springboot.Application</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -34,4 +69,14 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones-plugin</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
