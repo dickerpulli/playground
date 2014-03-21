@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class Application extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-		SpringApplication.run(new Class[] { Application.class, Initializer.class }, args);
+		SpringApplication.run(new Class[] { Application.class, ApplicationInitializer.class }, args);
 	}
 
 	@Override

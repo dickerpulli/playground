@@ -7,7 +7,7 @@ import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Initializer implements ServletContextInitializer {
+public class ApplicationInitializer implements ServletContextInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
