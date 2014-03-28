@@ -49,6 +49,8 @@ public class ApplicationConfiguration {
 	public EmbeddedServletContainerCustomizer containerCustomizer() throws FileNotFoundException {
 		final String absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
 
+		// Enable SSL per HTTPS
+
 		return new EmbeddedServletContainerCustomizer() {
 			@Override
 			public void customize(ConfigurableEmbeddedServletContainer factory) {
