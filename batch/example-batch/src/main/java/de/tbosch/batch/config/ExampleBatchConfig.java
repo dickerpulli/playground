@@ -22,6 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 import de.tbosch.batch.item.LogItemProcessor;
+import de.tbosch.batch.item.RetryItemProcessor;
 import de.tbosch.batch.item.SysoutItemWriter;
 import de.tbosch.batch.model.Person;
 import de.tbosch.batch.skip.AsyncLimitCheckingItemSkipPolicy;
@@ -36,14 +37,25 @@ public class ExampleBatchConfig {
 	private StepBuilderFactory steps;
 
 	@Bean
-	public Job job(Step step) {
-		return jobs.get("example-job").start(step).build();
+	public Job exampleJob() throws Exception {
+		return jobs.get("example-job").start(step1()).build();
 	}
 
 	@Bean
-	protected Step step() throws Exception {
-		return steps.get("step").<Person, Person> chunk(10).faultTolerant().skipPolicy(skipPolicy())
+	public Job retryJob() throws Exception {
+		return jobs.get("retry-job").start(step2()).build();
+	}
+
+	@Bean
+	public Step step1() throws Exception {
+		return steps.get("step1").<Person, Person> chunk(10).faultTolerant().skipPolicy(skipPolicy())
 				.reader(itemReader()).processor(asyncItemProcessor()).writer(asyncItemWriter()).build();
+	}
+
+	@Bean
+	public Step step2() throws Exception {
+		return steps.get("step2").<Person, String> chunk(10).faultTolerant().reader(itemReader())
+				.processor(retryItemProcessor()).writer(itemWriter()).build();
 	}
 
 	@Bean
@@ -79,6 +91,12 @@ public class ExampleBatchConfig {
 
 	@Bean
 	@StepScope
+	public RetryItemProcessor retryItemProcessor() {
+		return new RetryItemProcessor();
+	}
+
+	@Bean
+	@StepScope
 	public SysoutItemWriter itemWriter() {
 		return new SysoutItemWriter();
 	}
@@ -97,7 +115,7 @@ public class ExampleBatchConfig {
 	@Bean
 	@StepScope
 	public AsyncItemWriter asyncItemWriter() {
-		AsyncItemWriter<Person> itemWriter = new AsyncItemWriter<>();
+		AsyncItemWriter<Object> itemWriter = new AsyncItemWriter<>();
 		itemWriter.setDelegate(itemWriter());
 		return itemWriter;
 	}
