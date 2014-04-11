@@ -54,8 +54,8 @@ public class BatchJobConfig {
 
 	@Bean
 	public Step step2() throws Exception {
-		return steps.get("step2").<Person, String> chunk(10).faultTolerant().reader(itemReader())
-				.processor(retryItemProcessor()).writer(itemWriter()).build();
+		return steps.get("step2").<Person, String> chunk(10).faultTolerant().retry(IllegalArgumentException.class)
+				.retryLimit(3).reader(itemReader()).processor(retryItemProcessor()).writer(itemWriter()).build();
 	}
 
 	@Bean
