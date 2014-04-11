@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
-import de.tbosch.batch.model.Person;
-
-public class SysoutItemWriter implements ItemWriter<Person> {
+public class SysoutItemWriter implements ItemWriter<Object> {
 
 	@Override
-	public void write(List<? extends Person> items) throws Exception {
-		for (Person item : items) {
+	public void write(List<? extends Object> items) throws Exception {
+		for (Object item : items) {
 			System.out.println(item);
 		}
 	}
