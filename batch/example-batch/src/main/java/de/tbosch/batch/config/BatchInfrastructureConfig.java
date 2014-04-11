@@ -1,25 +1,18 @@
 package de.tbosch.batch.config;
 
-import javax.sql.DataSource;
-
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.support.ApplicationContextFactory;
+import org.springframework.batch.core.configuration.support.GenericApplicationContextFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
+@EnableBatchProcessing(modular = true)
 public class BatchInfrastructureConfig {
 
 	@Bean
-	public DataSource dataSource() {
-		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL)
-				.addScript("classpath:org/springframework/batch/core/schema-hsqldb.sql").build();
-		// BasicDataSource dataSource = new BasicDataSource();
-		// dataSource.setDriverClassName(jdbcDriver.class.getName());
-		// dataSource.setUrl("jdbc:hsqldb:mem:testdb");
-		// dataSource.setUsername("sa");
-		// dataSource.setPassword("");
-		// return dataSource;
+	public ApplicationContextFactory jobs() {
+		return new GenericApplicationContextFactory(BatchJobConfig.class);
 	}
 
 }

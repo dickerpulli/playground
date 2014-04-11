@@ -28,7 +28,7 @@ import de.tbosch.batch.model.Person;
 import de.tbosch.batch.skip.AsyncLimitCheckingItemSkipPolicy;
 
 @Configuration
-public class ExampleBatchConfig {
+public class BatchJobConfig {
 
 	@Autowired
 	private JobBuilderFactory jobs;
