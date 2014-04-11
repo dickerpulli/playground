@@ -8,20 +8,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.batch.core.launch.NoSuchJobInstanceException;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,36 +27,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BatchController {
 
 	@Autowired
-	private JobLauncher jobLauncher;
-
-	@Autowired
 	private JobOperator jobOperator;
 
-	@Autowired
-	private Job job;
-
-	@RequestMapping(value = "/job/run", method = RequestMethod.GET)
+	@RequestMapping(value = "/job/{jobName}/run", method = RequestMethod.POST)
 	public @ResponseBody
-	String start() {
+	String start(@ModelAttribute JobParameters jobParameters, @PathVariable String jobName) {
 		try {
-			JobExecution jobExecution = jobLauncher.run(job, new JobParameters());
-			return jobExecution.getJobId().toString();
+			return jobOperator.start(jobName, jobParameters.toString()).toString();
 		} catch (JobParametersInvalidException e) {
 			return "JobParameters are invalid";
-		} catch (JobExecutionAlreadyRunningException e) {
-			return "Job already running";
-		} catch (JobRestartException e) {
-			return "Job cannot be restarted";
-		} catch (JobInstanceAlreadyCompleteException e) {
-			return "JobInstance already completed";
+		} catch (NoSuchJobException e) {
+			return "Job with name " + jobName + " not found";
+		} catch (JobInstanceAlreadyExistsException e) {
+			return "JobInstance for job " + jobName + " with parameters " + jobParameters + " already exists";
 		}
 	}
 
-	@RequestMapping(value = "/job/status", method = RequestMethod.GET)
+	@RequestMapping(value = "/job/{jobName}/status", method = RequestMethod.GET)
 	public @ResponseBody
-	String status() {
+	String status(@PathVariable String jobName) {
 		try {
-			Set<Long> ids = jobOperator.getRunningExecutions(job.getName());
+			Set<Long> ids = jobOperator.getRunningExecutions(jobName);
 			String status = "";
 			for (Long id : ids) {
 				try {
@@ -72,15 +60,15 @@ public class BatchController {
 			}
 			return status;
 		} catch (NoSuchJobException e) {
-			return "Job with name '" + job.getName() + "' is not running";
+			return "Job with name '" + jobName + "' is not running";
 		}
 	}
 
-	@RequestMapping(value = "/job/history", method = RequestMethod.GET)
+	@RequestMapping(value = "/job/{jobName}/history", method = RequestMethod.GET)
 	public @ResponseBody
-	String history() {
+	String history(@PathVariable String jobName) {
 		try {
-			List<Long> instanceIds = jobOperator.getJobInstances(job.getName(), 0, Integer.MAX_VALUE);
+			List<Long> instanceIds = jobOperator.getJobInstances(jobName, 0, Integer.MAX_VALUE);
 			String history = "";
 			for (Long instanceId : instanceIds) {
 				try {
@@ -101,7 +89,7 @@ public class BatchController {
 			}
 			return history;
 		} catch (NoSuchJobException e) {
-			return "Job with name '" + job.getName() + "' has not been started yet";
+			return "Job with name '" + jobName + "' has not been started yet";
 		}
 	}
 
