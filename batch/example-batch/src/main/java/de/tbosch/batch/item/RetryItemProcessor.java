@@ -11,7 +11,7 @@ public class RetryItemProcessor implements ItemProcessor<Person, String> {
 	@Override
 	public String process(Person item) throws Exception {
 		if (i++ == 2) {
-			throw new IllegalArgumentException("i is " + i);
+			throw new IllegalArgumentException("RETRY!!!");
 		}
 		return item.getFirstname();
 	}
