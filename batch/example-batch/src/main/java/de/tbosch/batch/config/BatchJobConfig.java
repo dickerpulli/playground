@@ -27,6 +27,9 @@ import de.tbosch.batch.item.SysoutItemWriter;
 import de.tbosch.batch.model.Person;
 import de.tbosch.batch.skip.AsyncLimitCheckingItemSkipPolicy;
 
+/**
+ * Jobs.
+ */
 @Configuration
 public class BatchJobConfig {
 
