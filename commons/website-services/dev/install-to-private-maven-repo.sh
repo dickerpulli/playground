@@ -1,3 +1,11 @@
 #!/bin/bash
+# Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-mvn install:install-file -DlocalRepositoryPath=/home/thomas/Entwicklung/git/maven-repo/ -DcreateChecksum=true -Dpackaging=jar -Dfile=../target/website-services-1.0.0.jar -DgroupId=de.tbosch.web -DartifactId=website-services -Dversion=1.0.0 -DpomFile=../pom.xml
+LIB=website-services-1.0.0
+REPO=/home/thomas/Entwicklung/git/maven-repo/
+
+# Main Sources
+mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfile=target/$LIB.jar -DpomFile=pom.xml -Dsources=target/$LIB-sources.jar -Djavadoc=target/$LIB-javadoc.jar
+
+# Test Classes
+mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfile=target/$LIB-tests.jar -DpomFile=pom.xml -Dpackaging=test-jar
