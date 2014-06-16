@@ -54,22 +54,24 @@ public class ApplicationConfiguration {
 		return new EmbeddedServletContainerCustomizer() {
 			@Override
 			public void customize(ConfigurableEmbeddedServletContainer factory) {
-				if (factory instanceof TomcatEmbeddedServletContainerFactory) {
-					TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
-					containerFactory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
-						@Override
-						public void customize(Connector connector) {
-							connector.setPort(env.getProperty("server.port", Integer.class));
-							connector.setSecure(true);
-							connector.setScheme("https");
-							Http11NioProtocol proto = (Http11NioProtocol) connector.getProtocolHandler();
-							proto.setSSLEnabled(true);
-							proto.setKeystoreFile(absoluteKeystoreFile);
-							proto.setKeystorePass(keystorePass);
-							proto.setKeystoreType("PKCS12");
-							proto.setKeyAlias("tomcat");
-						}
-					});
+				if (env.getProperty("tomcat.https", Boolean.class, false)) {
+					if (factory instanceof TomcatEmbeddedServletContainerFactory) {
+						TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
+						containerFactory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
+							@Override
+							public void customize(Connector connector) {
+								connector.setPort(env.getProperty("server.port", Integer.class));
+								connector.setSecure(true);
+								connector.setScheme("https");
+								Http11NioProtocol proto = (Http11NioProtocol) connector.getProtocolHandler();
+								proto.setSSLEnabled(true);
+								proto.setKeystoreFile(absoluteKeystoreFile);
+								proto.setKeystorePass(keystorePass);
+								proto.setKeystoreType("PKCS12");
+								proto.setKeyAlias("tomcat");
+							}
+						});
+					}
 				}
 			}
 		};
