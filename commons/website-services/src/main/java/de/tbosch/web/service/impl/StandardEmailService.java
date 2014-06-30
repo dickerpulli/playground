@@ -44,7 +44,7 @@ public class StandardEmailService implements EmailService {
 			} else {
 				mail.setText(message);
 			}
-			mail.setTo("mail@tbosch.de");
+			mail.setTo(env.getProperty("smtp.to"));
 			mail.setFrom(env.getProperty("smtp.from"));
 			mailSender.send(mail);
 		} catch (Exception e) {
