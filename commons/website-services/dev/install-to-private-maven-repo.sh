@@ -1,7 +1,7 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-services-1.0.0
+LIB=website-services-1.0.1
 REPO=/home/thomas/Entwicklung/git/maven-repo/
 
 # Main Sources
