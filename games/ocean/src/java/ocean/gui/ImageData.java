@@ -54,7 +54,7 @@ public enum ImageData {
 	private Image[] images;
 	
 	// Base directory for the Fish images.
-	private final String baseDirectory = "src/ocean/gifs/";
+	private final String baseDirectory = "src/java/ocean/gifs/";
 	
     // constructor from a single image
 	private ImageData(String filename) {		
