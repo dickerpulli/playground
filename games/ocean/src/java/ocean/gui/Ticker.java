@@ -5,8 +5,7 @@ package ocean.gui;
  * 
  * @see OceanCanvas
  */
-class Ticker extends Thread
-{
+class Ticker extends Thread {
 	/** The ocean we send ticks to. */
 	OceanCanvas ocean;
 
@@ -15,52 +14,46 @@ class Ticker extends Thread
 
 	/** for allowing suspending the ticker */
 	boolean suspended;
-	
+
 	/**
 	 * Create ticker to send ticks to an Ocean.
 	 *
-	 * @param ocean The Ocean to send ticks to by calling its tick() method.
+	 * @param ocean
+	 *            The Ocean to send ticks to by calling its tick() method.
 	 */
-	Ticker(OceanCanvas ocean)
-	{
+	Ticker(OceanCanvas ocean) {
 		super();
 		this.ocean = ocean;
 		alive = true;
-		suspended=false;
+		suspended = false;
 	}
 
 	/**
-	 * The body of the tread.
-	 * Run as long as <tt>alive</tt> is true.
+	 * The body of the tread. Run as long as <tt>alive</tt> is true.
 	 */
-	public void run()
-	{
-		while(alive)
-		{
-			if (!this.suspended) ocean.tick();
-			try
-			{
+	public void run() {
+		while (alive) {
+			if (!this.suspended)
+				ocean.tick();
+			try {
 				sleep(ocean.animationSleep);
+			} catch (InterruptedException e) {
 			}
-			catch(InterruptedException e) { }
 		}
 	}
 
 	/**
 	 * Let the thread commit suicide.
 	 */
-	public synchronized void die()
-	{
+	public synchronized void die() {
 		alive = false;
 	}
-	
-	public void mySuspend()
-	{
-		this.suspended=true;
+
+	public void mySuspend() {
+		this.suspended = true;
 	}
-	
-	public void myResume()
-	{
-		this.suspended=false;
+
+	public void myResume() {
+		this.suspended = false;
 	}
 }
