@@ -1,6 +1,11 @@
 package ocean.core;
 
-import ocean.fish.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+
+import ocean.fish.Fish;
+import ocean.fish.SimpleHerring;
+import ocean.fish.SimpleShark;
 
 public class FishMatrixSimple extends FishMatrix {
 
@@ -20,9 +25,11 @@ public class FishMatrixSimple extends FishMatrix {
 	 * 
 	 * @return The new coordinate of the fish.
 	 */
+	@Override
 	protected Coordinate moveFish(Fish fish, Coordinate from, Coordinate to) {
-		// TODO
-		return null;
+		setFish(from, null);
+		setFish(to, fish);
+		return to;
 	}
 
 	/**
@@ -34,8 +41,37 @@ public class FishMatrixSimple extends FishMatrix {
 	 * fish could move more than one step in each phase.
 	 * <p>
 	 */
+	@Override
 	public void moveAllFish() {
-		// TODO
+		Fish[] moved = new Fish[0];
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
+				Coordinate from = new Coordinate(x, y);
+				Fish fish = getFish(from);
+				if (fish != null && !fishAlreadyMoved(fish, moved)) {
+					// calculate next coordinate
+					Direction direction = fish.getDirection(from, this);
+					Coordinate offset = Coordinate.fromOffset(direction);
+					Coordinate to = new Coordinate((from.x + offset.x) % getWidth(), from.y + offset.y);
+
+					// move fish to next coordinate
+					moveFish(fish, from, to);
+
+					// save fish as already moved
+					moved = Arrays.copyOf(moved, moved.length + 1);
+					moved[moved.length - 1] = fish;
+				}
+			}
+		}
+	}
+
+	private boolean fishAlreadyMoved(Fish fish, Fish[] allMovedFish) {
+		for (Fish movedFish : allMovedFish) {
+			if (movedFish.equals(fish)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -45,6 +81,13 @@ public class FishMatrixSimple extends FishMatrix {
 	 * @param numberSharks
 	 */
 	public void fillMatrix(int numberHerrings, int numberSharks) {
-		// TODO
+		LinkedList<Fish> manyFish = new LinkedList<Fish>();
+		for (int h = 0; h < numberHerrings; h++) {
+			manyFish.add(new SimpleHerring());
+		}
+		for (int s = 0; s < numberSharks; s++) {
+			manyFish.add(new SimpleShark());
+		}
+		fillMatrix(manyFish);
 	}
 }
