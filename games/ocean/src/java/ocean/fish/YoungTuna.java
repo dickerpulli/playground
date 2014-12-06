@@ -9,7 +9,11 @@ public class YoungTuna extends RandomMovingFish implements Eatable, Changing {
 	private int age = 0;
 
 	public YoungTuna() {
-		super(ImageData.TUNA_YOUNG);
+		this(ImageData.TUNA_YOUNG);
+	}
+
+	public YoungTuna(ImageData imageData) {
+		super(imageData);
 	}
 
 	@Override

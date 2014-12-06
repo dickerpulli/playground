@@ -8,7 +8,7 @@ import ocean.gui.ImageData;
 public class OldTuna extends RandomMovingFish {
 
 	public OldTuna() {
-		super(ImageData.TUNA_OLD);
+		this(ImageData.TUNA_OLD);
 	}
 
 	public OldTuna(ImageData imageData) {

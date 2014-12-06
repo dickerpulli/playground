@@ -5,7 +5,7 @@ import ocean.gui.ImageData;
 public class Herring extends RandomMovingFish implements Eatable {
 
 	public Herring() {
-		super(ImageData.HERRING);
+		this(ImageData.HERRING);
 	}
 
 	public Herring(ImageData imageData) {

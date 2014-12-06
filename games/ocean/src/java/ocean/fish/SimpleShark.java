@@ -11,7 +11,7 @@ public class SimpleShark extends Fish {
 	private Direction nextToLastDirection;
 
 	public SimpleShark() {
-		super(ImageData.SHARK);
+		this(ImageData.SHARK);
 	}
 
 	public SimpleShark(ImageData imageData) {

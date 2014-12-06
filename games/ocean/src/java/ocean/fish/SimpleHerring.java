@@ -8,7 +8,7 @@ import ocean.gui.ImageData;
 public class SimpleHerring extends Fish {
 
 	public SimpleHerring() {
-		super(ImageData.HERRING);
+		this(ImageData.HERRING);
 	}
 
 	public SimpleHerring(ImageData imageData) {
@@ -17,7 +17,7 @@ public class SimpleHerring extends Fish {
 
 	@Override
 	public Direction getDirection(Coordinate from, FishMatrix matrix) {
-		// always move right, if possible and no other fish is already there 
+		// always move right, if possible and no other fish is already there
 		Direction move = Direction.RIGHT;
 		if (matrix.canMove(from, move) && matrix.getFish(from, move) == null) {
 			return move;
@@ -25,7 +25,7 @@ public class SimpleHerring extends Fish {
 		// else stay
 		return Direction.STAY;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "This is a SimpleHerring";

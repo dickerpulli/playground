@@ -18,7 +18,7 @@ public class Shark extends Fish implements Feedable, Changing {
 	private Coordinate lastCoordinate;
 
 	public Shark() {
-		super(ImageData.SHARK);
+		this(ImageData.SHARK);
 	}
 
 	public Shark(ImageData imageData) {
