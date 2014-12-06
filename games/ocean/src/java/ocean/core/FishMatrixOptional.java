@@ -1,6 +1,11 @@
 package ocean.core;
 
-import ocean.fish.*;
+import java.util.LinkedList;
+
+import ocean.fish.Fish;
+import ocean.fish.Herring;
+import ocean.fish.Shark;
+import ocean.fish.YoungTuna;
 
 public class FishMatrixOptional extends FishMatrixComplex {
 
@@ -16,8 +21,9 @@ public class FishMatrixOptional extends FishMatrixComplex {
 	 * 
 	 * Like FishMatrixComplex, this handles Changing fish.
 	 */
+	@Override
 	public void moveAllFish() {
-		// TODO
+		super.moveAllFish();
 	}
 
 	/**
@@ -29,6 +35,16 @@ public class FishMatrixOptional extends FishMatrixComplex {
 	 */
 
 	public void fillMatrix(int numberHerrings, int numberSharks, int numberTuna) {
-		// TODO
+		LinkedList<Fish> manyFish = new LinkedList<Fish>();
+		for (int h = 0; h < numberHerrings; h++) {
+			manyFish.add(new Herring());
+		}
+		for (int s = 0; s < numberSharks; s++) {
+			manyFish.add(new Shark());
+		}
+		for (int s = 0; s < numberTuna; s++) {
+			manyFish.add(new YoungTuna());
+		}
+		fillMatrix(manyFish);
 	}
 }
