@@ -51,8 +51,7 @@ public class FishMatrixSimple extends FishMatrix {
 				if (fish != null && !fishAlreadyMoved(fish, moved)) {
 					// calculate next coordinate
 					Direction direction = fish.getDirection(from, this);
-					Coordinate offset = Coordinate.fromOffset(direction);
-					Coordinate to = new Coordinate((from.x + offset.x) % getWidth(), from.y + offset.y);
+					Coordinate to = getCoordinate(from, direction);
 
 					// move fish to next coordinate
 					moveFish(fish, from, to);

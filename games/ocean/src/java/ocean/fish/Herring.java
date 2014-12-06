@@ -23,11 +23,12 @@ public class Herring extends Fish implements Eatable {
 
 	@Override
 	public Direction getDirection(Coordinate from, FishMatrix matrix) {
-		// first of all, put all possible directions in a list
+		// first of all, put all possible directions in a list - all, but STAY
 		List<Direction> directions = new ArrayList<Direction>(Arrays.asList(Direction.values()));
+		directions.remove(Direction.STAY);
 		Iterator<Direction> it = directions.iterator();
 		while (it.hasNext()) {
-			// remove all directions, that are illegal
+			// remove all directions that are illegal
 			Direction direction = it.next();
 			if (!matrix.canMove(from, direction)) {
 				it.remove();
