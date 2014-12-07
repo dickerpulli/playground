@@ -31,18 +31,18 @@ public class FishMatrixComplex extends FishMatrixSimple {
 	@Override
 	protected Coordinate moveFish(Fish fish, Coordinate from, Coordinate to) {
 		Fish fishTo = getFish(to);
-		// if there is no fish just move there
-		if (fishTo == null) {
-			setFish(from, null);
-			setFish(to, fish);
-		}
-		// otherwise check if this one is feedable and the other fish is eatable, then more there
-		else if (fishTo instanceof Eatable && fish instanceof Feedable) {
+		// if there is an eatable fish, eat it
+		if (fishTo instanceof Eatable && fish instanceof Feedable) {
 			((Feedable) fish).feed((Eatable) fishTo);
+		}
+		// if there is no fish, or the fish could be eaten
+		if (fishTo == null || fishTo instanceof Eatable && fish instanceof Feedable) {
 			setFish(from, null);
 			setFish(to, fish);
+			return to;
 		}
-		return to;
+		// not moved
+		return from;
 	}
 
 	/**
