@@ -23,9 +23,7 @@ public class MergesortWithList<T> {
 	}
 
 	public List<T> sort(List<T> data) {
-		System.out.println("sort: " + data);
 		if (data.size() <= 1) {
-			System.out.println("return: " + data);
 			return data;
 		}
 		int middle = data.size() / 2;
@@ -35,7 +33,6 @@ public class MergesortWithList<T> {
 	}
 
 	private List<T> merge(List<T> left, List<T> right) {
-		System.out.println("merge: " + left + ", " + right);
 		List<T> data = new ArrayList<T>();
 		while (!left.isEmpty() && !right.isEmpty()) {
 			T firstLeft = left.get(0);
@@ -58,7 +55,6 @@ public class MergesortWithList<T> {
 			data.add(firstRight);
 			right.remove(firstRight);
 		}
-		System.out.println("merged: " + data);
 		return data;
 	}
 
