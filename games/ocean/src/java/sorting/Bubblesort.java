@@ -3,7 +3,7 @@ package sorting;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Bubblesort<T> extends AbstractSortAlgorithm<T> {
+public class Bubblesort<T> extends AbstractSortingAlgorithm<T> {
 
 	public Bubblesort(Comparator<T> comp) {
 		super(comp);
@@ -34,7 +34,7 @@ public class Bubblesort<T> extends AbstractSortAlgorithm<T> {
 	}
 
 	public static void main(String[] args) {
-		SortAlgorithm<Integer> mergesort = new Bubblesort<Integer>(new Comparator<Integer>() {
+		SortingAlgorithm<Integer> mergesort = new Bubblesort<Integer>(new Comparator<Integer>() {
 			@Override
 			public int compare(Integer o1, Integer o2) {
 				return o1.compareTo(o2);

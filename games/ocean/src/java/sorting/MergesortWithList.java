@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Thomas Bosch (tbosch@gmx.de)
  */
-public class MergesortWithList<T> extends AbstractSortAlgorithm<T> {
+public class MergesortWithList<T> extends AbstractSortingAlgorithm<T> {
 
 	public MergesortWithList(Comparator<T> newcomp) {
 		super(newcomp);

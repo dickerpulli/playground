@@ -3,7 +3,7 @@ package sorting;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Mergesort<T> extends AbstractSortAlgorithm<T> {
+public class Mergesort<T> extends AbstractSortingAlgorithm<T> {
 
 	public Mergesort(Comparator<T> newcomp) {
 		super(newcomp);
@@ -51,7 +51,7 @@ public class Mergesort<T> extends AbstractSortAlgorithm<T> {
 	}
 
 	public static void main(String[] args) {
-		SortAlgorithm<Integer> mergesort = new Mergesort<Integer>(new Comparator<Integer>() {
+		SortingAlgorithm<Integer> mergesort = new Mergesort<Integer>(new Comparator<Integer>() {
 			@Override
 			public int compare(Integer o1, Integer o2) {
 				return o1.compareTo(o2);
