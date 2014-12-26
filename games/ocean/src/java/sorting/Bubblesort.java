@@ -11,9 +11,11 @@ public class Bubblesort<T> extends AbstractSortAlgorithm<T> {
 
 	@Override
 	public T[] sort(T[] data) {
+		// Bei einer Länge von 1 ist der Algothmus am Emde
 		if (data.length <= 1) {
 			return data;
 		}
+		// Vertausche immer alle Elemente. die in der unsortierten Reihenfolge liegen
 		for (int i = 0; i < data.length - 1; i++) {
 			if (comp.compare(data[i], data[i + 1]) > 0) {
 				T temp = data[i + 1];
@@ -21,9 +23,12 @@ public class Bubblesort<T> extends AbstractSortAlgorithm<T> {
 				data[i] = temp;
 			}
 		}
+		// Das letzte Element ist dann immer das größte
 		T greatest = data[data.length - 1];
+		// Sortiere dann den Rest
 		T[] others = sort(Arrays.copyOf(data, data.length - 1));
 		T[] sorted = Arrays.copyOf(others, data.length);
+		// ... und verknüpfe die sortierte Restmenge mit dem größten Element
 		sorted[data.length - 1] = greatest;
 		return sorted;
 	}
