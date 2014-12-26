@@ -10,14 +10,13 @@ import java.util.List;
  *
  * @author Thomas Bosch (tbosch@gmx.de)
  */
-public class MergesortWithList<T> {
-
-	protected Comparator<T> comp;
+public class MergesortWithList<T> extends AbstractSortAlgorithm<T> {
 
 	public MergesortWithList(Comparator<T> newcomp) {
-		comp = newcomp;
+		super(newcomp);
 	}
 
+	@Override
 	public T[] sort(T[] data) {
 		return (T[]) sort(new ArrayList<T>(Arrays.asList(data))).toArray();
 	}
