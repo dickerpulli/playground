@@ -4,6 +4,9 @@
 LIB=website-services-1.1.0
 REPO=/home/thomas/Entwicklung/git/maven-repo/
 
+# Main Install
+mvn install
+
 # Main Sources
 mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfile=target/$LIB.jar -DpomFile=pom.xml -Dsources=target/$LIB-sources.jar -Djavadoc=target/$LIB-javadoc.jar
 
