@@ -12,3 +12,9 @@ mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfil
 
 # Test Classes
 mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfile=target/$LIB-tests.jar -DpomFile=pom.xml -Dpackaging=test-jar
+
+# git
+cd $REPO
+git add .
+git commit -m "new release"
+git push
