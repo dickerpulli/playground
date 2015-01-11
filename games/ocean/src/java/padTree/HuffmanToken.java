@@ -5,34 +5,29 @@ import padList.LinkedList;
 
 public class HuffmanToken implements Valued {
 
-	private byte character;
+	private final byte character;
 
-	private int freqency;
+	private final int freqency;
 
-	private LinkedList<Boolean> bitcode;
+	private final LinkedList<Boolean> bitcode;
+
+	public HuffmanToken(byte character, int freqency,
+			LinkedList<Boolean> bitcode) {
+		this.character = character;
+		this.freqency = freqency;
+		this.bitcode = bitcode;
+	}
 
 	public byte getCharacter() {
 		return character;
-	}
-
-	public void setCharacter(byte character) {
-		this.character = character;
 	}
 
 	public int getFreqency() {
 		return freqency;
 	}
 
-	public void setFreqency(int freqency) {
-		this.freqency = freqency;
-	}
-
 	public LinkedList<Boolean> getBitcode() {
 		return bitcode;
-	}
-
-	public void setBitcode(LinkedList<Boolean> bitcode) {
-		this.bitcode = bitcode;
 	}
 
 	@Override

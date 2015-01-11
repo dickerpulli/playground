@@ -1,7 +1,12 @@
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import padTree.HuffmanToken;
@@ -50,11 +55,19 @@ public class Compress {
 			inFileRead = inFile.read();
 		}
 
+		// Sortiere nach Häufigkeit
+		frequencies = sortByValue(frequencies);
+
 		/***** Aufbau des Huffman - Baumes *****/
 		HuffmanTree hufftree = new HuffmanTree(null);
-		for (int i = 0; i < 256; i++) {
-			// TODO
-			hufftree.append(Direction.LEFT, new HuffmanToken());
+		Direction lastDirection = Direction.RIGHT;
+		for (byte character : frequencies.keySet()) {
+			Integer frequency = frequencies.get(character);
+			padList.LinkedList<Boolean> bitcode = null;
+			Direction direction = lastDirection == Direction.RIGHT ? Direction.LEFT
+					: Direction.RIGHT;
+			hufftree.append(direction, new HuffmanToken(character, frequency,
+					bitcode));
 		}
 
 		/***** Tests *****/
@@ -71,4 +84,23 @@ public class Compress {
 			System.out.print((char) content);
 		}
 	}
+
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+			Map<K, V> map) {
+		List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+			@Override
+			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+				return (o1.getValue()).compareTo(o2.getValue());
+			}
+		});
+		Collections.reverse(list);
+
+		Map<K, V> result = new LinkedHashMap<>();
+		for (Map.Entry<K, V> entry : list) {
+			result.put(entry.getKey(), entry.getValue());
+		}
+		return result;
+	}
+
 }
