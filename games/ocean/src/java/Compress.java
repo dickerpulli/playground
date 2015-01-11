@@ -44,10 +44,7 @@ public class Compress {
 										// jeweiliges Zeichen
 		while (inFileRead != -1) {
 			Integer frequency = frequencies.get((byte) inFileRead);
-			if (frequency == null) {
-				frequency = 0;
-			}
-			frequency++;
+			frequency = frequency == null ? 1 : frequency + 1;
 			frequencies.put((byte) inFileRead, frequency);
 
 			inFileRead = inFile.read();
