@@ -71,7 +71,7 @@ public class BinTree<T> {
 		return _curr.getData();
 	}
 
-	protected class BinTreeNode<T> {
+	public class BinTreeNode<T> {
 		private BinTreeNode<T> left;
 		private BinTreeNode<T> right;
 		private T data;
