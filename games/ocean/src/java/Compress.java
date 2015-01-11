@@ -53,6 +53,7 @@ public class Compress {
 		/***** Aufbau des Huffman - Baumes *****/
 		HuffmanTree hufftree = new HuffmanTree(null);
 		for (int i = 0; i < 256; i++) {
+			// TODO
 			hufftree.append(Direction.LEFT, new HuffmanToken());
 		}
 
