@@ -1,6 +1,6 @@
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import padInterfaces.Valued;
 import padTree.HuffmanTree;
@@ -13,28 +13,23 @@ public class Compress {
 
 	public static void main(String[] args) throws IOException {
 
-		File file = new File("C:/Users/Katha/workspace/PA08/src/test.txt");
-		FileInputStream inFile = new FileInputStream(file);
+		InputStream inFile = new BufferedInputStream(Compress.class.getResourceAsStream("/test.txt"));
 
 		/*
-		 * Methoden für inFile: available() - number of remaining bytes that can
-		 * be read from this input stream close() - closes this file input
-		 * stream finalize() - ensures that close() method is called
-		 * getChannel() - returns the FileChannel object getFD() - returns the
-		 * FileDescriptor object read() - reads a byte of a data from this input
-		 * stream read(byte[] b) read up to b.length bytes of data into an array
-		 * of bytes read(byte[] b, int off, int len) - reads up to len bytes
-		 * skip(long n) - skips over and discards n bytes of data from input
-		 * stream clone() equals() getClass() hashCode() notify() notifyAll()
-		 * toString()
+		 * Methoden fï¿½r inFile: available() - number of remaining bytes that can be read from this input stream close()
+		 * - closes this file input stream finalize() - ensures that close() method is called getChannel() - returns the
+		 * FileChannel object getFD() - returns the FileDescriptor object read() - reads a byte of a data from this
+		 * input stream read(byte[] b) read up to b.length bytes of data into an array of bytes read(byte[] b, int off,
+		 * int len) - reads up to len bytes skip(long n) - skips over and discards n bytes of data from input stream
+		 * clone() equals() getClass() hashCode() notify() notifyAll() toString()
 		 */
 
-		/***** Häufigkeiten zählen *****/
+		/***** Hï¿½ufigkeiten zï¿½hlen *****/
 		// available() - anzahl der bytes
 		int size = inFile.available();
-		int[] freq = new int[256]; // Array mit Häufigkeiten der einzelnen
+		int[] freq = new int[256]; // Array mit Hï¿½ufigkeiten der einzelnen
 									// Zeichen
-		int inFileRead = inFile.read(); // = -1 wenn inFile "leer" und löscht
+		int inFileRead = inFile.read(); // = -1 wenn inFile "leer" und lï¿½scht
 										// jeweiliges Zeichen
 		while (inFileRead != -1) {
 			freq[inFileRead]++;
@@ -63,5 +58,4 @@ public class Compress {
 			System.out.print((char) content);
 		}
 	}
-
 }
