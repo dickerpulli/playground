@@ -5,13 +5,12 @@ public class BinTree<T> {
 	protected BinTreeNode<T> _curr;
 
 	public BinTree() {
-		_dummy = new BinTreeNode<T>();
+		_dummy = new BinTreeNode<T>(null);
 	}
 
 	public BinTree(T single) {
 		this();
-		BinTreeNode<T> left = new BinTreeNode<T>();
-		left.setData(single);
+		BinTreeNode<T> left = new BinTreeNode<T>(single);
 		_dummy.setLeft(left);
 	}
 
@@ -74,7 +73,15 @@ public class BinTree<T> {
 	public class BinTreeNode<T> {
 		private BinTreeNode<T> left;
 		private BinTreeNode<T> right;
-		private T data;
+		private final T data;
+
+		public BinTreeNode(T data) {
+			this.data = data;
+		}
+
+		public T getData() {
+			return data;
+		}
 
 		public BinTreeNode<T> getLeft() {
 			return left;
@@ -90,14 +97,6 @@ public class BinTree<T> {
 
 		public void setRight(BinTreeNode<T> right) {
 			this.right = right;
-		}
-
-		public T getData() {
-			return data;
-		}
-
-		public void setData(T data) {
-			this.data = data;
 		}
 
 	}

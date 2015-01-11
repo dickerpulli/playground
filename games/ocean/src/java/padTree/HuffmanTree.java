@@ -14,6 +14,15 @@ public class HuffmanTree extends BinTree<Valued> {
 
 	public class HuffmanTreeNode extends BinTreeNode<Valued> {
 
+		public HuffmanTreeNode(Valued data) {
+			super(data);
+		}
+
+		public HuffmanTreeNode(double data) {
+			// TODO
+			super(null);
+		}
+
 	}
 
 }
