@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import padInterfaces.Valued;
 import padTree.HuffmanToken;
 import padTree.HuffmanTree;
 // import java.io.IOException;
@@ -36,34 +35,34 @@ public class Compress {
 		/***** H�ufigkeiten z�hlen *****/
 		// available() - anzahl der bytes
 		int size = inFile.available();
-		Map<Byte, Integer> frequencies = new HashMap<Byte, Integer>();
-		int[] freq = new int[256]; // Array mit H�ufigkeiten der einzelnen
-									// Zeichen
+		Map<Byte, Integer> frequencies = new HashMap<Byte, Integer>();// Map mit
+																		// H�ufigkeiten
+																		// der
+																		// einzelnen
+																		// Zeichen
 		int inFileRead = inFile.read(); // = -1 wenn inFile "leer" und l�scht
 										// jeweiliges Zeichen
 		while (inFileRead != -1) {
 			Integer frequency = frequencies.get((byte) inFileRead);
 			if (frequency == null) {
 				frequency = 0;
-				frequencies.put((byte) inFileRead, frequency);
 			}
 			frequency++;
+			frequencies.put((byte) inFileRead, frequency);
 
 			inFileRead = inFile.read();
 		}
 
 		/***** Aufbau des Huffman - Baumes *****/
-		Valued obj = null;
-		HuffmanTree hufftree = new HuffmanTree(obj);
+		HuffmanTree hufftree = new HuffmanTree(null);
 		for (int i = 0; i < 256; i++) {
 			hufftree.append(Direction.LEFT, new HuffmanToken());
 		}
 
 		/***** Tests *****/
-		for (int i = 0; i < 256; i++) {
-			if (freq[i] != 0) {
-				System.out.println((char) i + " " + freq[i]);
-			}
+		for (byte character : frequencies.keySet()) {
+			Integer frequency = frequencies.get(character);
+			System.out.println((char) character + " " + frequency);
 		}
 
 		System.out.println("Total file size to read (in bytes) : " + size);
