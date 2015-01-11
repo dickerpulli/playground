@@ -1,13 +1,17 @@
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import padInterfaces.Valued;
+import padTree.HuffmanToken;
 import padTree.HuffmanTree;
 // import java.io.IOException;
 // import java.io.BufferedInputStream;
 // import padIo.BitInputFile;
 //class HuffmanTree (in padTree, Aufgabe B) verwenden
+import padTree.HuffmanTree.Direction;
 
 public class Compress {
 
@@ -32,20 +36,27 @@ public class Compress {
 		/***** H�ufigkeiten z�hlen *****/
 		// available() - anzahl der bytes
 		int size = inFile.available();
+		Map<Byte, Integer> frequencies = new HashMap<Byte, Integer>();
 		int[] freq = new int[256]; // Array mit H�ufigkeiten der einzelnen
 									// Zeichen
 		int inFileRead = inFile.read(); // = -1 wenn inFile "leer" und l�scht
 										// jeweiliges Zeichen
 		while (inFileRead != -1) {
-			freq[inFileRead]++;
+			Integer frequency = frequencies.get((byte) inFileRead);
+			if (frequency == null) {
+				frequency = 0;
+				frequencies.put((byte) inFileRead, frequency);
+			}
+			frequency++;
+
 			inFileRead = inFile.read();
 		}
 
 		/***** Aufbau des Huffman - Baumes *****/
 		Valued obj = null;
-		HuffmanTree[] hufftree = new HuffmanTree[256];
+		HuffmanTree hufftree = new HuffmanTree(obj);
 		for (int i = 0; i < 256; i++) {
-			// hufftree[i] = new HuffmanTree(freq[i]);
+			hufftree.append(Direction.LEFT, new HuffmanToken());
 		}
 
 		/***** Tests *****/
