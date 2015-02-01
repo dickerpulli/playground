@@ -1,109 +1,157 @@
 package padTree;
 
-public class BinTree<T> {
-	protected BinTreeNode<T> _dummy;
-	protected BinTreeNode<T> _curr;
+public abstract class BinTree<T> {
 
-	public BinTree() {
-		_dummy = new BinTreeNode<T>(null);
+///Public ENUM
+	public enum OriginEnum{ABOVE, LEFT, RIGHT}
+	
+///Class BinTreeNode--GenericNodesForBinaryTreesThatAreLeftOriantated
+ 
+	public class BinTreeNode{
+	///Declarations
+ 		protected 	T Data;
+ 		protected	BinTreeNode Parent;
+ 		protected	BinTreeNode LSon;
+ 		protected	BinTreeNode RSon;
+	///Constructors
+		public BinTreeNode(){
+			Parent=LSon=RSon=null;
+		}
+		public BinTreeNode(T NewData){
+			Data=NewData;
+			Parent=LSon=RSon=null;
+		}
+	///PublicMethods
+		public T getData(){
+			return Data;
+		}
+		public boolean isLeaf(){
+			return LSon==null;
+		}
+		public boolean isRoot(){
+			return Parent==_dummy;
+		}
+		public boolean isLeftChild(){
+			if(Parent==null) return false;
+			return this==Parent.getLeftChild();
+		}
+		public BinTreeNode getParent(){
+			return Parent;
+		}
+		public BinTreeNode getLeftChild(){
+			return LSon;
+		}
+		public BinTreeNode getRightChild(){
+			return RSon;
+		}
+		public void setLeftChild(BinTreeNode NewLeft){
+			NewLeft.Parent=this;
+			LSon=NewLeft;
+		}
+		public void setRightChild(BinTreeNode NewRight){
+			NewRight.Parent=this;
+			RSon=NewRight;
+		}
+		public String toString(){
+			return Data.toString();
+		}
+	}//class BinTreeNode
+
+///Declarations
+	private BinTreeNode		_dummy;
+	protected BinTreeNode	_curr;
+	protected OriginEnum	Origin;
+	
+///Constructors
+	public BinTree(){
+		_dummy	= new BinTreeNode();
 	}
-
-	public BinTree(T single) {
-		this();
-		BinTreeNode<T> left = new BinTreeNode<T>(single);
-		_dummy.setLeft(left);
+	public BinTree(T NewData){
+		_dummy	= new BinTreeNode();
+		_curr	= new BinTreeNode(NewData);
+		_dummy.setLeftChild(_curr);
 	}
-
-	public boolean isEmpty() {
-		return _dummy.getLeft() == null;
+	public BinTree(BinTreeNode NewNode){
+		_dummy	= new BinTreeNode();
+		_curr	= NewNode;
+		_dummy.setLeftChild(_curr);
 	}
-
-	public int getHeight() {
-		// TODO
-		return 0;
+///PublicMethods
+	public boolean isEmpty(){
+		return _dummy.isLeaf();
 	}
-
-	public int getSize() {
-		// TODO
-		return 0;
+	public int getSize(){
+		return getSize(_dummy.getLeftChild());
 	}
-
-	@Override
-	public String toString() {
-		if (_curr != null) {
-			return toString(_curr);
-		} else {
-			return "<empty>";
+	public int getSize(BinTreeNode Node){		//SizeOfTheSubtree
+		return (Node==null)? 0 : 1+getSize(Node.getLeftChild())+getSize(Node.getRightChild()) ;
+	}
+	public int getHeight(){
+		return getHeight(_dummy.getLeftChild());
+	}
+	public int getHeight(BinTreeNode Node){
+		if(Node==null) return 0;
+		else{
+			int HeightLeft	= getHeight(Node.getLeftChild());
+			int HeightRight	= getHeight(Node.getRightChild());
+			return (HeightLeft<HeightRight)?1+ HeightLeft : 1+HeightRight ;
 		}
 	}
-
-	private String toString(BinTreeNode<T> node) {
-		String text = "";
-		if (node.getLeft() != null) {
-			text += toString(node.getLeft());
+	public String toString(){
+		return toString(_dummy.getLeftChild());
+	}
+	public String toString(BinTreeNode Node){
+		return(Node==null)?	"*" : "(" + toString(Node.getLeftChild())+")"+ Node.toString() +"("+ toString(Node.getRightChild())+")";
+		//					Nothing				LeftPart					Data				RightPart
+	}
+	public void reset(){			//GoesToThe'Leftest'Child
+		_curr=_dummy;
+		while(_curr.getLeftChild()!=null){
+			_curr=_curr.getLeftChild();
+			Origin=OriginEnum.LEFT;
 		}
-		text += node.getData().toString() + "\n";
-		if (node.getRight() != null) {
-			text += toString(node.getRight());
-		}
-		return text;
 	}
-
-	public void reset() {
-		_curr = _dummy.getLeft();
+	public void increment(){
+		do{
+			switch(Origin){
+			 case ABOVE:
+				if (_curr.getLeftChild() != null) {
+					_curr = _curr.getLeftChild();
+				}
+				else {
+					Origin = OriginEnum.LEFT;
+				}
+				break;//ABOVE
+			 case LEFT: 
+				if (_curr.getRightChild() != null) {
+					_curr = _curr.getRightChild();
+					Origin = OriginEnum.ABOVE;
+				}
+				else {
+					Origin = OriginEnum.RIGHT;
+				}
+				break;//LEFT
+			 case RIGHT:
+				if (_curr.isLeftChild()) {
+					Origin = OriginEnum.LEFT;
+				}
+				else {
+					Origin = OriginEnum.RIGHT;
+				}
+				_curr = _curr.getParent();
+				break; //RIGHT
+			default: System.err.println("Error: increment hat keine Richtung gespeichert");
+				break;
+			}//switch(Origin)
+		}while(Origin!=OriginEnum.LEFT && !(Origin==OriginEnum.ABOVE && _curr.getLeftChild()==null));
+	}//increment()
+	public boolean isAtEnd(){
+		return _curr==_dummy;
 	}
-
-	public void increment() {
-		// TODO
+	public boolean isAtLeaf(){
+		return _curr.getLeftChild()==null;
 	}
-
-	public boolean isAtEnd() {
-		// TODO
-		return false;
-	}
-
-	public boolean isAtLeaf() {
-		return _curr.getLeft() == null && _curr.getRight() == null;
-	}
-
-	public T currentData() {
+	public T currentData(){
 		return _curr.getData();
 	}
-
-	public class BinTreeNode<T> {
-		private BinTreeNode<T> left;
-		private BinTreeNode<T> right;
-		private final T data;
-
-		public BinTreeNode(T data) {
-			this.data = data;
-		}
-
-		public T getData() {
-			return data;
-		}
-
-		public BinTreeNode<T> getLeft() {
-			return left;
-		}
-
-		public void setLeft(BinTreeNode<T> left) {
-			this.left = left;
-		}
-
-		public BinTreeNode<T> getRight() {
-			return right;
-		}
-
-		public void setRight(BinTreeNode<T> right) {
-			this.right = right;
-		}
-
-	}
-
-	public static void main(String[] args) {
-		BinTree<Integer> tree = new BinTree<Integer>();
-		// tree.
-	}
-
-}
+}//abstract class BinTree<T>
