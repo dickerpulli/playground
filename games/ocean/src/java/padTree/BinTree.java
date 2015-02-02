@@ -26,7 +26,7 @@ public abstract class BinTree<T> {
 			return Data;
 		}
 		public boolean isLeaf(){
-			return LSon==null;
+			return LSon==null && RSon == null;
 		}
 		public boolean isRoot(){
 			return Parent==_dummy;
