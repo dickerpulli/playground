@@ -25,7 +25,30 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 
 	@Override
 	public Comparable<T> contains(Comparable<T> obj) {
-		// TODO Auto-generated method stub
+		return contains(obj, root);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Comparable<T> contains(Comparable<T> obj,
+			BinTree<Comparable<T>>.BinTreeNode node) {
+		Comparable<T> currentData = node.getData();
+		if (currentData.compareTo((T) obj) == 0) {
+			// found
+			return obj;
+		} else if (currentData.compareTo((T) obj) > 0) {
+			// data is smaller than traveral
+			if (node.getLeftChild() != null) {
+				// search in left sub-tree
+				return contains(obj, node.getLeftChild());
+			} 
+		} else if (currentData.compareTo((T) obj) < 0) {
+			// data is bigger than traveral
+			if (node.getRightChild() != null) {
+				// search in right sub-tree
+				return contains(obj, node.getRightChild());
+			} 
+		}
+		// not found
 		return null;
 	}
 
@@ -34,7 +57,7 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 	public Comparable<T> insert(Comparable<T> obj) {
 		// initialize traversal
 		traversal = root;
-		
+
 		// while traversal does not reach the end
 		Comparable<T> currentData = traversal.getData();
 		while (!isAtLeaf()) {
@@ -64,14 +87,14 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 				}
 			}
 		}
-		
+
 		// end / leaf is reached in iteration
 		if (currentData.compareTo((T) obj) > 0) {
 			traversal.setLeftChild(new BinTreeNode(obj));
 		} else if (currentData.compareTo((T) obj) < 0) {
 			traversal.setRightChild(new BinTreeNode(obj));
 		}
-		
+
 		return obj;
 	}
 
@@ -86,7 +109,7 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	@Override
 	public boolean isAtLeaf() {
 		return traversal.isLeaf();
