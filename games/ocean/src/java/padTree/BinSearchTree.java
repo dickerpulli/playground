@@ -35,13 +35,8 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		// initialize traversal
 		traversal = root;
 		
-		// current data is null 
-		Comparable<T> currentData = traversal.getData();
-		if (currentData == null) {
-			return obj;
-		}
-		
 		// while traversal does not reach the end
+		Comparable<T> currentData = traversal.getData();
 		while (!isAtLeaf()) {
 			currentData = traversal.getData();
 			if (currentData.compareTo((T) obj) == 0) {
