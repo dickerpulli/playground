@@ -25,28 +25,28 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 
 	@Override
 	public Comparable<T> contains(Comparable<T> obj) {
-		return contains(obj, root);
+		return contains(obj, root) != null ? contains(obj, root).getData()
+				: null;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Comparable<T> contains(Comparable<T> obj,
-			BinTree<Comparable<T>>.BinTreeNode node) {
+	private BinTreeNode contains(Comparable<T> obj, BinTreeNode node) {
 		Comparable<T> currentData = node.getData();
 		if (currentData.compareTo((T) obj) == 0) {
 			// found
-			return obj;
+			return node;
 		} else if (currentData.compareTo((T) obj) > 0) {
 			// data is smaller than traveral
 			if (node.getLeftChild() != null) {
 				// search in left sub-tree
 				return contains(obj, node.getLeftChild());
-			} 
+			}
 		} else if (currentData.compareTo((T) obj) < 0) {
 			// data is bigger than traveral
 			if (node.getRightChild() != null) {
 				// search in right sub-tree
 				return contains(obj, node.getRightChild());
-			} 
+			}
 		}
 		// not found
 		return null;
@@ -59,9 +59,8 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		traversal = root;
 
 		// while traversal does not reach the end
-		Comparable<T> currentData = traversal.getData();
 		while (!isAtLeaf()) {
-			currentData = traversal.getData();
+			Comparable<T> currentData = traversal.getData();
 			if (currentData.compareTo((T) obj) == 0) {
 				// data already exists
 				return currentData;
@@ -89,6 +88,7 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		}
 
 		// end / leaf is reached in iteration
+		Comparable<T> currentData = traversal.getData();
 		if (currentData.compareTo((T) obj) > 0) {
 			traversal.setLeftChild(new BinTreeNode(obj));
 		} else if (currentData.compareTo((T) obj) < 0) {
@@ -100,8 +100,70 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 
 	@Override
 	public Comparable<T> remove(Comparable<T> obj) {
-		// TODO Auto-generated method stub
+		BinTreeNode node = contains(obj, root);
+		if (node != null) {
+			if (node.isLeaf()) {
+				// node is leaf
+				if (node.isLeftChild()) {
+					node.getParent().LSon = null;
+				} else {
+					node.getParent().RSon = null;
+				}
+			} else if (node.getLeftChild() != null
+					&& node.getRightChild() == null) {
+				// node has only one child, left one
+				if (node.isLeftChild()) {
+					// node to remove is left child, set new left child
+					node.getParent().setLeftChild(node.getLeftChild());
+				} else {
+					node.getParent().setRightChild(node.getLeftChild());
+				}
+				// set parent of child to parent of node to remove
+				node.getLeftChild().Parent = node.getParent();
+			} else if (node.getRightChild() != null
+					&& node.getLeftChild() == null) {
+				// node has only one child, right one
+				if (node.isLeftChild()) {
+					// node to remove is left child, set new left child
+					node.getParent().setLeftChild(node.getRightChild());
+				} else {
+					node.getParent().setRightChild(node.getRightChild());
+				}
+				// set parent of child to parent of node to remove
+				node.getRightChild().Parent = node.getParent();
+			} else {
+				// node has two children
+				BinTreeNode leftest = leftestChild(node.getRightChild());
+				if (node.isLeftChild()) {
+					// node to remove is left child, set new left child
+					node.getParent().setLeftChild(leftest);
+				} else {
+					node.getParent().setRightChild(leftest);
+				}
+				if (leftest.isLeftChild()) {
+					leftest.getParent().LSon = null;
+				} else {
+					leftest.getParent().RSon = null;
+				}
+				node.getLeftChild().Parent = leftest;
+				node.getRightChild().Parent = leftest;
+				if (node.getParent() != null) {
+					leftest.Parent = node.getParent();
+				} else {
+					root = leftest;
+				}
+				leftest.LSon = node.getLeftChild();
+				leftest.RSon = node.getRightChild();
+			}
+		}
 		return null;
+	}
+
+	private BinTreeNode leftestChild(BinTreeNode node) {
+		while (node.getLeftChild() != null) {
+			node = node.getLeftChild();
+		}
+		return node;
 	}
 
 	@Override
