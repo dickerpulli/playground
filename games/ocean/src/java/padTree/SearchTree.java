@@ -13,11 +13,12 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 
 	// /Constructors
 	public SearchTree() {
-		// ThisConstructorIsLeftBlankIntentionally
+		reset();
 	}
 
 	public SearchTree(Comparable<T> NewData) {
 		root = traversal = new BinTreeNode(NewData);
+		reset();
 	}
 
 	// /Override - Automatisch eingefügt wegen 'implements
@@ -27,18 +28,19 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 	public Comparable<T> contains(Comparable<T> obj) {
 		if (root == null)
 			return null;
-		if (root.getData().compareTo((T) obj) == 0) { // .equals((T)obj)
+		if (root.getData().compareTo((T) obj) == 0) {
 			return root.getData();
 		} else {
 			BinTreeNode pointer = root;
 			pointer = contains(obj, pointer);
-			return (pointer.getData().equals(obj)) ? pointer.getData() : null;
+			return (pointer.getData().compareTo((T) obj) == 0) ? pointer
+					.getData() : null;
 		}
 	}// contains(Comparable<T> obj)
 
 	@SuppressWarnings("unchecked")
 	public BinTreeNode contains(Comparable<T> obj, BinTreeNode pointer) {
-		if (pointer.getData().compareTo((T) obj) == 0) { // .equals((T)obj)
+		if (pointer.getData().compareTo((T) obj) == 0) {
 			return pointer;
 		} else {
 			if (pointer.getData().compareTo((T) obj) > 0) {
@@ -65,18 +67,21 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 			root = traversal = new BinTreeNode(obj);
 			return root.getData();
 		}
-		BinTreeNode pointer = contains(obj, root);
-		if (pointer.getData().compareTo((T) obj) > 0) {
-			BinTreeNode NewNode = new BinTreeNode(obj);
-			pointer.setLeftChild(NewNode);
-			pointer = pointer.getLeftChild();
+		Comparable<T> exist = contains(obj);
+		if (exist == null) {
+			BinTreeNode pointer = contains(obj, root);
+			if (pointer.getData().compareTo((T) obj) > 0) {
+				BinTreeNode NewNode = new BinTreeNode(obj);
+				pointer.setLeftChild(NewNode);
+				pointer = pointer.getLeftChild();
+			} else if (pointer.getData().compareTo((T) obj) < 0) {
+				BinTreeNode NewNode = new BinTreeNode(obj);
+				pointer.setRightChild(NewNode);
+				pointer = pointer.getRightChild();
+			}
+			return pointer.getData();
 		}
-		if (pointer.getData().compareTo((T) obj) < 0) {
-			BinTreeNode NewNode = new BinTreeNode(obj);
-			pointer.setRightChild(NewNode);
-			pointer = pointer.getRightChild();
-		}
-		return pointer.getData();
+		return null;
 	}
 
 	@Override
@@ -85,17 +90,17 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 		if (obj == null || obj == null)
 			return null;
 		BinTreeNode pointer = contains(obj, root);
-		if (pointer == traversal)
-			reset();
 		if (pointer.getData().compareTo((T) obj) != 0)
 			return null;
-		int size = getSize();
+
+		if (pointer == traversal)
+			increment();
+
 		delete(pointer);
-		size = getSize();
 		return obj;
 	}
 
-	public void delete(BinTreeNode pointer) {
+	public BinTreeNode delete(BinTreeNode pointer) {
 		boolean isroot = false;
 		if (pointer == root) {
 			isroot = true;
@@ -103,60 +108,66 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 		if (pointer.isLeaf()) {
 			if (isroot) {
 				root = traversal = null;
-				return;
+				return null;
 			}
 			if (pointer.Parent.LSon == pointer) {
-				pointer.Parent.setLeftChild(pointer.Parent);
+				pointer.Parent.LSon = null;
 			} else {
-				pointer.Parent.setRightChild(pointer.Parent);
+				pointer.Parent.RSon = null;
 			}
-			return;
+			return pointer.Parent;
 		}// if(pointer.isLeaf())
 		if (pointer.LSon == null) {
 			if (isroot) {
-				root = traversal = root.getRightChild();
-				root.Parent = null;
-				return;
+				root = traversal = pointer.getRightChild();
+				pointer.getRightChild().Parent = null;
+				return root;
 			}
-			// pointer.getRightChild().Parent=pointer.Parent;
+			pointer.getRightChild().Parent = pointer.Parent;
 			if (pointer.Parent.LSon == pointer) {
 				pointer.Parent.setLeftChild(pointer.RSon);
 			} else {
 				pointer.Parent.setRightChild(pointer.RSon);
 			}
-			return;
+			return pointer.Parent;
 		}// if(pointer.LSon==null)
 		if (pointer.RSon == null) {
 			if (isroot) {
-				root = traversal = root.getLeftChild();
-				root.Parent = null;
-				return;
+				root = traversal = pointer.getLeftChild();
+				pointer.getLeftChild().Parent = null;
+				return root;
 			}
 			pointer.getLeftChild().Parent = pointer.Parent;
 			if (pointer.Parent.LSon == pointer) {
 				pointer.Parent.setLeftChild(pointer.LSon);
-				;
 			} else {
 				pointer.Parent.setRightChild(pointer.LSon);
 			}
-			return;
+			return pointer.Parent;
 		}// if(pointer.RSon==null)
-		// Fall mit beiden Kindern -- Gehe einmal nach li und dann das rechteste
-		// Kind!!!
+			// Fall mit beiden Kindern -- Gehe einmal nach li und dann das
+			// rechteste Kind!
 		BinTreeNode pointerSubset = pointer.getLeftChild();
-		while (pointerSubset.getRightChild() != null) { // Ganz nach Rechts
-														// gehen
+		while (pointerSubset.getRightChild() != null) {
 			pointerSubset = pointerSubset.getRightChild();
 		}
+		BinTreeNode result = pointerSubset.getParent();
 		pointer.Data = pointerSubset.getData();
-		if (pointerSubset.getLeftChild() != null) {
-			pointerSubset.Parent.setRightChild(pointerSubset.getLeftChild());
+		if (pointerSubset.Parent == pointer) {
+			if (pointerSubset.getLeftChild() != null) {
+				pointerSubset.Parent.setLeftChild(pointerSubset.getLeftChild());
+			} else {
+				pointerSubset.Parent.LSon = null;
+			}
 		} else {
-			pointerSubset.Parent.RSon = null;
+			if (pointerSubset.getLeftChild() != null) {
+				pointerSubset.Parent
+						.setRightChild(pointerSubset.getLeftChild());
+			} else {
+				pointerSubset.Parent.RSon = null;
+			}
 		}
-		// pointerSubset.LSon=null;
-		// pointerSubset.RSon=null;
-		// pointerSubset.Parent=null;
+		return result;
 	}// delete(BinTreeNode pointer)
 
 	@Override
@@ -183,11 +194,6 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 				}
 				break;// ABOVE
 			case LEFT:
-				if (traversal == root) {
-					traversal = traversal.getRightChild();
-					Origin = OriginEnum.ABOVE;
-					break;
-				}
 				if (traversal.getRightChild() != null) {
 					traversal = traversal.getRightChild();
 					Origin = OriginEnum.ABOVE;
@@ -196,11 +202,6 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 				}
 				break;// LEFT
 			case RIGHT:
-				if (traversal == root) {
-					traversal = traversal.getRightChild();
-					Origin = OriginEnum.ABOVE;
-					break;
-				}
 				if (traversal.isLeftChild()) {
 					Origin = OriginEnum.LEFT;
 				} else {
@@ -233,11 +234,15 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 	public int getSize() {
 		int size = 0;
 		traversal = getMin();
+		BinTreeNode traversalOld = traversal;
 		while (!isAtEnd()) {
 			increment();
-			size++;
+			if (traversalOld != traversal) {
+				size++;
+				traversalOld = traversal;
+			}
 		}
-		return size;
+		return size + 1;
 	}
 
 	@Override
@@ -315,24 +320,18 @@ public class SearchTree<T> extends BinTree<Comparable<T>> implements
 		if (root == null) {
 			return "Leerer Baum!";
 		}
-		String traverse = "" + getMin().getData();
+		String traverse = "" + getMin().getData() + " (" + maxSearch(getMin())
+				+ ")";
 		reset();
+		BinTreeNode temp = traversal;
 		while (!isAtEnd()) {
 			increment();
-			traverse += ", " + traversal.getData();
+			if (temp != traversal)
+				traverse += ", " + traversal.getData() + " ("
+						+ maxSearch(traversal) + ")";
+			temp = traversal;
 		}
 		return traverse;
 	}
 
-	/*
-	 * public static void main(String[] args) { SearchTree tree = new
-	 * SearchTree();
-	 * 
-	 * for (Integer i = 0; i <= 5; i++) { tree.insert(i); }
-	 * 
-	 * //tree.remove(0);
-	 * 
-	 * System.out.println(tree.toString() + " getSize: " + tree.getSize()); }
-	 */
-
-}// Class SearchTree<T> 
+}// Class SearchTree<T>
