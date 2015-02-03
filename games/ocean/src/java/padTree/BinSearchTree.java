@@ -5,16 +5,22 @@ import padInterfaces.TraversableSortedContainer;
 public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		TraversableSortedContainer<T> {
 
+	private BinTreeNode traversal;
+	private BinTreeNode root;
+
 	public BinSearchTree() {
 		super();
+		root = traversal = _curr;
 	}
 
 	public BinSearchTree(BinTree<Comparable<T>>.BinTreeNode NewNode) {
 		super(NewNode);
+		root = traversal = _curr;
 	}
 
 	public BinSearchTree(Comparable<T> NewData) {
 		super(NewData);
+		root = traversal = _curr;
 	}
 
 	@Override
@@ -26,35 +32,51 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparable<T> insert(Comparable<T> obj) {
+		// initialize traversal
+		traversal = root;
+		
+		// current data is null 
+		Comparable<T> currentData = traversal.getData();
+		if (currentData == null) {
+			return obj;
+		}
+		
+		// while traversal does not reach the end
 		while (!isAtLeaf()) {
-			Comparable<T> currentData = currentData();
+			currentData = traversal.getData();
 			if (currentData.compareTo((T) obj) == 0) {
+				// data already exists
 				return currentData;
 			} else if (currentData.compareTo((T) obj) > 0) {
-				if (_curr.getLeftChild() != null) {
-					_curr = _curr.getLeftChild();
+				// data is smaller than traveral
+				if (traversal.getLeftChild() != null) {
+					// go to next left node
+					traversal = traversal.getLeftChild();
 					continue;
 				} else {
-					_curr.setLeftChild(new BinTreeNode(obj));
-					return obj;
+					// right place found to insert
+					break;
 				}
 			} else if (currentData.compareTo((T) obj) < 0) {
-				if (_curr.getRightChild() != null) {
-					_curr = _curr.getRightChild();
+				// data is bigger than traveral
+				if (traversal.getRightChild() != null) {
+					// go to next right node
+					traversal = traversal.getRightChild();
 					continue;
 				} else {
-					_curr.setRightChild(new BinTreeNode(obj));
-					return obj;
+					// right place found to insert
+					break;
 				}
 			}
 		}
-		if (currentData() == null) {
-			 _curr = new BinTreeNode(obj);
-		} else if (currentData().compareTo((T) obj) > 0) {
-			_curr.setLeftChild(new BinTreeNode(obj));
-		} else if (currentData().compareTo((T) obj) < 0) {
-			_curr.setRightChild(new BinTreeNode(obj));
+		
+		// end / leaf is reached in iteration
+		if (currentData.compareTo((T) obj) > 0) {
+			traversal.setLeftChild(new BinTreeNode(obj));
+		} else if (currentData.compareTo((T) obj) < 0) {
+			traversal.setRightChild(new BinTreeNode(obj));
 		}
+		
 		return obj;
 	}
 
@@ -68,6 +90,11 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 	public int maxSearch() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public boolean isAtLeaf() {
+		return traversal.isLeaf();
 	}
 
 }
