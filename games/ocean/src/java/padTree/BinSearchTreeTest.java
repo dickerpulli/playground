@@ -6,7 +6,9 @@ public class BinSearchTreeTest {
 
 	@Test
 	public void insert() throws Exception {
-		BinSearchTree<Integer> tree = new BinSearchTree<Integer>(12);
+		BinSearchTree<Integer> tree = new BinSearchTree<Integer>();
+		System.out.println(tree);
+		tree.insert(12);
 		System.out.println(tree);
 		tree.insert(7);
 		System.out.println(tree);
@@ -24,7 +26,8 @@ public class BinSearchTreeTest {
 
 	@Test
 	public void contains() throws Exception {
-		BinSearchTree<Integer> tree = new BinSearchTree<Integer>(12);
+		BinSearchTree<Integer> tree = new BinSearchTree<Integer>();
+		tree.insert(12);
 		tree.insert(7);
 		tree.insert(71);
 		tree.insert(1);
@@ -40,7 +43,8 @@ public class BinSearchTreeTest {
 
 	@Test
 	public void remove() throws Exception {
-		BinSearchTree<Integer> tree = new BinSearchTree<Integer>(12);
+		BinSearchTree<Integer> tree = new BinSearchTree<Integer>();
+		tree.insert(12);
 		tree.insert(7);
 		tree.insert(71);
 		tree.insert(1);
@@ -58,7 +62,8 @@ public class BinSearchTreeTest {
 
 	@Test
 	public void maxSearch() throws Exception {
-		BinSearchTree<Integer> tree = new BinSearchTree<Integer>(12);
+		BinSearchTree<Integer> tree = new BinSearchTree<Integer>();
+		tree.insert(12);
 		tree.insert(7);
 		tree.insert(71);
 		tree.insert(1);

@@ -1,6 +1,7 @@
 package padTree;
 
 import padInterfaces.TraversableSortedContainer;
+import padTree.BinTree.BinTreeNode;
 
 public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 		TraversableSortedContainer<T> {
@@ -10,7 +11,6 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 
 	public BinSearchTree() {
 		super();
-		root = traversal = _curr;
 	}
 
 	public BinSearchTree(BinTree<Comparable<T>>.BinTreeNode NewNode) {
@@ -25,8 +25,8 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 
 	@Override
 	public Comparable<T> contains(Comparable<T> obj) {
-		return contains(obj, root) != null ? contains(obj, root).getData()
-				: null;
+		return root != null && contains(obj, root) != null ? contains(obj, root)
+				.getData() : null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,6 +55,12 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparable<T> insert(Comparable<T> obj) {
+		if (root == null) {
+			root = new BinTreeNode(obj);
+			reset();
+			_curr.setLeftChild(root);
+		}
+
 		// initialize traversal
 		traversal = root;
 
@@ -134,14 +140,14 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 			} else {
 				// node has two children
 				BinTreeNode leftest = leftestChild(node.getRightChild());
-				
+
 				// first of all remove old reference of leftest
 				if (leftest.isLeftChild()) {
 					leftest.getParent().LSon = null;
 				} else {
 					leftest.getParent().RSon = null;
 				}
-				
+
 				// set leftest node to parent of removing node's parent child
 				if (node.isLeftChild()) {
 					// node to remove is left child, set new left child
@@ -158,6 +164,7 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 				leftest.LSon = node.getLeftChild();
 				leftest.RSon = node.getRightChild();
 			}
+			return obj;
 		}
 		return null;
 	}
