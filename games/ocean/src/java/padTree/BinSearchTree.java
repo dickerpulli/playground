@@ -134,24 +134,27 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 			} else {
 				// node has two children
 				BinTreeNode leftest = leftestChild(node.getRightChild());
+				
+				// first of all remove old reference of leftest
+				if (leftest.isLeftChild()) {
+					leftest.getParent().LSon = null;
+				} else {
+					leftest.getParent().RSon = null;
+				}
+				
+				// set leftest node to parent of removing node's parent child
 				if (node.isLeftChild()) {
 					// node to remove is left child, set new left child
 					node.getParent().setLeftChild(leftest);
 				} else {
 					node.getParent().setRightChild(leftest);
 				}
-				if (leftest.isLeftChild()) {
-					leftest.getParent().LSon = null;
-				} else {
-					leftest.getParent().RSon = null;
-				}
+
+				// inform old children about their new paren
 				node.getLeftChild().Parent = leftest;
 				node.getRightChild().Parent = leftest;
-				if (node.getParent() != null) {
-					leftest.Parent = node.getParent();
-				} else {
-					root = leftest;
-				}
+
+				// set old children to moved node (leftest)
 				leftest.LSon = node.getLeftChild();
 				leftest.RSon = node.getRightChild();
 			}
