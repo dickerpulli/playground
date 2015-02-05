@@ -164,6 +164,7 @@ public class BinSearchTree<T> extends BinTree<Comparable<T>> implements
 				leftest.LSon = node.getLeftChild();
 				leftest.RSon = node.getRightChild();
 			}
+			root = _curr.getLeftChild();
 			return obj;
 		}
 		return null;
