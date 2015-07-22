@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.stereotype.Service;
 
 import de.tbosch.web.service.EmailService;
@@ -35,23 +35,20 @@ public class StandardEmailService implements EmailService {
 		LOGGER.info("Send mail from {} to me with sender email {} and subject {}", name, email, subject);
 		LOGGER.debug("... and message: {}", message);
 		try {
-			SimpleMailMessage mail = new SimpleMailMessage();
+			MimeMailMessage mail = new MimeMailMessage(mailSender.createMimeMessage());
 			mail.setSubject(subject);
 			if (email != null) {
-				mail.setText("Nachricht aus dem Kontaktformular meiner Webseite:\n\nVon " + name + " (" + email
-						+ ")\n\n" + message);
 				mail.setReplyTo(email);
-			} else {
-				mail.setText(message);
 			}
+			mail.setText("Nachricht aus dem Kontaktformular meiner Webseite:\n\nVon " + name + " (" + email + ")\n\n"
+					+ message);
 			mail.setTo(env.getProperty("smtp.to"));
 			mail.setFrom(env.getProperty("smtp.from"));
-			mailSender.send(mail);
+			mailSender.send(mail.getMimeMessage());
 		} catch (Exception e) {
 			LOGGER.error("Unable to send email", e);
 			return false;
 		}
 		return true;
 	}
-
 }

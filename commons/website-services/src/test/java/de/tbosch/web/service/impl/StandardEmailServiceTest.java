@@ -11,8 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dumbster.smtp.SimpleSmtpServer;
+import com.dumbster.smtp.SmtpMessage;
 
-import de.tbosch.web.service.impl.StandardEmailService;
 import de.tbosch.web.test.TestConfiguration;
 
 @ContextConfiguration(classes = { TestConfiguration.class })
@@ -37,9 +37,11 @@ public class StandardEmailServiceTest {
 	@Test
 	public void sendMeAnEmail() throws Exception {
 		boolean sent = service.sendMeAnEmail("Max Mustermann", "Test", "max.mustermann@mail.com",
-				"Dies ist mein Text...");
+				"Dies ist mein Text mit Umlautön...");
 		assertEquals(true, sent);
 		assertEquals(1, smtpServer.getReceivedEmailSize());
+		assertEquals("Dies ist mein Text mit Umlautön...",
+				((SmtpMessage) smtpServer.getReceivedEmail().next()).getBody());
 	}
 
 }

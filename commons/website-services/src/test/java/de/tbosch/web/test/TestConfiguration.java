@@ -27,6 +27,7 @@ public class TestConfiguration {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost(env.getProperty("smtp.host"));
 		mailSender.setPort(env.getProperty("smtp.port", Integer.class));
+		mailSender.setDefaultEncoding("utf8");
 		Properties javaMailProperties = new Properties();
 		javaMailProperties.put("mail.smtp.auth", true);
 		if (env.getProperty("smtp.ssl", Boolean.class)) {
