@@ -1,8 +1,8 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-services-1.1.0
-REPO=/home/thomas/Entwicklung/git/maven-repo/
+LIB=website-services-1.1.1
+REPO=/home/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
 mvn install
@@ -16,5 +16,5 @@ mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfil
 # git
 cd $REPO
 git add .
-git commit -m "new release"
+git commit -m "new release $LIB"
 git push
