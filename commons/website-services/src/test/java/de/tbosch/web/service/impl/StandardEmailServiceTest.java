@@ -1,6 +1,7 @@
 package de.tbosch.web.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,8 +41,11 @@ public class StandardEmailServiceTest {
 				"Dies ist mein Text mit Umlautön...");
 		assertEquals(true, sent);
 		assertEquals(1, smtpServer.getReceivedEmailSize());
-		assertEquals("Dies ist mein Text mit Umlautön...",
-				((SmtpMessage) smtpServer.getReceivedEmail().next()).getBody());
+		String body = ((SmtpMessage) smtpServer.getReceivedEmail().next()).getBody();
+		System.out.println(body);
+		assertTrue(body.contains("Von Max Mustermann"));
+		assertTrue(body.contains("(max.mustermann@mail.com)"));
+		assertTrue(body.contains("Dies ist mein Text mit Umlautön..."));
 	}
 
 }
