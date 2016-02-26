@@ -1,11 +1,11 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-services-1.1.1
+LIB=website-services-1.2.0
 REPO=/home/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
-mvn install
+mvn clean install
 
 # Main Sources
 mvn install:install-file -DlocalRepositoryPath=$REPO -DcreateChecksum=true -Dfile=target/$LIB.jar -DpomFile=pom.xml -Dsources=target/$LIB-sources.jar -Djavadoc=target/$LIB-javadoc.jar

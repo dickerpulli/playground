@@ -3,6 +3,9 @@ package de.tbosch.web.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.Charset;
+
+import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,8 +44,9 @@ public class StandardEmailServiceTest {
 				"Dies ist mein Text mit Umlautön...");
 		assertEquals(true, sent);
 		assertEquals(1, smtpServer.getReceivedEmailSize());
-		String body = ((SmtpMessage) smtpServer.getReceivedEmail().next()).getBody();
-		System.out.println(body);
+		SmtpMessage message = (SmtpMessage) smtpServer.getReceivedEmail().next();
+		String body = new String(QuotedPrintableCodec.decodeQuotedPrintable(message.getBody().getBytes()),
+				Charset.forName("UTF-8"));
 		assertTrue(body.contains("Von Max Mustermann"));
 		assertTrue(body.contains("(max.mustermann@mail.com)"));
 		assertTrue(body.contains("Dies ist mein Text mit Umlautön..."));

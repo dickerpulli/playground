@@ -1,5 +1,7 @@
 package de.tbosch.web.service.impl;
 
+import javax.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +37,12 @@ public class StandardEmailService implements EmailService {
 		LOGGER.info("Send mail from {} to me with sender email {} and subject {}", name, email, subject);
 		LOGGER.debug("... and message: {}", message);
 		try {
-			MimeMailMessage mail = new MimeMailMessage(mailSender.createMimeMessage());
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMailMessage mail = new MimeMailMessage(mimeMessage);
 			mail.setSubject(subject);
-			if (email != null) {
-				mail.setReplyTo(email);
-			}
-			mail.setText("Nachricht aus dem Kontaktformular meiner Webseite:\n\nVon " + name + " (" + email + ")\n\n"
+			mail.setReplyTo(email);
+			mail.setText("Nachricht aus dem Kontaktformular meiner Webseite:\n\n"//
+					+ "Von " + name + " (" + email + ")\n\n"//
 					+ message);
 			mail.setTo(env.getProperty("smtp.to"));
 			mail.setFrom(env.getProperty("smtp.from"));
