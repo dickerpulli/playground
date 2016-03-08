@@ -1,7 +1,7 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-commons-1.3.0
+LIB=website-commons-1.0.0
 REPO=/home/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
