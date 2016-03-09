@@ -45,6 +45,11 @@
 				<artifactId>commons-logging</artifactId>
 				<version>1.2</version>
 			</dependency>
+			<dependency>
+				<groupId>com.newrelic.agent.java</groupId>
+				<artifactId>newrelic-agent</artifactId>
+				<version>3.25.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -83,6 +88,24 @@
 								<goal>jar</goal>
 								<goal>test-jar</goal>
 							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy-new-relic</id>
+							<phase>package</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeGroupIds>com.newrelic.agent.java</includeGroupIds>
+								<includeArtifactIds>newrelic-agent</includeArtifactIds>
+								<stripVersion>true</stripVersion>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
