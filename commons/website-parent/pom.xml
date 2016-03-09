@@ -4,6 +4,7 @@
 	<groupId>de.tbosch.web</groupId>
 	<artifactId>website-parent</artifactId>
 	<version>1.0.0</version>
+	<packaging>pom</packaging>
 	<parent>
     	<groupId>org.springframework.boot</groupId>
     	<artifactId>spring-boot-starter-parent</artifactId>
