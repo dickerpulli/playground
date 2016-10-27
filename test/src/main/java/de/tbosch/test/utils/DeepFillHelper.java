@@ -1,4 +1,4 @@
-package com.provinzial.protago.allsparten.plattform.testutil;
+package de.tbosch.test.utils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
