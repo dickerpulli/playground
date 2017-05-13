@@ -4,6 +4,11 @@
 	<groupId>de.tbosch.web</groupId>
 	<artifactId>website-services</artifactId>
 	<version>1.2.0</version>
+	
+	<!-- !!! -->
+	<description>old services - use website-commons</description>
+	<!-- !!! -->
+	
 	<properties>
 		<spring.version>4.2.4.RELEASE</spring.version>
 	</properties>
