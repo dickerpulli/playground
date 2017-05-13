@@ -2,7 +2,7 @@
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
 LIB=website-parent-1.2.0
-REPO=/home/thomas/Entwicklung/git/dickerpulli/maven-repo/
+REPO=/Users/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
 mvn clean install
