@@ -1,8 +1,8 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-commons-1.1.0
-REPO=/home/thomas/Entwicklung/git/dickerpulli/maven-repo/
+LIB=website-commons-1.2.0
+REPO=/Users/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
 mvn clean install
