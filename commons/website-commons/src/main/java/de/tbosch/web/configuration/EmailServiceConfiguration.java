@@ -5,10 +5,12 @@ import java.util.Properties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import de.tbosch.web.service.EmailService;
+import de.tbosch.web.service.impl.SendGridEmailService;
 import de.tbosch.web.service.impl.StandardEmailService;
 
 @Configuration
@@ -16,8 +18,14 @@ import de.tbosch.web.service.impl.StandardEmailService;
 public class EmailServiceConfiguration {
 
 	@Bean
-	public EmailService emailService() {
+	@Primary
+	public EmailService standardMailService() {
 		return new StandardEmailService();
+	}
+	
+	@Bean
+	public EmailService sendGridEmailService() {
+		return new SendGridEmailService();
 	}
 
 	@Bean
