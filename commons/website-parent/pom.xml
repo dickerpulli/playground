@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tbosch.web</groupId>
 	<artifactId>website-parent</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
