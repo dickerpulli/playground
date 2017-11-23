@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tbosch.web</groupId>
 	<artifactId>website-parent</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>pom</packaging>
 	<parent>
-    	<groupId>org.springframework.boot</groupId>
-    	<artifactId>spring-boot-starter-parent</artifactId>
-    	<version>1.5.6.RELEASE</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.6.RELEASE</version>
 	</parent>
 	<properties>
 		<java.version>1.8</java.version>
@@ -18,7 +18,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.4</version>
+				<version>3.5</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.mail</groupId>
@@ -43,7 +43,7 @@
 			<dependency>
 				<groupId>com.newrelic.agent.java</groupId>
 				<artifactId>newrelic-agent</artifactId>
-				<version>3.25.0</version>
+				<version>3.44.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sendgrid</groupId>
@@ -105,6 +105,7 @@
 								<includeGroupIds>com.newrelic.agent.java</includeGroupIds>
 								<includeArtifactIds>newrelic-agent</includeArtifactIds>
 								<stripVersion>true</stripVersion>
+								<destFileName>newrelic-agent.jar</destFileName>
 							</configuration>
 						</execution>
 					</executions>
