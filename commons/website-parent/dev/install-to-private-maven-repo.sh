@@ -1,7 +1,7 @@
 #!/bin/bash
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-parent-1.4.2
+LIB=website-parent-1.4.3
 REPO=/Users/thomas/Entwicklung/git/dickerpulli/maven-repo/
 
 # Main Install
