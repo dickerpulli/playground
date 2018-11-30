@@ -1,8 +1,12 @@
 #!/bin/bash -e
 # Muss im root-Verzeichnis des Projekts ausgeführt werden
 
-LIB=website-parent-2.0.5
 REPO=/Users/thomas/Entwicklung/git/dickerpulli/maven-repo/
+
+# Version ermitteln
+VERSION=`mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' -q`
+ARTIFACTID=`mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.artifactId}' -q`
+LIB=$ARTIFACTID-$VERSION
 
 # Main Install
 mvn clean install
